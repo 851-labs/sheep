@@ -33,6 +33,25 @@ if [[ -f "$FRAMEWORK_PATH/Info.plist" ]] \
 fi
 
 cd "$GHOSTTY_ROOT"
+PIXEL_FORMAT_SOURCE="$GHOSTTY_ROOT/pkg/macos/video/pixel_format.zig"
+PATCH_BACKUP_DIRECTORY=$(mktemp -d)
+PATCH_BACKUP_SOURCE="$PATCH_BACKUP_DIRECTORY/pixel_format.zig"
+
+cp "$PIXEL_FORMAT_SOURCE" "$PATCH_BACKUP_SOURCE"
+restore_ghostty_source() {
+  cp "$PATCH_BACKUP_SOURCE" "$PIXEL_FORMAT_SOURCE"
+  rm "$PATCH_BACKUP_SOURCE"
+  rmdir "$PATCH_BACKUP_DIRECTORY"
+}
+trap restore_ghostty_source EXIT
+
+# Ghostty 1.3.1 names this CoreVideo FourCC through an SDK symbol that was
+# introduced after the macOS 14 runner SDK. The value itself is stable and
+# public (`r210`), so compile the pin against older SDKs using that value.
+perl -0pi -e \
+  's/@"30RGB_r210" = c\.kCVPixelFormatType_30RGB_r210,/@"30RGB_r210" = 0x72323130,/' \
+  "$PIXEL_FORMAT_SOURCE"
+
 "$ZIG_BIN" build \
   -Demit-xcframework=true \
   -Demit-macos-app=false \
