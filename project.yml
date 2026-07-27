@@ -52,14 +52,19 @@ targets:
       - target: SheepDomain
       - target: SheepApplication
       - target: SheepInfrastructure
+      - framework: Dependencies/ghostty/macos/GhosttyKit.xcframework
+        embed: false
+      - sdk: Carbon.framework
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep
         PRODUCT_NAME: sheep
+        ENABLE_DEBUG_DYLIB: NO
         INFOPLIST_KEY_CFBundleDisplayName: sheep
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
         INFOPLIST_KEY_NSHumanReadableCopyright: Copyright © 2026 851 Labs
         GENERATE_INFOPLIST_FILE: YES
+        OTHER_LDFLAGS: "$(inherited) -lstdc++"
     scheme:
       testTargets:
         - SheepTests

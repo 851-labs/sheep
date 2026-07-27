@@ -7,10 +7,18 @@ final class MainSplitViewController: NSSplitViewController {
     private let terminalArea: TerminalAreaViewController
     private var restoredWidth = false
 
-    init(model: AppModel) {
+    init(
+        model: AppModel,
+        ghosttyRuntime: GhosttyRuntime?,
+        herdrExecutable: URL?
+    ) {
         self.model = model
         sidebar = SidebarViewController(model: model)
-        terminalArea = TerminalAreaViewController(model: model)
+        terminalArea = TerminalAreaViewController(
+            model: model,
+            ghosttyRuntime: ghosttyRuntime,
+            herdrExecutable: herdrExecutable
+        )
         super.init(nibName: nil, bundle: nil)
     }
 

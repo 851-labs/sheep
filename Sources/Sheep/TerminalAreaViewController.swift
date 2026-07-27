@@ -5,15 +5,24 @@ import SheepDomain
 @MainActor
 final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private let model: AppModel
+    private let ghosttyRuntime: GhosttyRuntime?
+    private let herdrExecutable: URL?
     private let tabStack = NSStackView()
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
     private var ratioTasks: [String: Task<Void, Never>] = [:]
     private var activeTabID: TabID?
+    private var renderedLayout: PaneLayout?
 
-    init(model: AppModel) {
+    init(
+        model: AppModel,
+        ghosttyRuntime: GhosttyRuntime?,
+        herdrExecutable: URL?
+    ) {
         self.model = model
+        self.ghosttyRuntime = ghosttyRuntime
+        self.herdrExecutable = herdrExecutable
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -62,11 +71,13 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         reloadTabs()
         guard let tab = model.session?.focusedTab else {
             activeTabID = nil
+            renderedLayout = nil
             showEmptyState()
             return
         }
         if activeTabID != tab.id {
             activeTabID = tab.id
+            renderedLayout = nil
             showLoading()
             model.loadLayout(tabID: tab.id)
         }
@@ -76,10 +87,19 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         guard let tabID = activeTabID else { return }
         switch result {
         case let .success(layout) where layout.tabID == tabID:
-            splitMetadata.removeAll()
             let node = layout.zoomed
                 ? PaneLayout.Node.pane(layout.focusedPaneID)
                 : layout.root
+            if let renderedLayout {
+                let renderedNode = renderedLayout.zoomed
+                    ? PaneLayout.Node.pane(renderedLayout.focusedPaneID)
+                    : renderedLayout.root
+                if renderedLayout.tabID == layout.tabID, renderedNode == node {
+                    return
+                }
+            }
+            renderedLayout = layout
+            splitMetadata.removeAll()
             replaceContent(with: build(node: node, tabID: tabID, path: []))
         case let .failure(error):
             replaceContent(with: stateLabel(
@@ -156,9 +176,24 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             guard let pane = model.session?.panes.first(where: { $0.id == id }) else {
                 return stateLabel(title: "Pane unavailable", detail: id.rawValue)
             }
-            return TerminalPlaceholderView(pane: pane) { [weak self] in
-                self?.model.focusPane(id)
+            guard let ghosttyRuntime, let herdrExecutable else {
+                return stateLabel(
+                    title: "Terminal unavailable",
+                    detail: ghosttyRuntime == nil
+                        ? "Ghostty 1.3.1 could not be initialized."
+                        : "The Herdr executable could not be found."
+                )
             }
+            return GhosttyTerminalView(
+                runtime: ghosttyRuntime,
+                herdrExecutable: herdrExecutable,
+                pane: pane
+            ) { [weak self] in
+                self?.model.focusPane(id)
+            } ?? stateLabel(
+                title: "Terminal attach failed",
+                detail: "Could not attach \(pane.terminalID.rawValue)."
+            )
         case let .split(direction, ratio, first, second):
             let split = NSSplitView()
             split.isVertical = direction == .right
@@ -279,58 +314,4 @@ private final class ClosureButton: NSButton {
     required init?(coder: NSCoder) { fatalError() }
 
     @objc private func invoke() { closure() }
-}
-
-@MainActor
-private final class TerminalPlaceholderView: NSView {
-    private let focus: () -> Void
-
-    init(pane: Pane, focus: @escaping () -> Void) {
-        self.focus = focus
-        super.init(frame: .zero)
-        wantsLayer = true
-        layer?.backgroundColor = Palette.terminal.cgColor
-        layer?.borderColor = Palette.line.cgColor
-        layer?.borderWidth = 0.5
-
-        let icon = NSImageView(image: NSImage(
-            systemSymbolName: "terminal",
-            accessibilityDescription: "Terminal"
-        )!)
-        icon.contentTintColor = .tertiaryLabelColor
-        let title = NSTextField(labelWithString: pane.displayTitle)
-        title.font = .monospacedSystemFont(ofSize: 13, weight: .medium)
-        title.textColor = .secondaryLabelColor
-        let detail = NSTextField(labelWithString: pane.foregroundCWD ?? pane.cwd ?? pane.terminalID.rawValue)
-        detail.font = .monospacedSystemFont(ofSize: 10, weight: .regular)
-        detail.textColor = .tertiaryLabelColor
-        detail.lineBreakMode = .byTruncatingMiddle
-        let stack = NSStackView(views: [icon, title, detail])
-        stack.orientation = .vertical
-        stack.alignment = .centerX
-        stack.spacing = 8
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stack)
-        NSLayoutConstraint.activate([
-            stack.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            stack.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -30),
-        ])
-        setAccessibilityLabel("Terminal \(pane.displayTitle)")
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
-
-    override var acceptsFirstResponder: Bool { true }
-
-    override func mouseDown(with event: NSEvent) {
-        window?.makeFirstResponder(self)
-        focus()
-    }
-
-    override func becomeFirstResponder() -> Bool {
-        focus()
-        return true
-    }
 }

@@ -1,0 +1,3 @@
+[submodule "Dependencies/ghostty"]
+	path = Dependencies/ghostty
+	url = https://github.com/ghostty-org/ghostty.git

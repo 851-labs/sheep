@@ -25,8 +25,11 @@
 		87F9FCBECC15B6BB74BE4D91 /* HerdrSessionRepositoryAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */; };
 		99FDA4F528D0384BA4000924 /* HerdrExecutableLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */; };
 		A0441950F017D79ED78703C9 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E451D7BBC74EACA9AC4976D /* AppModel.swift */; };
+		A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */; };
+		A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */; };
 		A43780D542051077309A4C70 /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E116FBCA3178E61F006B3C /* GitStatusService.swift */; };
 		A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */; };
 		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
 		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
 		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
@@ -36,6 +39,7 @@
 		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
 		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
+		ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA6EE6E193A66A9E5280102F /* Carbon.framework */; };
 		ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE77EFCF9C51576670E513 /* ModuleTests.swift */; };
 		F18D88158BFCADCAC9A6ED97 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -151,6 +155,7 @@
 		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = Dependencies/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
 		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
 		45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrExecutableLocator.swift; sourceTree = "<group>"; };
 		46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepInfrastructure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,9 +171,12 @@
 		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
+		D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyTerminalView.swift; sourceTree = "<group>"; };
 		D903237ACD72439C718857D0 /* HerdrSocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSocketClient.swift; sourceTree = "<group>"; };
 		D93C27078727AA9D1A1121DC /* Sheep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sheep.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyRuntime.swift; sourceTree = "<group>"; };
 		DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SheepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA6EE6E193A66A9E5280102F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSessionRepositoryAdapter.swift; sourceTree = "<group>"; };
 		EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECF5EFDF2BB76FC240971028 /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
@@ -200,6 +208,8 @@
 				3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */,
 				F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */,
 				11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */,
+				A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */,
+				ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +240,15 @@
 				32A09B70745E449387FEE66F /* SheepTests */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		2F5A6FEF544A3665C07555B0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EA6EE6E193A66A9E5280102F /* Carbon.framework */,
+				2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		32A09B70745E449387FEE66F /* SheepTests */ = {
@@ -269,6 +288,7 @@
 			children = (
 				DCEF44F2724E65EA2A5BB55C /* Sources */,
 				1658A02843B4F81E4982EE6A /* Tests */,
+				2F5A6FEF544A3665C07555B0 /* Frameworks */,
 				5AAB0DDDF8DE74CB5816EDAD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -301,6 +321,8 @@
 			children = (
 				48606E38D19B5A7548A279BC /* AppDelegate.swift */,
 				9E451D7BBC74EACA9AC4976D /* AppModel.swift */,
+				DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */,
+				D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */,
 				1C7925FF80ED98D4F28CF247 /* main.swift */,
 				92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */,
 				1A565582B6D4CFC0EB1C4ABE /* Palette.swift */,
@@ -455,6 +477,8 @@
 			files = (
 				49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */,
 				A0441950F017D79ED78703C9 /* AppModel.swift in Sources */,
+				AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */,
+				A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */,
 				FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */,
 				DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */,
 				784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */,
@@ -778,6 +802,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_DEBUG_DYLIB = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Dependencies/ghostty/macos\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = sheep;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -786,6 +815,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "$(inherited) -lstdc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -797,6 +827,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_DEBUG_DYLIB = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Dependencies/ghostty/macos\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = sheep;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -805,6 +840,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = "$(inherited) -lstdc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;

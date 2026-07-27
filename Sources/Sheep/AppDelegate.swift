@@ -5,6 +5,7 @@ import SheepInfrastructure
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowController: NSWindowController?
     private var mainController: MainSplitViewController?
+    private var ghosttyRuntime: GhosttyRuntime?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.appearance = NSAppearance(named: .darkAqua)
@@ -12,7 +13,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let supervisor = HerdrServerSupervisorAdapter()
         let repository = HerdrSessionRepositoryAdapter(supervisor: supervisor)
         let model = AppModel(repository: repository, gitStatus: GitStatusService())
-        let content = MainSplitViewController(model: model)
+        let runtime = GhosttyRuntime()
+        ghosttyRuntime = runtime
+        let content = MainSplitViewController(
+            model: model,
+            ghosttyRuntime: runtime,
+            herdrExecutable: try? HerdrExecutableLocator().locate()
+        )
         mainController = content
 
         let window = NSWindow(contentViewController: content)

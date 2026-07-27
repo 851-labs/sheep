@@ -6,6 +6,5 @@ build/
 *.xcuserstate
 xcuserdata/
 Dependencies/GhosttyKit.xcframework/
-Dependencies/ghostty/
+Dependencies/ghostty/macos/GhosttyKit.xcframework/
 *.log
-
