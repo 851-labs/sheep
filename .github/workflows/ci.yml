@@ -9,7 +9,8 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: macos-14
+    # Xcode 16 is required for Swift 6; the product still targets macOS 14.
+    runs-on: macos-15
     timeout-minutes: 45
 
     steps:
