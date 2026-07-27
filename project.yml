@@ -1,0 +1,80 @@
+name: Sheep
+options:
+  bundleIdPrefix: com.851labs
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CODE_SIGNING_ALLOWED: NO
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    CLANG_ENABLE_MODULES: YES
+targets:
+  SheepDomain:
+    type: framework
+    platform: macOS
+    sources: Sources/SheepDomain
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.domain
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+  SheepApplication:
+    type: framework
+    platform: macOS
+    sources: Sources/SheepApplication
+    dependencies:
+      - target: SheepDomain
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.application
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+  SheepInfrastructure:
+    type: framework
+    platform: macOS
+    sources: Sources/SheepInfrastructure
+    dependencies:
+      - target: SheepDomain
+      - target: SheepApplication
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.infrastructure
+        DEFINES_MODULE: YES
+        GENERATE_INFOPLIST_FILE: YES
+  Sheep:
+    type: application
+    platform: macOS
+    sources: Sources/Sheep
+    dependencies:
+      - target: SheepDomain
+      - target: SheepApplication
+      - target: SheepInfrastructure
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep
+        PRODUCT_NAME: sheep
+        INFOPLIST_KEY_CFBundleDisplayName: sheep
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+        INFOPLIST_KEY_NSHumanReadableCopyright: Copyright © 2026 851 Labs
+        GENERATE_INFOPLIST_FILE: YES
+    scheme:
+      testTargets:
+        - SheepTests
+  SheepTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: Tests/SheepTests
+    dependencies:
+      - target: Sheep
+      - target: SheepDomain
+      - target: SheepApplication
+      - target: SheepInfrastructure
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/sheep.app/Contents/MacOS/sheep"
+        BUNDLE_LOADER: "$(TEST_HOST)"
