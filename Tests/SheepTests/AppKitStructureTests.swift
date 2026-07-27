@@ -26,10 +26,12 @@ final class AppKitStructureTests: XCTestCase {
                 )
             )
         )
+        let recorder = CommandRecorder()
         let model = AppModel(
             repository: StubRepository(
                 update: SessionUpdate(connection: .connected, session: session),
-                layout: layout
+                layout: layout,
+                recorder: recorder
             ),
             gitStatus: StubGitStatus()
         )
@@ -55,6 +57,7 @@ final class AppKitStructureTests: XCTestCase {
 
         let outlines: [NSOutlineView] = allSubviews(in: controller.view)
         XCTAssertEqual(outlines.first?.numberOfRows, 3)
+        XCTAssertEqual(recorder.focusCount, 0)
     }
 
     func testDisconnectedSessionRetainsContentAndShowsBanner() async throws {
@@ -66,13 +69,15 @@ final class AppKitStructureTests: XCTestCase {
             focusedPaneID: PaneID(rawValue: "w1:p1"),
             root: .pane(PaneID(rawValue: "w1:p1"))
         )
+        let recorder = CommandRecorder()
         let model = AppModel(
             repository: StubRepository(
                 update: SessionUpdate(
                     connection: .disconnected("socket closed"),
                     session: session
                 ),
-                layout: layout
+                layout: layout,
+                recorder: recorder
             ),
             gitStatus: StubGitStatus()
         )
@@ -178,6 +183,7 @@ final class AppKitStructureTests: XCTestCase {
 private struct StubRepository: HerdrSessionRepository {
     let update: SessionUpdate
     let layout: PaneLayout
+    let recorder: CommandRecorder
 
     func observeSession() async -> AsyncStream<SessionUpdate> {
         AsyncStream { continuation in
@@ -186,13 +192,26 @@ private struct StubRepository: HerdrSessionRepository {
     }
 
     func refresh() async {}
-    func focusWorkspace(_ id: WorkspaceID) async throws {}
+    func focusWorkspace(_ id: WorkspaceID) async throws { recorder.recordFocus() }
     func focusTab(_ id: TabID) async throws {}
-    func focusPane(_ id: PaneID) async throws {}
+    func focusPane(_ id: PaneID) async throws { recorder.recordFocus() }
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
     func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
     func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
+}
+
+private final class CommandRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage = 0
+
+    var focusCount: Int {
+        lock.withLock { storage }
+    }
+
+    func recordFocus() {
+        lock.withLock { storage += 1 }
+    }
 }
 
 private struct StubGitStatus: GitStatusProvider {

@@ -8,6 +8,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     private let spacesTable = NSTableView()
     private let agentsOutline = NSOutlineView()
     private var agentGroups: [AgentGroup] = []
+    private var isApplyingSnapshot = false
     var onToggleSidebar: (() -> Void)?
 
     init(model: AppModel) {
@@ -113,6 +114,8 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     }
 
     func reload() {
+        isApplyingSnapshot = true
+        defer { isApplyingSnapshot = false }
         agentGroups = groupedAgents()
         spacesTable.reloadData()
         agentsOutline.reloadData()
@@ -154,9 +157,11 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     }
 
     func tableViewSelectionDidChange(_ notification: Notification) {
-        guard notification.object as? NSTableView === spacesTable,
+        guard !isApplyingSnapshot,
+              notification.object as? NSTableView === spacesTable,
               spacesTable.selectedRow >= 0,
-              let workspace = model.session?.workspaces[spacesTable.selectedRow] else { return }
+              let workspace = model.session?.workspaces[spacesTable.selectedRow],
+              workspace.id != model.session?.focusedWorkspaceID else { return }
         model.focusWorkspace(workspace.id)
     }
 
@@ -198,8 +203,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     }
 
     func outlineViewSelectionDidChange(_ notification: Notification) {
-        guard agentsOutline.selectedRow >= 0,
-              let agent = (agentsOutline.item(atRow: agentsOutline.selectedRow) as? AgentItem)?.value else { return }
+        guard !isApplyingSnapshot,
+              agentsOutline.selectedRow >= 0,
+              let agent = (agentsOutline.item(atRow: agentsOutline.selectedRow) as? AgentItem)?.value,
+              agent.paneID != model.session?.focusedPaneID else { return }
         model.focusPane(agent.paneID)
     }
 

@@ -79,7 +79,6 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             activeTabID = tab.id
             renderedLayout = nil
             showLoading()
-            model.loadLayout(tabID: tab.id)
         }
     }
 
