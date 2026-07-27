@@ -36,6 +36,8 @@
 		BB35D261DADF22A0679B546F /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF5EFDF2BB76FC240971028 /* Identifiers.swift */; };
 		BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7BE142BBEA70858221BFD6B /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F633763458D6BDE725065A /* Session.swift */; };
+		CB58C2530540072CC6993FD3 /* HerdrSocketIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */; };
+		CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */; };
 		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
 		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
@@ -165,9 +167,11 @@
 		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
 		664764DDE91837CFA755F69A /* PaneLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaneLayout.swift; sourceTree = "<group>"; };
 		71F633763458D6BDE725065A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSocketIntegrationTests.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
 		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitStructureTests.swift; sourceTree = "<group>"; };
 		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
@@ -254,6 +258,8 @@
 		32A09B70745E449387FEE66F /* SheepTests */ = {
 			isa = PBXGroup;
 			children = (
+				A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */,
+				77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */,
 				8AFE77EFCF9C51576670E513 /* ModuleTests.swift */,
 			);
 			path = SheepTests;
@@ -524,6 +530,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */,
+				CB58C2530540072CC6993FD3 /* HerdrSocketIntegrationTests.swift in Sources */,
 				EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

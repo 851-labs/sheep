@@ -9,6 +9,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     private var keyText: [String]?
     private let focusPane: () -> Void
     private var tracking: NSTrackingArea?
+    private var cursorHidden = false
 
     init?(
         runtime: GhosttyRuntime,
@@ -55,6 +56,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     required init?(coder: NSCoder) { fatalError() }
 
     deinit {
+        if cursorHidden { NSCursor.unhide() }
         if let surface { ghostty_surface_free(surface) }
     }
 
@@ -80,6 +82,11 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     override func viewDidChangeBackingProperties() {
         super.viewDidChangeBackingProperties()
+        updateSurfaceGeometry()
+    }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
         updateSurfaceGeometry()
     }
 
@@ -143,8 +150,8 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     override func scrollWheel(with event: NSEvent) {
         guard let surface else { return }
         let multiplier = event.hasPreciseScrollingDeltas ? 2.0 : 1.0
-        var scrollMods = Int32(Self.modifiers(event.modifierFlags).rawValue)
-        if event.hasPreciseScrollingDeltas { scrollMods |= 1 << 8 }
+        var scrollMods: Int32 = event.hasPreciseScrollingDeltas ? 1 : 0
+        scrollMods |= Self.momentum(event.momentumPhase) << 1
         ghostty_surface_mouse_scroll(
             surface,
             event.scrollingDeltaX * multiplier,
@@ -176,7 +183,26 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     }
 
     override func flagsChanged(with event: NSEvent) {
-        sendKey(event, action: GHOSTTY_ACTION_PRESS)
+        let flag: NSEvent.ModifierFlags
+        switch event.keyCode {
+        case 0x39: flag = .capsLock
+        case 0x38, 0x3C: flag = .shift
+        case 0x3B, 0x3E: flag = .control
+        case 0x3A, 0x3D: flag = .option
+        case 0x37, 0x36: flag = .command
+        default: return
+        }
+        sendKey(
+            event,
+            action: event.modifierFlags.contains(flag)
+                ? GHOSTTY_ACTION_PRESS
+                : GHOSTTY_ACTION_RELEASE
+        )
+    }
+
+    override func pressureChange(with event: NSEvent) {
+        guard let surface else { return }
+        ghostty_surface_mouse_pressure(surface, UInt32(event.stage), Double(event.pressure))
     }
 
     @objc func copy(_ sender: Any?) {
@@ -245,11 +271,35 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
               let surface = target.target.surface,
               let pointer = ghostty_surface_userdata(surface) else { return false }
         let view = Unmanaged<GhosttyTerminalView>.fromOpaque(pointer).takeUnretainedValue()
-        if action.tag == GHOSTTY_ACTION_MOUSE_SHAPE {
+        switch action.tag {
+        case GHOSTTY_ACTION_MOUSE_SHAPE:
             Task { @MainActor in view.applyCursor(action.action.mouse_shape) }
             return true
+        case GHOSTTY_ACTION_MOUSE_VISIBILITY:
+            Task { @MainActor in
+                view.applyCursorVisibility(action.action.mouse_visibility)
+            }
+            return true
+        case GHOSTTY_ACTION_MOUSE_OVER_LINK:
+            let link = Self.string(
+                action.action.mouse_over_link.url,
+                length: action.action.mouse_over_link.len
+            )
+            Task { @MainActor in view.toolTip = link.isEmpty ? nil : link }
+            return true
+        case GHOSTTY_ACTION_OPEN_URL:
+            let link = Self.string(
+                action.action.open_url.url,
+                length: Int(action.action.open_url.len)
+            )
+            Task { @MainActor in
+                guard let url = URL(string: link) else { return }
+                NSWorkspace.shared.open(url)
+            }
+            return true
+        default:
+            return false
         }
-        return false
     }
 
     nonisolated static func readClipboard(pointer: UnsafeMutableRawPointer?, state: UnsafeMutableRawPointer?) -> Bool {
@@ -300,6 +350,11 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         let scale = window?.backingScaleFactor ?? 2
         layer?.contentsScale = scale
         ghostty_surface_set_content_scale(surface, scale, scale)
+        if let number = window?.screen?.deviceDescription[
+            NSDeviceDescriptionKey("NSScreenNumber")
+        ] as? NSNumber {
+            ghostty_surface_set_display_id(surface, number.uint32Value)
+        }
         ghostty_surface_set_size(
             surface,
             UInt32(max(1, bounds.width * scale)),
@@ -365,6 +420,19 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         }
     }
 
+    private func applyCursorVisibility(_ visibility: ghostty_action_mouse_visibility_e) {
+        switch visibility {
+        case GHOSTTY_MOUSE_HIDDEN where !cursorHidden:
+            NSCursor.hide()
+            cursorHidden = true
+        case GHOSTTY_MOUSE_VISIBLE where cursorHidden:
+            NSCursor.unhide()
+            cursorHidden = false
+        default:
+            break
+        }
+    }
+
     private static func modifiers(_ flags: NSEvent.ModifierFlags) -> ghostty_input_mods_e {
         var value = GHOSTTY_MODS_NONE.rawValue
         if flags.contains(.shift) { value |= GHOSTTY_MODS_SHIFT.rawValue }
@@ -377,5 +445,28 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     private static func shellQuote(_ value: String) -> String {
         "'\(value.replacingOccurrences(of: "'", with: "'\\''"))'"
+    }
+
+    private nonisolated static func momentum(_ phase: NSEvent.Phase) -> Int32 {
+        switch phase {
+        case .began: 1
+        case .stationary: 2
+        case .changed: 3
+        case .ended: 4
+        case .cancelled: 5
+        case .mayBegin: 6
+        default: 0
+        }
+    }
+
+    private nonisolated static func string(
+        _ pointer: UnsafePointer<CChar>?,
+        length: Int
+    ) -> String {
+        guard let pointer, length > 0 else { return "" }
+        return String(
+            data: Data(bytes: pointer, count: length),
+            encoding: .utf8
+        ) ?? ""
     }
 }

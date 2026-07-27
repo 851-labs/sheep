@@ -16,14 +16,7 @@ Clone the pinned Ghostty 1.3.1 source and build its universal XCFramework:
 
 ```sh
 git submodule update --init --recursive
-cd Dependencies/ghostty
-zig build \
-  -Demit-xcframework=true \
-  -Demit-macos-app=false \
-  -Dapp-runtime=none \
-  -Dxcframework-target=universal \
-  -Doptimize=ReleaseFast
-cd ../..
+Scripts/bootstrap-ghostty.sh
 ```
 
 The generated `GhosttyKit.xcframework` is cached locally but intentionally not

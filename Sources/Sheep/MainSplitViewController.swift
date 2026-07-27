@@ -20,6 +20,9 @@ final class MainSplitViewController: NSSplitViewController {
             herdrExecutable: herdrExecutable
         )
         super.init(nibName: nil, bundle: nil)
+        sidebar.onToggleSidebar = { [weak self] in
+            self?.toggleSidebar()
+        }
     }
 
     @available(*, unavailable)

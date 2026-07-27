@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.15.2
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Cache GhosttyKit
+        id: ghostty-cache
+        uses: actions/cache@v4
+        with:
+          path: Dependencies/ghostty/macos/GhosttyKit.xcframework
+          key: ghostty-1.3.1-zig-0.15.2-${{ runner.os }}-${{ runner.arch }}-universal
+
+      - name: Build GhosttyKit
+        if: steps.ghostty-cache.outputs.cache-hit != 'true'
+        run: Scripts/bootstrap-ghostty.sh
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -project Sheep.xcodeproj \
+            -scheme Sheep \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Test
+        run: |
+          xcodebuild \
+            -project Sheep.xcodeproj \
+            -scheme Sheep \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            test

@@ -1,0 +1,200 @@
+import AppKit
+import Foundation
+import SheepApplication
+import SheepDomain
+@testable import sheep
+import XCTest
+
+@MainActor
+final class AppKitStructureTests: XCTestCase {
+    func testSidebarTabsNestedSplitsAndAccessibilityLabels() async throws {
+        let session = try Self.session()
+        let layout = PaneLayout(
+            workspaceID: WorkspaceID(rawValue: "w1"),
+            tabID: TabID(rawValue: "w1:t1"),
+            zoomed: false,
+            focusedPaneID: PaneID(rawValue: "w1:p1"),
+            root: .split(
+                direction: .right,
+                ratio: 0.55,
+                first: .pane(PaneID(rawValue: "w1:p1")),
+                second: .split(
+                    direction: .down,
+                    ratio: 0.4,
+                    first: .pane(PaneID(rawValue: "w1:p2")),
+                    second: .pane(PaneID(rawValue: "w1:p3"))
+                )
+            )
+        )
+        let model = AppModel(
+            repository: StubRepository(
+                update: SessionUpdate(connection: .connected, session: session),
+                layout: layout
+            ),
+            gitStatus: StubGitStatus()
+        )
+        let controller = MainSplitViewController(
+            model: model,
+            ghosttyRuntime: nil,
+            herdrExecutable: nil
+        )
+        controller.loadView()
+        controller.viewDidLoad()
+        try await Task.sleep(for: .milliseconds(100))
+
+        let labels = allSubviews(in: controller.view).compactMap { $0.accessibilityLabel() }
+        XCTAssertTrue(labels.contains("Spaces"))
+        XCTAssertTrue(labels.contains("Agents grouped by space"))
+        XCTAssertTrue(labels.contains("Create space"))
+        XCTAssertTrue(labels.contains("Collapse sidebar"))
+        XCTAssertTrue(labels.contains("Tab 1"))
+        XCTAssertFalse(labels.contains("Tab other"))
+
+        let splitViews: [NSSplitView] = allSubviews(in: controller.view)
+        XCTAssertGreaterThanOrEqual(splitViews.count, 3)
+
+        let outlines: [NSOutlineView] = allSubviews(in: controller.view)
+        XCTAssertEqual(outlines.first?.numberOfRows, 3)
+    }
+
+    func testDisconnectedSessionRetainsContentAndShowsBanner() async throws {
+        let session = try Self.session()
+        let layout = PaneLayout(
+            workspaceID: WorkspaceID(rawValue: "w1"),
+            tabID: TabID(rawValue: "w1:t1"),
+            zoomed: true,
+            focusedPaneID: PaneID(rawValue: "w1:p1"),
+            root: .pane(PaneID(rawValue: "w1:p1"))
+        )
+        let model = AppModel(
+            repository: StubRepository(
+                update: SessionUpdate(
+                    connection: .disconnected("socket closed"),
+                    session: session
+                ),
+                layout: layout
+            ),
+            gitStatus: StubGitStatus()
+        )
+        let controller = MainSplitViewController(
+            model: model,
+            ghosttyRuntime: nil,
+            herdrExecutable: nil
+        )
+        controller.loadView()
+        controller.viewDidLoad()
+        try await Task.sleep(for: .milliseconds(100))
+
+        let fields: [NSTextField] = allSubviews(in: controller.view)
+        XCTAssertTrue(fields.contains {
+            $0.stringValue.contains("Disconnected")
+                && $0.stringValue.contains("socket closed")
+        })
+        XCTAssertTrue(fields.contains { $0.stringValue == "Terminal unavailable" })
+    }
+
+    private static func session() throws -> HerdrSession {
+        let json = """
+        {
+          "version": "0.7.5", "protocol": 17,
+          "focused_workspace_id": "w1",
+          "focused_tab_id": "w1:t1",
+          "focused_pane_id": "w1:p1",
+          "workspaces": [
+            {
+              "workspace_id": "w1", "number": 1, "label": "sheep",
+              "focused": true, "pane_count": 3, "tab_count": 1,
+              "active_tab_id": "w1:t1", "agent_status": "working"
+            },
+            {
+              "workspace_id": "w2", "number": 2, "label": "elsewhere",
+              "focused": false, "pane_count": 1, "tab_count": 1,
+              "active_tab_id": "w2:t1", "agent_status": "idle"
+            }
+          ],
+          "tabs": [
+            {
+              "tab_id": "w1:t1", "workspace_id": "w1", "number": 1,
+              "label": "1", "focused": true, "pane_count": 3,
+              "agent_status": "working"
+            },
+            {
+              "tab_id": "w2:t1", "workspace_id": "w2", "number": 1,
+              "label": "other", "focused": false, "pane_count": 1,
+              "agent_status": "idle"
+            }
+          ],
+          "panes": [
+            {
+              "pane_id": "w1:p1", "terminal_id": "term_1",
+              "workspace_id": "w1", "tab_id": "w1:t1", "focused": true,
+              "cwd": "/tmp", "display_agent": "codex",
+              "agent_status": "working", "revision": 1
+            },
+            {
+              "pane_id": "w1:p2", "terminal_id": "term_2",
+              "workspace_id": "w1", "tab_id": "w1:t1", "focused": false,
+              "cwd": "/tmp", "display_agent": "claude",
+              "agent_status": "blocked", "revision": 1
+            },
+            {
+              "pane_id": "w1:p3", "terminal_id": "term_3",
+              "workspace_id": "w1", "tab_id": "w1:t1", "focused": false,
+              "cwd": "/tmp", "agent_status": "idle", "revision": 1
+            }
+          ],
+          "agents": [
+            {
+              "terminal_id": "term_1", "agent": "codex",
+              "agent_status": "working", "workspace_id": "w1",
+              "tab_id": "w1:t1", "pane_id": "w1:p1",
+              "focused": true, "cwd": "/tmp", "revision": 1
+            },
+            {
+              "terminal_id": "term_2", "agent": "claude",
+              "agent_status": "blocked", "workspace_id": "w1",
+              "tab_id": "w1:t1", "pane_id": "w1:p2",
+              "focused": false, "cwd": "/tmp", "revision": 1
+            }
+          ]
+        }
+        """
+        return try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
+    }
+
+    private func allSubviews<T: NSView>(in root: NSView) -> [T] {
+        var result: [T] = []
+        if let typed = root as? T {
+            result.append(typed)
+        }
+        for subview in root.subviews {
+            let descendants: [T] = allSubviews(in: subview)
+            result.append(contentsOf: descendants)
+        }
+        return result
+    }
+}
+
+private struct StubRepository: HerdrSessionRepository {
+    let update: SessionUpdate
+    let layout: PaneLayout
+
+    func observeSession() async -> AsyncStream<SessionUpdate> {
+        AsyncStream { continuation in
+            continuation.yield(update)
+        }
+    }
+
+    func refresh() async {}
+    func focusWorkspace(_ id: WorkspaceID) async throws {}
+    func focusTab(_ id: TabID) async throws {}
+    func focusPane(_ id: PaneID) async throws {}
+    func createWorkspace(cwd: URL) async throws {}
+    func createTab(workspaceID: WorkspaceID) async throws {}
+    func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
+    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
+}
+
+private struct StubGitStatus: GitStatusProvider {
+    func summary(for directory: URL) async -> GitSummary? { nil }
+}

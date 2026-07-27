@@ -55,6 +55,10 @@ public struct PaneLayout: Codable, Equatable, Sendable {
         case right
         case down
     }
+
+    public var visibleRoot: Node {
+        zoomed ? .pane(focusedPaneID) : root
+    }
 }
 
 extension PaneLayout.Node: Codable {

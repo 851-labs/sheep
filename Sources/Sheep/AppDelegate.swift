@@ -8,6 +8,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var ghosttyRuntime: GhosttyRuntime?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            return
+        }
         NSApp.appearance = NSAppearance(named: .darkAqua)
 
         let supervisor = HerdrServerSupervisorAdapter()

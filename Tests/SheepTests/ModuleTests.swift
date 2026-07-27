@@ -4,13 +4,22 @@ import XCTest
 
 final class DomainTests: XCTestCase {
     func testAgentStatusUrgency() {
-        XCTAssertGreaterThan(AgentStatus.blocked.urgency, AgentStatus.working.urgency)
-        XCTAssertGreaterThan(AgentStatus.working.urgency, AgentStatus.done.urgency)
+        XCTAssertEqual(
+            [
+                AgentStatus.blocked,
+                .working,
+                .done,
+                .idle,
+                .unknown,
+            ].map(\.urgency),
+            [5, 4, 3, 2, 1]
+        )
     }
 
     func testGitSummaryDescription() {
         let summary = GitSummary(branch: "main", ahead: 2, behind: 3)
         XCTAssertEqual(summary.compactDescription, "main ↑2 ↓3")
+        XCTAssertEqual(GitSummary(branch: "detached").compactDescription, "detached")
     }
 
     func testLayoutDecodesHerdrShape() throws {
@@ -32,6 +41,15 @@ final class DomainTests: XCTestCase {
         let layout = try JSONDecoder().decode(PaneLayout.self, from: Data(json.utf8))
         XCTAssertEqual(layout.root.paneIDs().map(\.rawValue), ["w1:p1", "w1:p2"])
         XCTAssertEqual(layout.root.leavesWithPaths().map(\.path), [[false], [true]])
+
+        let zoomed = PaneLayout(
+            workspaceID: layout.workspaceID,
+            tabID: layout.tabID,
+            zoomed: true,
+            focusedPaneID: PaneID(rawValue: "w1:p2"),
+            root: layout.root
+        )
+        XCTAssertEqual(zoomed.visibleRoot, .pane(PaneID(rawValue: "w1:p2")))
     }
 
     func testProtocol17SnapshotIgnoresUnknownFields() throws {
@@ -73,5 +91,44 @@ final class DomainTests: XCTestCase {
         XCTAssertEqual(session.focusedWorkspace?.label, "sheep")
         XCTAssertEqual(session.focusedTab?.id, TabID(rawValue: "w1:t1"))
         XCTAssertEqual(session.agents.first?.displayName, "codex")
+    }
+
+    func testSelectionFallsBackFromStaleFocusedIdentifiers() throws {
+        let json = """
+        {
+          "version": "0.7.5", "protocol": 17,
+          "focused_workspace_id": "closed-workspace",
+          "focused_tab_id": "closed-tab",
+          "focused_pane_id": "closed-pane",
+          "workspaces": [{
+            "workspace_id": "w1", "number": 1, "label": "sheep",
+            "focused": false, "pane_count": 1, "tab_count": 1,
+            "active_tab_id": "w1:t1", "agent_status": "idle"
+          }],
+          "tabs": [{
+            "tab_id": "w1:t1", "workspace_id": "w1", "number": 1,
+            "label": "1", "focused": false, "pane_count": 1,
+            "agent_status": "idle"
+          }],
+          "panes": [{
+            "pane_id": "w1:p1", "terminal_id": "term_1",
+            "workspace_id": "w1", "tab_id": "w1:t1", "focused": true,
+            "cwd": "/tmp/sheep", "agent_status": "idle", "revision": 1
+          }],
+          "agents": []
+        }
+        """
+        let session = try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
+
+        XCTAssertEqual(session.focusedWorkspace?.id, WorkspaceID(rawValue: "w1"))
+        XCTAssertEqual(session.focusedTab?.id, TabID(rawValue: "w1:t1"))
+        XCTAssertEqual(session.focusedPane?.id, PaneID(rawValue: "w1:p1"))
+        XCTAssertEqual(
+            WorkspaceProjection.repositoryDirectory(
+                for: try XCTUnwrap(session.focusedWorkspace),
+                in: session
+            )?.path,
+            "/tmp/sheep"
+        )
     }
 }

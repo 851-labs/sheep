@@ -6,9 +6,13 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
     private let supervisor: any HerdrServerSupervisor
     private var client: HerdrSocketClient?
     private var continuations: [UUID: AsyncStream<SessionUpdate>.Continuation] = [:]
+    private var connectionState: ConnectionState = .connecting
     private var currentSession: HerdrSession?
     private var runTask: Task<Void, Never>?
     private var subscriptionTask: Task<Void, Never>?
+    private var subscription: HerdrEventSubscription?
+    private var subscriptionPaneIDs: Set<PaneID> = []
+    private var reconnectReason: String?
     private var refreshTask: Task<Void, Never>?
 
     public init(supervisor: any HerdrServerSupervisor) {
@@ -18,6 +22,7 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
     deinit {
         runTask?.cancel()
         subscriptionTask?.cancel()
+        subscription?.cancel()
         refreshTask?.cancel()
     }
 
@@ -28,10 +33,7 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
             Task { await self?.removeContinuation(id) }
         }
         continuations[id] = continuation
-        continuation.yield(SessionUpdate(
-            connection: currentSession == nil ? .connecting : .connected,
-            session: currentSession
-        ))
+        continuation.yield(SessionUpdate(connection: connectionState, session: currentSession))
         startIfNeeded()
         return stream
     }
@@ -39,14 +41,9 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
     public func refresh() async {
         guard let client else { return }
         do {
-            let session = try fetchSnapshot(using: client)
-            currentSession = session
-            broadcast(.init(connection: .connected, session: session))
+            try refreshSnapshot(using: client)
         } catch {
-            broadcast(.init(
-                connection: .disconnected(error.localizedDescription),
-                session: currentSession
-            ))
+            requestReconnect(error.localizedDescription)
         }
     }
 
@@ -106,49 +103,64 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
     private func run() async {
         var retrySeconds: UInt64 = 1
         while !Task.isCancelled {
-            broadcast(.init(connection: .connecting, session: currentSession))
+            publish(currentSession == nil ? .connecting : connectionState)
             do {
                 let socketURL = try await supervisor.ensureRunning()
                 let newClient = HerdrSocketClient(socketURL: socketURL)
-                client = newClient
                 let session = try fetchSnapshot(using: newClient)
-                guard session.protocolVersion >= 17 else {
-                    throw HerdrAPIError(
-                        code: "incompatible_protocol",
-                        message: "Sheep requires Herdr protocol 17 or newer."
-                    )
-                }
+                try validateCompatibility(session)
+                client = newClient
                 currentSession = session
-                broadcast(.init(connection: .connected, session: session))
-                startSubscription(client: newClient, paneIDs: session.panes.map(\.id))
+                reconnectReason = nil
+                try startSubscription(client: newClient, paneIDs: Set(session.panes.map(\.id)))
+                publish(.connected)
                 retrySeconds = 1
 
+                var secondsUntilSafetyRefresh = 5
                 while !Task.isCancelled {
-                    try await Task.sleep(for: .seconds(5))
-                    await refresh()
+                    try await Task.sleep(for: .seconds(1))
+                    if let reconnectReason {
+                        throw HerdrAPIError(code: "subscription_lost", message: reconnectReason)
+                    }
+                    secondsUntilSafetyRefresh -= 1
+                    if secondsUntilSafetyRefresh == 0 {
+                        try refreshSnapshot(using: newClient)
+                        secondsUntilSafetyRefresh = 5
+                    }
                 }
             } catch {
+                stopSubscription()
                 client = nil
-                broadcast(.init(
-                    connection: .unavailable(error.localizedDescription),
-                    session: currentSession
-                ))
+                reconnectReason = nil
+                publish(currentSession == nil
+                    ? .unavailable(error.localizedDescription)
+                    : .disconnected(error.localizedDescription))
                 try? await Task.sleep(for: .seconds(retrySeconds))
                 retrySeconds = min(retrySeconds * 2, 10)
             }
         }
     }
 
-    private func startSubscription(client: HerdrSocketClient, paneIDs: [PaneID]) {
+    private func startSubscription(
+        client: HerdrSocketClient,
+        paneIDs: Set<PaneID>
+    ) throws {
+        let next = try client.makeSubscription(paneIDs: paneIDs.sorted {
+            $0.rawValue < $1.rawValue
+        })
+        let previous = subscription
+        subscription = next
+        subscriptionPaneIDs = paneIDs
         subscriptionTask?.cancel()
+        previous?.cancel()
         let repository = self
         subscriptionTask = Task.detached {
             do {
-                try client.subscribe(paneIDs: paneIDs) { _ in
+                try next.run { _ in
                     Task { await repository.scheduleRefresh() }
                 }
             } catch {
-                await repository.subscriptionDisconnected(error)
+                await repository.subscriptionDisconnected(error, id: next.id)
             }
         }
     }
@@ -161,16 +173,25 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
         }
     }
 
-    private func subscriptionDisconnected(_ error: Error) {
-        broadcast(.init(
-            connection: .disconnected(error.localizedDescription),
-            session: currentSession
-        ))
+    private func subscriptionDisconnected(_ error: Error, id: UUID) {
+        guard subscription?.id == id else { return }
+        requestReconnect(error.localizedDescription)
     }
 
     private func fetchSnapshot(using client: HerdrSocketClient) throws -> HerdrSession {
         let data = try client.request(method: "session.snapshot")
         return try JSONDecoder().decode(SessionSnapshotEnvelope.self, from: data).result.snapshot
+    }
+
+    private func refreshSnapshot(using client: HerdrSocketClient) throws {
+        let session = try fetchSnapshot(using: client)
+        try validateCompatibility(session)
+        currentSession = session
+        let paneIDs = Set(session.panes.map(\.id))
+        if paneIDs != subscriptionPaneIDs {
+            try startSubscription(client: client, paneIDs: paneIDs)
+        }
+        publish(.connected)
     }
 
     private func command(_ method: String, params: [String: Any]) throws {
@@ -181,12 +202,58 @@ public actor HerdrSessionRepositoryAdapter: HerdrSessionRepository {
         scheduleRefresh()
     }
 
-    private func broadcast(_ update: SessionUpdate) {
+    private func requestReconnect(_ reason: String) {
+        reconnectReason = reason
+        publish(.disconnected(reason))
+    }
+
+    private func stopSubscription() {
+        let active = subscription
+        subscription = nil
+        subscriptionPaneIDs = []
+        subscriptionTask?.cancel()
+        subscriptionTask = nil
+        active?.cancel()
+    }
+
+    private func validateCompatibility(_ session: HerdrSession) throws {
+        guard session.protocolVersion >= 17 else {
+            throw HerdrAPIError(
+                code: "incompatible_protocol",
+                message: "Sheep requires Herdr protocol 17 or newer; the server reports \(session.protocolVersion)."
+            )
+        }
+        let version = session.version
+            .split(separator: "-").first?
+            .split(separator: ".")
+            .prefix(3)
+            .map { Int($0) ?? 0 } ?? []
+        let padded = version + Array(repeating: 0, count: max(0, 3 - version.count))
+        guard padded.lexicographicallyPrecedes([0, 7, 5]) == false else {
+            throw HerdrAPIError(
+                code: "incompatible_version",
+                message: "Sheep requires Herdr 0.7.5 or newer; the server reports \(session.version)."
+            )
+        }
+    }
+
+    private func publish(_ state: ConnectionState) {
+        connectionState = state
+        let update = SessionUpdate(connection: state, session: currentSession)
         continuations.values.forEach { $0.yield(update) }
     }
 
     private func removeContinuation(_ id: UUID) {
         continuations.removeValue(forKey: id)
+        if continuations.isEmpty {
+            runTask?.cancel()
+            runTask = nil
+            refreshTask?.cancel()
+            refreshTask = nil
+            stopSubscription()
+            client = nil
+            connectionState = .connecting
+        }
     }
 }
 

@@ -87,13 +87,9 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         guard let tabID = activeTabID else { return }
         switch result {
         case let .success(layout) where layout.tabID == tabID:
-            let node = layout.zoomed
-                ? PaneLayout.Node.pane(layout.focusedPaneID)
-                : layout.root
+            let node = layout.visibleRoot
             if let renderedLayout {
-                let renderedNode = renderedLayout.zoomed
-                    ? PaneLayout.Node.pane(renderedLayout.focusedPaneID)
-                    : renderedLayout.root
+                let renderedNode = renderedLayout.visibleRoot
                 if renderedLayout.tabID == layout.tabID, renderedNode == node {
                     return
                 }
@@ -219,7 +215,8 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         let first = split.isVertical ? split.subviews[0].frame.width : split.subviews[0].frame.height
         guard total > 0, first > 0 else { return }
         let ratio = min(max(first / total, 0.1), 0.9)
-        let key = metadata.path.map { $0 ? "1" : "0" }.joined()
+        let key = "\(metadata.tabID.rawValue):"
+            + metadata.path.map { $0 ? "1" : "0" }.joined()
         ratioTasks[key]?.cancel()
         ratioTasks[key] = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(250))

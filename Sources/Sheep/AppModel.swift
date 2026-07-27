@@ -8,6 +8,9 @@ final class AppModel {
     private let gitStatus: any GitStatusProvider
     private var observationTask: Task<Void, Never>?
     private var gitTask: Task<Void, Never>?
+    private var gitTimerTask: Task<Void, Never>?
+    private var layoutTask: Task<Void, Never>?
+    private var layoutGeneration = 0
 
     private(set) var connection: ConnectionState = .connecting
     private(set) var session: HerdrSession?
@@ -26,6 +29,8 @@ final class AppModel {
     deinit {
         observationTask?.cancel()
         gitTask?.cancel()
+        gitTimerTask?.cancel()
+        layoutTask?.cancel()
     }
 
     func start() {
@@ -42,6 +47,13 @@ final class AppModel {
                     loadLayout(tabID: tabID)
                 }
                 refreshGit()
+            }
+        }
+        gitTimerTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(15))
+                guard !Task.isCancelled else { return }
+                self?.refreshGit()
             }
         }
     }
@@ -75,10 +87,16 @@ final class AppModel {
     }
 
     func loadLayout(tabID: TabID) {
-        Task {
+        layoutGeneration += 1
+        let generation = layoutGeneration
+        layoutTask?.cancel()
+        layoutTask = Task {
             do {
-                onLayout?(.success(try await repository.exportLayout(tabID: tabID)))
+                let layout = try await repository.exportLayout(tabID: tabID)
+                guard !Task.isCancelled, generation == layoutGeneration else { return }
+                onLayout?(.success(layout))
             } catch {
+                guard !Task.isCancelled, generation == layoutGeneration else { return }
                 onLayout?(.failure(error))
             }
         }
@@ -117,8 +135,10 @@ final class AppModel {
                 summaries[workspace.id] = await provider.summary(for: directory)
             }
             guard let self, !Task.isCancelled else { return }
-            gitSummaries = summaries
-            onChange?()
+            if gitSummaries != summaries {
+                gitSummaries = summaries
+                onChange?()
+            }
         }
     }
 }

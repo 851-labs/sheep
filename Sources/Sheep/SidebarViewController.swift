@@ -8,6 +8,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     private let spacesTable = NSTableView()
     private let agentsOutline = NSOutlineView()
     private var agentGroups: [AgentGroup] = []
+    var onToggleSidebar: (() -> Void)?
 
     init(model: AppModel) {
         self.model = model
@@ -62,7 +63,19 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         menuButton.isBordered = false
         menuButton.contentTintColor = .secondaryLabelColor
 
-        let footer = NSStackView(views: [newButton, NSView(), menuButton])
+        let collapseButton = NSButton(
+            image: NSImage(
+                systemSymbolName: "sidebar.left",
+                accessibilityDescription: "Collapse sidebar"
+            )!,
+            target: self,
+            action: #selector(toggleSidebar)
+        )
+        collapseButton.isBordered = false
+        collapseButton.contentTintColor = .secondaryLabelColor
+        collapseButton.setAccessibilityLabel("Collapse sidebar")
+
+        let footer = NSStackView(views: [newButton, NSView(), menuButton, collapseButton])
         footer.orientation = .horizontal
         footer.alignment = .centerY
         footer.edgeInsets = NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
@@ -272,6 +285,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
 
     @objc private func createTab() {
         model.createTab()
+    }
+
+    @objc private func toggleSidebar() {
+        onToggleSidebar?()
     }
 }
 
