@@ -18,11 +18,13 @@
 		49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48606E38D19B5A7548A279BC /* AppDelegate.swift */; };
 		5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */; };
 		784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */; };
 		7ACD5B6716DF0887AD9D5802 /* HerdrSocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D903237ACD72439C718857D0 /* HerdrSocketClient.swift */; };
 		7FA7838A60D3CF9E9253FA2C /* HerdrServerSupervisorAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BB711F60F3D90AC18602E /* HerdrServerSupervisorAdapter.swift */; };
 		7FEFC79DB0D0ECA641B1C7A0 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		87F9FCBECC15B6BB74BE4D91 /* HerdrSessionRepositoryAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */; };
 		99FDA4F528D0384BA4000924 /* HerdrExecutableLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */; };
+		A0441950F017D79ED78703C9 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E451D7BBC74EACA9AC4976D /* AppModel.swift */; };
 		A43780D542051077309A4C70 /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E116FBCA3178E61F006B3C /* GitStatusService.swift */; };
 		A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
@@ -32,11 +34,14 @@
 		BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7BE142BBEA70858221BFD6B /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F633763458D6BDE725065A /* Session.swift */; };
 		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
 		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
 		ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE77EFCF9C51576670E513 /* ModuleTests.swift */; };
 		F18D88158BFCADCAC9A6ED97 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
+		F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */; };
+		FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,15 +149,20 @@
 /* Begin PBXFileReference section */
 		035BB711F60F3D90AC18602E /* HerdrServerSupervisorAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrServerSupervisorAdapter.swift; sourceTree = "<group>"; };
 		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
+		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
 		45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrExecutableLocator.swift; sourceTree = "<group>"; };
 		46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepInfrastructure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		52235095160BAAD7282BF933 /* AgentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatus.swift; sourceTree = "<group>"; };
 		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
 		664764DDE91837CFA755F69A /* PaneLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaneLayout.swift; sourceTree = "<group>"; };
 		71F633763458D6BDE725065A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
+		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
+		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
@@ -290,7 +300,12 @@
 			isa = PBXGroup;
 			children = (
 				48606E38D19B5A7548A279BC /* AppDelegate.swift */,
+				9E451D7BBC74EACA9AC4976D /* AppModel.swift */,
 				1C7925FF80ED98D4F28CF247 /* main.swift */,
+				92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */,
+				1A565582B6D4CFC0EB1C4ABE /* Palette.swift */,
+				4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */,
+				40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */,
 			);
 			path = Sheep;
 			sourceTree = "<group>";
@@ -439,6 +454,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */,
+				A0441950F017D79ED78703C9 /* AppModel.swift in Sources */,
+				FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */,
+				DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */,
+				784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */,
+				F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */,
 				B8997E14601964BEE704F9B8 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

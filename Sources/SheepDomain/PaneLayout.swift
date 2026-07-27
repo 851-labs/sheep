@@ -39,6 +39,16 @@ public struct PaneLayout: Codable, Equatable, Sendable {
                 first.paneIDs() + second.paneIDs()
             }
         }
+
+        public func leavesWithPaths(path: [Bool] = []) -> [(paneID: PaneID, path: [Bool])] {
+            switch self {
+            case let .pane(id):
+                [(id, path)]
+            case let .split(_, _, first, second):
+                first.leavesWithPaths(path: path + [false])
+                    + second.leavesWithPaths(path: path + [true])
+            }
+        }
     }
 
     public enum SplitDirection: String, Codable, Equatable, Sendable {
@@ -92,4 +102,3 @@ extension PaneLayout.Node: Codable {
         }
     }
 }
-

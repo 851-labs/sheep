@@ -31,6 +31,7 @@ final class DomainTests: XCTestCase {
         """
         let layout = try JSONDecoder().decode(PaneLayout.self, from: Data(json.utf8))
         XCTAssertEqual(layout.root.paneIDs().map(\.rawValue), ["w1:p1", "w1:p2"])
+        XCTAssertEqual(layout.root.leavesWithPaths().map(\.path), [[false], [true]])
     }
 
     func testProtocol17SnapshotIgnoresUnknownFields() throws {

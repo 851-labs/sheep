@@ -35,16 +35,24 @@ public struct HerdrSession: Codable, Equatable, Sendable {
 
     public var focusedWorkspace: Workspace? {
         guard let focusedWorkspaceID else { return workspaces.first }
-        return workspaces.first { $0.id == focusedWorkspaceID }
+        return workspaces.first { $0.id == focusedWorkspaceID } ?? workspaces.first
     }
 
     public var focusedTab: Tab? {
-        guard let focusedTabID else {
-            return focusedWorkspace.flatMap { workspace in
-                tabs.first { $0.id == workspace.activeTabID }
-            }
+        if let focusedTabID, let focused = tabs.first(where: { $0.id == focusedTabID }) {
+            return focused
         }
-        return tabs.first { $0.id == focusedTabID }
+        return focusedWorkspace.flatMap { workspace in
+            tabs.first { $0.id == workspace.activeTabID }
+                ?? tabs(in: workspace.id).first
+        }
+    }
+
+    public var focusedPane: Pane? {
+        if let focusedPaneID, let focused = panes.first(where: { $0.id == focusedPaneID }) {
+            return focused
+        }
+        return focusedTab.flatMap { panes(in: $0.id).first(where: \.focused) ?? panes(in: $0.id).first }
     }
 
     public func tabs(in workspaceID: WorkspaceID) -> [Tab] {
