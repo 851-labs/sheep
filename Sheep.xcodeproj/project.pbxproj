@@ -7,21 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D0FF011AB392F9BD25294A3 /* AgentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52235095160BAAD7282BF933 /* AgentStatus.swift */; };
 		11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
-		15946F5E733570EF5B3222B1 /* SheepApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6075B691018ACC17510770F8 /* SheepApplication.swift */; };
 		184B440A95F9AB4AB58A6EA6 /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		19E13BD9A5361EC9727A792A /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1D16156819B1AC4780E82D1B /* SheepDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DEC3BCEE2138C57C6571E6A /* SheepDomain.swift */; };
+		1F1743318B6B1F663049C2B7 /* PaneLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664764DDE91837CFA755F69A /* PaneLayout.swift */; };
 		271650E061B18ED6C79AFE32 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		42FACE2BFB74A2A7D0F88D7D /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48606E38D19B5A7548A279BC /* AppDelegate.swift */; };
+		5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */; };
 		727280AF7E3273905BAA9D05 /* SheepInfrastructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B9C73480DCDCC35E5E755F /* SheepInfrastructure.swift */; };
 		784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		7FEFC79DB0D0ECA641B1C7A0 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
+		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
 		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
+		BB35D261DADF22A0679B546F /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF5EFDF2BB76FC240971028 /* Identifiers.swift */; };
 		BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C7BE142BBEA70858221BFD6B /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F633763458D6BDE725065A /* Session.swift */; };
 		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
 		ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -133,17 +138,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		1DEC3BCEE2138C57C6571E6A /* SheepDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheepDomain.swift; sourceTree = "<group>"; };
 		46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepInfrastructure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6075B691018ACC17510770F8 /* SheepApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheepApplication.swift; sourceTree = "<group>"; };
+		52235095160BAAD7282BF933 /* AgentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatus.swift; sourceTree = "<group>"; };
+		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
+		664764DDE91837CFA755F69A /* PaneLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaneLayout.swift; sourceTree = "<group>"; };
+		71F633763458D6BDE725065A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
+		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7B9C73480DCDCC35E5E755F /* SheepInfrastructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheepInfrastructure.swift; sourceTree = "<group>"; };
 		D93C27078727AA9D1A1121DC /* Sheep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sheep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SheepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECF5EFDF2BB76FC240971028 /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,7 +200,8 @@
 		0CD021218A3D296D2D39DB63 /* SheepApplication */ = {
 			isa = PBXGroup;
 			children = (
-				6075B691018ACC17510770F8 /* SheepApplication.swift */,
+				5B5218861D153263DA868DD9 /* Ports.swift */,
+				0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */,
 			);
 			path = SheepApplication;
 			sourceTree = "<group>";
@@ -214,7 +225,11 @@
 		404C19DA3412DF09AA0A4B10 /* SheepDomain */ = {
 			isa = PBXGroup;
 			children = (
-				1DEC3BCEE2138C57C6571E6A /* SheepDomain.swift */,
+				52235095160BAAD7282BF933 /* AgentStatus.swift */,
+				A8664C0B9B4802B6EE1E056B /* GitSummary.swift */,
+				ECF5EFDF2BB76FC240971028 /* Identifiers.swift */,
+				664764DDE91837CFA755F69A /* PaneLayout.swift */,
+				71F633763458D6BDE725065A /* Session.swift */,
 			);
 			path = SheepDomain;
 			sourceTree = "<group>";
@@ -428,7 +443,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15946F5E733570EF5B3222B1 /* SheepApplication.swift in Sources */,
+				B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */,
+				5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +452,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D16156819B1AC4780E82D1B /* SheepDomain.swift in Sources */,
+				0D0FF011AB392F9BD25294A3 /* AgentStatus.swift in Sources */,
+				B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */,
+				BB35D261DADF22A0679B546F /* Identifiers.swift in Sources */,
+				1F1743318B6B1F663049C2B7 /* PaneLayout.swift in Sources */,
+				C7BE142BBEA70858221BFD6B /* Session.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
