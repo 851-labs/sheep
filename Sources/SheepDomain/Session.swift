@@ -77,7 +77,7 @@ public struct Workspace: Codable, Equatable, Identifiable, Sendable {
     public let tabCount: Int
     public let activeTabID: TabID
     public let agentStatus: AgentStatus
-    public let tokens: [String: String]
+    public let tokens: [String: String]?
     public let worktree: Worktree?
 
     public struct Worktree: Codable, Equatable, Sendable {
@@ -208,4 +208,3 @@ public struct Agent: Codable, Equatable, Identifiable, Sendable {
         case revision
     }
 }
-
