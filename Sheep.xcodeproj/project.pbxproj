@@ -824,6 +824,7 @@
 					"@executable_path/../Frameworks",
 				);
 				OTHER_LDFLAGS = "$(inherited) -lstdc++";
+				OTHER_SWIFT_FLAGS = "$(inherited) -enable-experimental-feature IsolatedDeinit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -849,6 +850,7 @@
 					"@executable_path/../Frameworks",
 				);
 				OTHER_LDFLAGS = "$(inherited) -lstdc++";
+				OTHER_SWIFT_FLAGS = "$(inherited) -enable-experimental-feature IsolatedDeinit";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
