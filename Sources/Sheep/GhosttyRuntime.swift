@@ -7,10 +7,18 @@ private let ghosttyWakeupCallback: @convention(c) (UnsafeMutableRawPointer?) -> 
     Task { @MainActor in runtime.tick() }
 }
 
+private struct GhosttyHandle: @unchecked Sendable {
+    let rawValue: UnsafeMutableRawPointer
+}
+
 @MainActor
 final class GhosttyRuntime {
-    private(set) var app: ghostty_app_t?
-    private var config: ghostty_config_t?
+    private var appHandle: GhosttyHandle?
+    private var configHandle: GhosttyHandle?
+
+    var app: ghostty_app_t? {
+        appHandle?.rawValue
+    }
 
     init?() {
         guard ghostty_init(UInt(CommandLine.argc), CommandLine.unsafeArgv) == GHOSTTY_SUCCESS else {
@@ -19,7 +27,7 @@ final class GhosttyRuntime {
         guard let config = ghostty_config_new() else { return nil }
         ghostty_config_load_default_files(config)
         ghostty_config_finalize(config)
-        self.config = config
+        self.configHandle = GhosttyHandle(rawValue: config)
 
         var runtime = ghostty_runtime_config_s(
             userdata: Unmanaged.passUnretained(self).toOpaque(),
@@ -42,7 +50,7 @@ final class GhosttyRuntime {
             }
         )
         guard let app = ghostty_app_new(&runtime, config) else { return nil }
-        self.app = app
+        self.appHandle = GhosttyHandle(rawValue: app)
         ghostty_app_set_focus(app, NSApp.isActive)
 
         NotificationCenter.default.addObserver(
@@ -59,10 +67,10 @@ final class GhosttyRuntime {
         )
     }
 
-    isolated deinit {
+    deinit {
+        if let appHandle { ghostty_app_free(appHandle.rawValue) }
+        if let configHandle { ghostty_config_free(configHandle.rawValue) }
         NotificationCenter.default.removeObserver(self)
-        if let app { ghostty_app_free(app) }
-        if let config { ghostty_config_free(config) }
     }
 
     func tick() {

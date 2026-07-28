@@ -64,7 +64,6 @@ targets:
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
         INFOPLIST_KEY_NSHumanReadableCopyright: Copyright © 2026 851 Labs
         GENERATE_INFOPLIST_FILE: YES
-        OTHER_SWIFT_FLAGS: "$(inherited) -enable-experimental-feature IsolatedDeinit"
         OTHER_LDFLAGS: "$(inherited) -lstdc++"
     scheme:
       testTargets:
