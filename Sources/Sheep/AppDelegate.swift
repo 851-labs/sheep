@@ -1,4 +1,5 @@
 import AppKit
+import HerdrSDKLocal
 import SheepInfrastructure
 
 @MainActor
@@ -13,15 +14,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        let supervisor = HerdrServerSupervisorAdapter()
-        let repository = HerdrSessionRepositoryAdapter(supervisor: supervisor)
-        let model = AppModel(repository: repository, gitStatus: GitStatusService())
+        let logs = FileManager.default.homeDirectoryForCurrentUser
+            .appending(path: "Library/Application Support/Sheep/Logs/herdr-server.log")
+        let configuration = HerdrLocalConfiguration(logURL: logs)
+        let localRuntime = HerdrLocalRuntime(configuration: configuration)
+        let model = AppModel(repository: localRuntime.client, gitStatus: GitStatusService())
         let runtime = GhosttyRuntime()
         ghosttyRuntime = runtime
+        let executable = configuration.executableURL
+            ?? (try? HerdrExecutableLocator(
+                environment: configuration.environment
+            ).locate())
+        let attachmentFactory = executable.flatMap {
+            try? HerdrTerminalAttachmentFactory(executableURL: $0)
+        }
         let content = MainSplitViewController(
             model: model,
             ghosttyRuntime: runtime,
-            herdrExecutable: try? HerdrExecutableLocator().locate()
+            terminalAttachments: attachmentFactory
         )
         mainController = content
 

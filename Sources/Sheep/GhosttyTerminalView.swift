@@ -1,5 +1,6 @@
 import AppKit
 import GhosttyKit
+import HerdrSDKLocal
 import SheepDomain
 
 @MainActor
@@ -14,7 +15,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     init?(
         runtime: GhosttyRuntime,
-        herdrExecutable: URL,
+        attachment: HerdrTerminalAttachment,
         pane: Pane,
         focusPane: @escaping () -> Void
     ) {
@@ -28,12 +29,9 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         geometry.recordContentScale(x: initialScale, y: initialScale)
         layer?.contentsScale = initialScale
 
-        let command = [
-            Self.shellQuote(herdrExecutable.path),
-            "terminal", "attach",
-            Self.shellQuote(pane.terminalID.rawValue),
-            "--takeover",
-        ].joined(separator: " ")
+        let command = (
+            [attachment.executableURL.path] + attachment.arguments
+        ).map(Self.shellQuote).joined(separator: " ")
         var configuration = ghostty_surface_config_new()
         configuration.platform_tag = GHOSTTY_PLATFORM_MACOS
         configuration.platform.macos.nsview = Unmanaged.passUnretained(self).toOpaque()

@@ -1,10 +1,11 @@
 import AppKit
+import HerdrSDK
 import SheepApplication
 import SheepDomain
 
 @MainActor
 final class AppModel {
-    let repository: any HerdrSessionRepository
+    let repository: any HerdrSessionClient
     private let gitStatus: any GitStatusProvider
     private var observationTask: Task<Void, Never>?
     private var gitTask: Task<Void, Never>?
@@ -12,14 +13,14 @@ final class AppModel {
     private var layoutTask: Task<Void, Never>?
     private var layoutGeneration = 0
 
-    private(set) var connection: ConnectionState = .connecting
+    private(set) var connection: HerdrConnectionState = .connecting
     private(set) var session: HerdrSession?
     private(set) var gitSummaries: [WorkspaceID: GitSummary] = [:]
     var onChange: (() -> Void)?
     var onLayout: ((Result<PaneLayout, Error>) -> Void)?
 
     init(
-        repository: any HerdrSessionRepository,
+        repository: any HerdrSessionClient,
         gitStatus: any GitStatusProvider
     ) {
         self.repository = repository
@@ -37,7 +38,7 @@ final class AppModel {
         guard observationTask == nil else { return }
         observationTask = Task { [weak self] in
             guard let self else { return }
-            let updates = await repository.observeSession()
+            let updates = await repository.sessionUpdates()
             for await update in updates {
                 guard !Task.isCancelled else { return }
                 connection = update.connection

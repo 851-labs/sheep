@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import HerdrSDK
 import SheepApplication
 import SheepDomain
 @testable import sheep
@@ -63,7 +64,7 @@ final class AppKitStructureTests: XCTestCase {
         let recorder = CommandRecorder()
         let model = AppModel(
             repository: StubRepository(
-                update: SessionUpdate(connection: .connected, session: session),
+                update: HerdrSessionUpdate(connection: .connected, session: session),
                 layout: layout,
                 recorder: recorder
             ),
@@ -72,7 +73,7 @@ final class AppKitStructureTests: XCTestCase {
         let controller = MainSplitViewController(
             model: model,
             ghosttyRuntime: nil,
-            herdrExecutable: nil
+            terminalAttachments: nil
         )
         controller.loadView()
         controller.viewDidLoad()
@@ -169,7 +170,7 @@ final class AppKitStructureTests: XCTestCase {
         let recorder = CommandRecorder()
         let model = AppModel(
             repository: StubRepository(
-                update: SessionUpdate(
+                update: HerdrSessionUpdate(
                     connection: .disconnected("socket closed"),
                     session: session
                 ),
@@ -181,7 +182,7 @@ final class AppKitStructureTests: XCTestCase {
         let controller = MainSplitViewController(
             model: model,
             ghosttyRuntime: nil,
-            herdrExecutable: nil
+            terminalAttachments: nil
         )
         controller.loadView()
         controller.viewDidLoad()
@@ -277,18 +278,18 @@ final class AppKitStructureTests: XCTestCase {
     }
 }
 
-private struct StubRepository: HerdrSessionRepository {
-    let update: SessionUpdate
+private struct StubRepository: HerdrSessionClient {
+    let update: HerdrSessionUpdate
     let layout: PaneLayout
     let recorder: CommandRecorder
 
-    func observeSession() async -> AsyncStream<SessionUpdate> {
+    func sessionUpdates() async -> AsyncStream<HerdrSessionUpdate> {
         AsyncStream { continuation in
             continuation.yield(update)
         }
     }
 
-    func refresh() async {}
+    func refreshSession() async {}
     func focusWorkspace(_ id: WorkspaceID) async throws { recorder.recordFocus() }
     func focusTab(_ id: TabID) async throws {}
     func focusPane(_ id: PaneID) async throws { recorder.recordFocus() }

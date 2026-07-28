@@ -1,4 +1,5 @@
 import AppKit
+import HerdrSDKLocal
 
 @MainActor
 final class MainSplitViewController: NSSplitViewController {
@@ -10,14 +11,14 @@ final class MainSplitViewController: NSSplitViewController {
     init(
         model: AppModel,
         ghosttyRuntime: GhosttyRuntime?,
-        herdrExecutable: URL?
+        terminalAttachments: HerdrTerminalAttachmentFactory?
     ) {
         self.model = model
         sidebar = SidebarViewController(model: model)
         terminalArea = TerminalAreaViewController(
             model: model,
             ghosttyRuntime: ghosttyRuntime,
-            herdrExecutable: herdrExecutable
+            terminalAttachments: terminalAttachments
         )
         super.init(nibName: nil, bundle: nil)
     }

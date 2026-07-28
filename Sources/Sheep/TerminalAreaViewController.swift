@@ -1,4 +1,5 @@
 import AppKit
+import HerdrSDKLocal
 import SheepApplication
 import SheepDomain
 
@@ -7,7 +8,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private static let layoutInset: CGFloat = 10
     private let model: AppModel
     private let ghosttyRuntime: GhosttyRuntime?
-    private let herdrExecutable: URL?
+    private let terminalAttachments: HerdrTerminalAttachmentFactory?
     private let tabStack = NSStackView()
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
@@ -19,11 +20,11 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     init(
         model: AppModel,
         ghosttyRuntime: GhosttyRuntime?,
-        herdrExecutable: URL?
+        terminalAttachments: HerdrTerminalAttachmentFactory?
     ) {
         self.model = model
         self.ghosttyRuntime = ghosttyRuntime
-        self.herdrExecutable = herdrExecutable
+        self.terminalAttachments = terminalAttachments
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -170,7 +171,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                     paneID: id
                 )
             }
-            guard let ghosttyRuntime, let herdrExecutable else {
+            guard let ghosttyRuntime, let terminalAttachments else {
                 return terminalCard(containing: stateLabel(
                     title: "Terminal unavailable",
                     detail: ghosttyRuntime == nil
@@ -178,9 +179,12 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                         : "The Herdr executable could not be found."
                 ), paneID: id)
             }
+            let attachment = terminalAttachments.attachment(
+                terminalID: pane.terminalID
+            )
             paneContent = GhosttyTerminalView(
                 runtime: ghosttyRuntime,
-                herdrExecutable: herdrExecutable,
+                attachment: attachment,
                 pane: pane
             ) { [weak self] in
                 self?.model.focusPane(id)

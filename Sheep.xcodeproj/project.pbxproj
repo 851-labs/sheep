@@ -7,23 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D0FF011AB392F9BD25294A3 /* AgentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52235095160BAAD7282BF933 /* AgentStatus.swift */; };
+		039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = D1F2B11F011AE93DE4CC8330 /* HerdrSDK */; };
 		11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
 		184B440A95F9AB4AB58A6EA6 /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		19E13BD9A5361EC9727A792A /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1F1743318B6B1F663049C2B7 /* PaneLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664764DDE91837CFA755F69A /* PaneLayout.swift */; };
 		271650E061B18ED6C79AFE32 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */; };
+		3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8C67A9051645E3250C56549E /* HerdrSDK */; };
 		3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		42FACE2BFB74A2A7D0F88D7D /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48606E38D19B5A7548A279BC /* AppDelegate.swift */; };
 		5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */; };
 		784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */; };
-		7ACD5B6716DF0887AD9D5802 /* HerdrSocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D903237ACD72439C718857D0 /* HerdrSocketClient.swift */; };
-		7FA7838A60D3CF9E9253FA2C /* HerdrServerSupervisorAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BB711F60F3D90AC18602E /* HerdrServerSupervisorAdapter.swift */; };
 		7FEFC79DB0D0ECA641B1C7A0 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
-		87F9FCBECC15B6BB74BE4D91 /* HerdrSessionRepositoryAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */; };
-		99FDA4F528D0384BA4000924 /* HerdrExecutableLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */; };
+		99E1FFEAFB38549F85F0DA21 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8D51F8F586972D435475B2E0 /* HerdrSDK */; };
 		A0441950F017D79ED78703C9 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E451D7BBC74EACA9AC4976D /* AppModel.swift */; };
 		A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */; };
 		A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */; };
@@ -31,16 +29,16 @@
 		A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */; };
 		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
+		B51A2BD51FDB16BB8F6B38FF /* HerdrModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AA2F693A7EC645054C5201 /* HerdrModels.swift */; };
 		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
 		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
-		BB35D261DADF22A0679B546F /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF5EFDF2BB76FC240971028 /* Identifiers.swift */; };
 		BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C7BE142BBEA70858221BFD6B /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F633763458D6BDE725065A /* Session.swift */; };
-		CB58C2530540072CC6993FD3 /* HerdrSocketIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */; };
+		C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */; };
 		CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */; };
 		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
 		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
+		E1D29AB2F62E3ABC253E9310 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 97ABBFEFF24581DEE53C93E8 /* HerdrSDK */; };
 		ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA6EE6E193A66A9E5280102F /* Carbon.framework */; };
 		ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE77EFCF9C51576670E513 /* ModuleTests.swift */; };
@@ -154,21 +152,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		035BB711F60F3D90AC18602E /* HerdrServerSupervisorAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrServerSupervisorAdapter.swift; sourceTree = "<group>"; };
+		0473F1D911C4BEF3ECD7A548 /* HerdrSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = HerdrSDK; path = Packages/HerdrSDK; sourceTree = SOURCE_ROOT; };
 		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = Dependencies/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
 		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
-		45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrExecutableLocator.swift; sourceTree = "<group>"; };
 		46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepInfrastructure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
-		52235095160BAAD7282BF933 /* AgentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatus.swift; sourceTree = "<group>"; };
 		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
-		664764DDE91837CFA755F69A /* PaneLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaneLayout.swift; sourceTree = "<group>"; };
-		71F633763458D6BDE725065A /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSocketIntegrationTests.swift; sourceTree = "<group>"; };
+		85AA2F693A7EC645054C5201 /* HerdrModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrModels.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
 		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -178,22 +172,28 @@
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
 		D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyTerminalView.swift; sourceTree = "<group>"; };
-		D903237ACD72439C718857D0 /* HerdrSocketClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSocketClient.swift; sourceTree = "<group>"; };
 		D93C27078727AA9D1A1121DC /* Sheep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sheep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyRuntime.swift; sourceTree = "<group>"; };
 		DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SheepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA6EE6E193A66A9E5280102F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
-		EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrSessionRepositoryAdapter.swift; sourceTree = "<group>"; };
 		EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECF5EFDF2BB76FC240971028 /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		21B5C8BF5E2CAF5A0CED132F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1D29AB2F62E3ABC253E9310 /* HerdrSDK in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3E10C5D48F13BDE80EE38D54 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */,
+				99E1FFEAFB38549F85F0DA21 /* HerdrSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +204,8 @@
 				784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */,
 				42FACE2BFB74A2A7D0F88D7D /* SheepApplication.framework in Frameworks */,
 				DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */,
+				039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */,
+				2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +216,8 @@
 				3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */,
 				F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */,
 				11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */,
+				3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */,
+				C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */,
 				A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */,
 				ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */,
 			);
@@ -261,7 +265,6 @@
 			isa = PBXGroup;
 			children = (
 				A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */,
-				77F76A123CEA89B8B838B23D /* HerdrSocketIntegrationTests.swift */,
 				8AFE77EFCF9C51576670E513 /* ModuleTests.swift */,
 			);
 			path = SheepTests;
@@ -270,11 +273,8 @@
 		404C19DA3412DF09AA0A4B10 /* SheepDomain */ = {
 			isa = PBXGroup;
 			children = (
-				52235095160BAAD7282BF933 /* AgentStatus.swift */,
 				A8664C0B9B4802B6EE1E056B /* GitSummary.swift */,
-				ECF5EFDF2BB76FC240971028 /* Identifiers.swift */,
-				664764DDE91837CFA755F69A /* PaneLayout.swift */,
-				71F633763458D6BDE725065A /* Session.swift */,
+				85AA2F693A7EC645054C5201 /* HerdrModels.swift */,
 			);
 			path = SheepDomain;
 			sourceTree = "<group>";
@@ -291,9 +291,18 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8858C17C48ACB853B57CD7AF /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				0473F1D911C4BEF3ECD7A548 /* HerdrSDK */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
 		C5F07418AF13D20C160E732C = {
 			isa = PBXGroup;
 			children = (
+				8858C17C48ACB853B57CD7AF /* Packages */,
 				DCEF44F2724E65EA2A5BB55C /* Sources */,
 				1658A02843B4F81E4982EE6A /* Tests */,
 				2F5A6FEF544A3665C07555B0 /* Frameworks */,
@@ -316,10 +325,6 @@
 			isa = PBXGroup;
 			children = (
 				B4E116FBCA3178E61F006B3C /* GitStatusService.swift */,
-				45B8D3DA1B875E8BE6F15E1D /* HerdrExecutableLocator.swift */,
-				035BB711F60F3D90AC18602E /* HerdrServerSupervisorAdapter.swift */,
-				EADBA014BA56A5A285727CC9 /* HerdrSessionRepositoryAdapter.swift */,
-				D903237ACD72439C718857D0 /* HerdrSocketClient.swift */,
 			);
 			path = SheepInfrastructure;
 			sourceTree = "<group>";
@@ -362,6 +367,8 @@
 			);
 			name = SheepTests;
 			packageProductDependencies = (
+				D1F2B11F011AE93DE4CC8330 /* HerdrSDK */,
+				DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */,
 			);
 			productName = SheepTests;
 			productReference = DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */;
@@ -392,6 +399,7 @@
 			buildConfigurationList = BB698F6DAC7077659CCB619A /* Build configuration list for PBXNativeTarget "SheepDomain" */;
 			buildPhases = (
 				E6CC4214648EA4693F3629F8 /* Sources */,
+				21B5C8BF5E2CAF5A0CED132F /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -399,6 +407,7 @@
 			);
 			name = SheepDomain;
 			packageProductDependencies = (
+				97ABBFEFF24581DEE53C93E8 /* HerdrSDK */,
 			);
 			productName = SheepDomain;
 			productReference = B17093567465FC52F481B477 /* SheepDomain.framework */;
@@ -418,6 +427,7 @@
 			);
 			name = SheepApplication;
 			packageProductDependencies = (
+				8D51F8F586972D435475B2E0 /* HerdrSDK */,
 			);
 			productName = SheepApplication;
 			productReference = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */;
@@ -440,6 +450,8 @@
 			);
 			name = Sheep;
 			packageProductDependencies = (
+				8C67A9051645E3250C56549E /* HerdrSDK */,
+				A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */,
 			);
 			productName = Sheep;
 			productReference = D93C27078727AA9D1A1121DC /* Sheep.app */;
@@ -465,6 +477,9 @@
 			);
 			mainGroup = C5F07418AF13D20C160E732C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0780973632184429FB6F2FDD /* XCLocalSwiftPackageReference "Packages/HerdrSDK" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5AAB0DDDF8DE74CB5816EDAD /* Products */;
 			projectDirPath = "";
@@ -502,10 +517,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A43780D542051077309A4C70 /* GitStatusService.swift in Sources */,
-				99FDA4F528D0384BA4000924 /* HerdrExecutableLocator.swift in Sources */,
-				7FA7838A60D3CF9E9253FA2C /* HerdrServerSupervisorAdapter.swift in Sources */,
-				87F9FCBECC15B6BB74BE4D91 /* HerdrSessionRepositoryAdapter.swift in Sources */,
-				7ACD5B6716DF0887AD9D5802 /* HerdrSocketClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,11 +533,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D0FF011AB392F9BD25294A3 /* AgentStatus.swift in Sources */,
 				B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */,
-				BB35D261DADF22A0679B546F /* Identifiers.swift in Sources */,
-				1F1743318B6B1F663049C2B7 /* PaneLayout.swift in Sources */,
-				C7BE142BBEA70858221BFD6B /* Session.swift in Sources */,
+				B51A2BD51FDB16BB8F6B38FF /* HerdrModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,7 +543,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */,
-				CB58C2530540072CC6993FD3 /* HerdrSocketIntegrationTests.swift in Sources */,
 				EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -999,6 +1006,40 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		0780973632184429FB6F2FDD /* XCLocalSwiftPackageReference "Packages/HerdrSDK" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/HerdrSDK;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8C67A9051645E3250C56549E /* HerdrSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDK;
+		};
+		8D51F8F586972D435475B2E0 /* HerdrSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDK;
+		};
+		97ABBFEFF24581DEE53C93E8 /* HerdrSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDK;
+		};
+		A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDKLocal;
+		};
+		D1F2B11F011AE93DE4CC8330 /* HerdrSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDK;
+		};
+		DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HerdrSDKLocal;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 76EACB87837AA1667F803F03 /* Project object */;
 }
