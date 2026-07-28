@@ -8,6 +8,7 @@ final class MainWindowToolbar: NSObject, NSToolbarDelegate {
     static let itemIdentifiers: [NSToolbarItem.Identifier] = [
         .flexibleSpace,
         .toggleSidebar,
+        .space,
         sidebarTrackingIdentifier,
         .flexibleSpace,
     ]

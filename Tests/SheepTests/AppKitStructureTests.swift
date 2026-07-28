@@ -72,7 +72,8 @@ final class AppKitStructureTests: XCTestCase {
             MainWindowToolbar.itemIdentifiers
         )
         XCTAssertEqual(toolbar.toolbar.items[1].itemIdentifier, .toggleSidebar)
-        XCTAssertTrue(toolbar.toolbar.items[2] is NSTrackingSeparatorToolbarItem)
+        XCTAssertEqual(toolbar.toolbar.items[2].itemIdentifier, .space)
+        XCTAssertTrue(toolbar.toolbar.items[3] is NSTrackingSeparatorToolbarItem)
 
         let textFields: [NSTextField] = allSubviews(in: controller.view)
         let buttons: [NSButton] = allSubviews(in: controller.view)
