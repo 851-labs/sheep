@@ -15,6 +15,8 @@ public struct HerdrAPIError: LocalizedError, Equatable, Sendable {
 public enum HerdrCompatibilityError: LocalizedError, Equatable, Sendable {
     case protocolMismatch(expected: Int, actual: UInt)
     case versionTooOld(minimum: String, actual: String)
+    case unknownResultDiscriminator(String)
+    case unknownEventDiscriminator(String)
 
     public var errorDescription: String? {
         switch self {
@@ -22,6 +24,10 @@ public enum HerdrCompatibilityError: LocalizedError, Equatable, Sendable {
             "HerdrSDK requires protocol \(expected); the server reports \(actual)."
         case let .versionTooOld(minimum, actual):
             "HerdrSDK requires Herdr \(minimum) or newer; the server reports \(actual)."
+        case let .unknownResultDiscriminator(value):
+            "Herdr returned an unknown protocol-17 result discriminator: \(value)."
+        case let .unknownEventDiscriminator(value):
+            "Herdr emitted an unknown protocol-17 event discriminator: \(value)."
         }
     }
 }

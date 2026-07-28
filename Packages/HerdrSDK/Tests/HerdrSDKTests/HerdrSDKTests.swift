@@ -60,7 +60,12 @@ final class HerdrSDKTests: XCTestCase {
                 HerdrResponseResult.self,
                 from: Data(#"{"type":"future_result"}"#.utf8)
             )
-        )
+        ) { error in
+            XCTAssertEqual(
+                error as? HerdrCompatibilityError,
+                .unknownResultDiscriminator("future_result")
+            )
+        }
         XCTAssertThrowsError(
             try JSONDecoder().decode(
                 HerdrLifecycleEvent.self,

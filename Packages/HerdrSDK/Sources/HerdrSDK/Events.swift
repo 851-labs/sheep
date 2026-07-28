@@ -87,14 +87,16 @@ final class HerdrEventConnection: @unchecked Sendable {
         let decoder = JSONDecoder()
         while !isClosed {
             let data = try reader.readLine()
-            if let event = try? decoder.decode(HerdrLifecycleEvent.self, from: data) {
+            let discriminator = try Self.eventDiscriminator(from: data)
+            if HerdrSchemaCatalog.eventTypes.contains(discriminator) {
+                let event = try decoder.decode(HerdrLifecycleEvent.self, from: data)
                 onEvent(.lifecycle(event))
-            } else if let event = try? decoder.decode(HerdrSubscriptionEnvelope.self, from: data) {
+            } else if HerdrSchemaCatalog.subscriptionEventTypes.contains(discriminator) {
+                let event = try decoder.decode(HerdrSubscriptionEnvelope.self, from: data)
                 onEvent(.subscription(event))
             } else {
-                throw HerdrAPIError(
-                    code: "unknown_event",
-                    message: "Herdr emitted an event outside protocol 17."
+                throw HerdrCompatibilityError.unknownEventDiscriminator(
+                    discriminator
                 )
             }
         }
@@ -113,6 +115,17 @@ final class HerdrEventConnection: @unchecked Sendable {
 
     private var isClosed: Bool {
         lock.withLock { closed }
+    }
+
+    private static func eventDiscriminator(from data: Data) throws -> String {
+        guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let discriminator = object["event"] as? String else {
+            throw HerdrAPIError(
+                code: "malformed_event",
+                message: "Herdr emitted an event without a discriminator."
+            )
+        }
+        return discriminator
     }
 }
 

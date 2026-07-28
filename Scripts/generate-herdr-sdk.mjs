@@ -200,6 +200,8 @@ const subscriptionVariants =
   schema.schemas.request.$defs.Subscription.oneOf.map(
     (entry) => entry.properties.type.const,
   );
+const subscriptionEventTypes =
+  schema.schemas.subscription_event.$defs.SubscriptionEventKind.enum;
 const schemaHash = crypto.createHash("sha256").update(schemaData).digest("hex");
 
 const swiftStringArray = (values, indentation = "        ") =>
@@ -270,12 +272,22 @@ ${swiftStringArray(eventTypes)}
     public static let subscriptionTypes: Set<String> = [
 ${swiftStringArray(subscriptionVariants)}
     ]
+
+    public static let subscriptionEventTypes: Set<String> = [
+${swiftStringArray(subscriptionEventTypes)}
+    ]
 }
 
 public enum HerdrSuccessResult: Codable, Sendable {
 ${resultCases}
 
     public init(from decoder: Decoder) throws {
+        let discriminator = try decoder.container(
+            keyedBy: HerdrResultDiscriminatorKey.self
+        ).decode(String.self, forKey: .type)
+        guard HerdrSchemaCatalog.resultTypes.contains(discriminator) else {
+            throw HerdrCompatibilityError.unknownResultDiscriminator(discriminator)
+        }
         let value = try HerdrResponseResponse(from: decoder)
         switch value.type {
 ${resultSwitchCases}
@@ -295,6 +307,10 @@ ${resultSwitchCases}
             value
         }
     }
+}
+
+private enum HerdrResultDiscriminatorKey: String, CodingKey {
+    case type
 }
 
 public enum HerdrEndpoints {

@@ -128,6 +128,32 @@ final class TransportTests: XCTestCase {
             // Expected: cancellation shuts down the descriptor blocked in read(2).
         }
     }
+
+    func testSubscriptionRejectsUnknownEventWithCompatibilityError() async throws {
+        let server = try FakeHerdrServer { descriptor, request in
+            let acknowledgement = FakeHerdrServer.jsonLine([
+                "id": request["id"] ?? "",
+                "result": ["type": "subscription_started"],
+            ])
+            let event = FakeHerdrServer.jsonLine([
+                "event": "future_event",
+                "data": ["type": "future_event"],
+            ])
+            FakeHerdrServer.send(acknowledgement + event, to: descriptor)
+        }
+        defer { server.stop() }
+
+        let client = HerdrClient(socketURL: server.socketURL)
+        let stream = try await client.events.subscribe([
+            .init(type: "workspace.updated"),
+        ])
+        do {
+            for try await _ in stream {}
+            XCTFail("Expected an unknown event error")
+        } catch let error as HerdrCompatibilityError {
+            XCTAssertEqual(error, .unknownEventDiscriminator("future_event"))
+        }
+    }
 }
 
 private final class FakeHerdrServer: @unchecked Sendable {

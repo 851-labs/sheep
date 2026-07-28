@@ -315,6 +315,12 @@ public enum HerdrSchemaCatalog {
         "pane.scroll_changed",
         "layout.updated",
     ]
+
+    public static let subscriptionEventTypes: Set<String> = [
+        "pane.output_matched",
+        "pane.agent_status_changed",
+        "pane.scroll_changed",
+    ]
 }
 
 public enum HerdrSuccessResult: Codable, Sendable {
@@ -377,6 +383,12 @@ public enum HerdrSuccessResult: Codable, Sendable {
     case ok(HerdrResponseResponse)
 
     public init(from decoder: Decoder) throws {
+        let discriminator = try decoder.container(
+            keyedBy: HerdrResultDiscriminatorKey.self
+        ).decode(String.self, forKey: .type)
+        guard HerdrSchemaCatalog.resultTypes.contains(discriminator) else {
+            throw HerdrCompatibilityError.unknownResultDiscriminator(discriminator)
+        }
         let value = try HerdrResponseResponse(from: decoder)
         switch value.type {
         case .pong: self = .pong(value)
@@ -452,6 +464,10 @@ public enum HerdrSuccessResult: Codable, Sendable {
             value
         }
     }
+}
+
+private enum HerdrResultDiscriminatorKey: String, CodingKey {
+    case type
 }
 
 public enum HerdrEndpoints {
