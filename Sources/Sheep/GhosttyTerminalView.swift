@@ -10,6 +10,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     private let focusPane: () -> Void
     private var tracking: NSTrackingArea?
     private var cursorHidden = false
+    private var geometry = GhosttySurfaceGeometryState()
 
     init?(
         runtime: GhosttyRuntime,
@@ -23,6 +24,10 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         wantsLayer = true
         updateAdaptiveAppearance()
 
+        let initialScale = Double(NSScreen.main?.backingScaleFactor ?? 2)
+        geometry.recordContentScale(x: initialScale, y: initialScale)
+        layer?.contentsScale = initialScale
+
         let command = [
             Self.shellQuote(herdrExecutable.path),
             "terminal", "attach",
@@ -33,7 +38,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         configuration.platform_tag = GHOSTTY_PLATFORM_MACOS
         configuration.platform.macos.nsview = Unmanaged.passUnretained(self).toOpaque()
         configuration.userdata = Unmanaged.passUnretained(self).toOpaque()
-        configuration.scale_factor = Double(NSScreen.main?.backingScaleFactor ?? 2)
+        configuration.scale_factor = initialScale
         configuration.context = GHOSTTY_SURFACE_CONTEXT_SPLIT
 
         surface = command.withCString { commandPointer in
@@ -48,7 +53,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         }
         guard surface != nil else { return nil }
         updateGhosttyColorScheme()
-        updateSurfaceGeometry()
+        updateSurfaceSize()
         updateTrackingAreas()
         setAccessibilityLabel("Terminal \(pane.displayTitle)")
     }
@@ -59,6 +64,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     deinit {
         if cursorHidden { NSCursor.unhide() }
         if let surface { ghostty_surface_free(surface) }
+        NotificationCenter.default.removeObserver(self)
     }
 
     override var acceptsFirstResponder: Bool { true }
@@ -78,12 +84,15 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     override func layout() {
         super.layout()
-        updateSurfaceGeometry()
+        // Divider and window drags continuously relayout this view. Ghostty only
+        // needs the framebuffer size here; scale and display changes have their
+        // own AppKit notifications.
+        updateSurfaceSize()
     }
 
     override func viewDidChangeBackingProperties() {
         super.viewDidChangeBackingProperties()
-        updateSurfaceGeometry()
+        updateSurfaceEnvironment()
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -94,7 +103,19 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
-        updateSurfaceGeometry()
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSWindow.didChangeScreenNotification,
+            object: nil
+        )
+        guard let window else { return }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(windowDidChangeScreen(_:)),
+            name: NSWindow.didChangeScreenNotification,
+            object: window
+        )
+        updateSurfaceEnvironment()
     }
 
     override func updateTrackingAreas() {
@@ -352,20 +373,41 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         Task { @MainActor in view.needsDisplay = true }
     }
 
-    private func updateSurfaceGeometry() {
-        guard let surface, bounds.width > 0, bounds.height > 0 else { return }
-        let scale = window?.backingScaleFactor ?? 2
-        layer?.contentsScale = scale
-        ghostty_surface_set_content_scale(surface, scale, scale)
-        if let number = window?.screen?.deviceDescription[
+    @objc private func windowDidChangeScreen(_ notification: Notification) {
+        updateSurfaceEnvironment()
+    }
+
+    private func updateSurfaceEnvironment() {
+        guard let surface, let window else { return }
+        let scale = Double(window.backingScaleFactor)
+        if geometry.recordContentScale(x: scale, y: scale) {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer?.contentsScale = scale
+            CATransaction.commit()
+            ghostty_surface_set_content_scale(surface, scale, scale)
+        }
+        if let number = window.screen?.deviceDescription[
             NSDeviceDescriptionKey("NSScreenNumber")
-        ] as? NSNumber {
+        ] as? NSNumber, geometry.recordDisplayID(number.uint32Value) {
             ghostty_surface_set_display_id(surface, number.uint32Value)
         }
+        updateSurfaceSize()
+    }
+
+    private func updateSurfaceSize() {
+        guard let surface, bounds.width > 0, bounds.height > 0 else { return }
+        let scale = geometry.contentScale
+            ?? GhosttySurfaceContentScale(x: 1, y: 1)
+        let size = GhosttySurfacePixelSize(
+            width: UInt32(max(1, bounds.width * scale.x)),
+            height: UInt32(max(1, bounds.height * scale.y))
+        )
+        guard geometry.recordPixelSize(size) else { return }
         ghostty_surface_set_size(
             surface,
-            UInt32(max(1, bounds.width * scale)),
-            UInt32(max(1, bounds.height * scale))
+            size.width,
+            size.height
         )
     }
 
@@ -490,5 +532,48 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             data: Data(bytes: pointer, count: length),
             encoding: .utf8
         ) ?? ""
+    }
+}
+
+struct GhosttySurfaceContentScale: Equatable {
+    let x: CGFloat
+    let y: CGFloat
+
+    init(x: Double, y: Double) {
+        self.x = CGFloat(x)
+        self.y = CGFloat(y)
+    }
+}
+
+struct GhosttySurfacePixelSize: Equatable {
+    let width: UInt32
+    let height: UInt32
+}
+
+struct GhosttySurfaceGeometryState {
+    private(set) var contentScale: GhosttySurfaceContentScale?
+    private(set) var displayID: UInt32?
+    private(set) var pixelSize: GhosttySurfacePixelSize?
+
+    @discardableResult
+    mutating func recordContentScale(x: Double, y: Double) -> Bool {
+        let next = GhosttySurfaceContentScale(x: x, y: y)
+        guard contentScale != next else { return false }
+        contentScale = next
+        return true
+    }
+
+    @discardableResult
+    mutating func recordDisplayID(_ next: UInt32) -> Bool {
+        guard displayID != next else { return false }
+        displayID = next
+        return true
+    }
+
+    @discardableResult
+    mutating func recordPixelSize(_ next: GhosttySurfacePixelSize) -> Bool {
+        guard pixelSize != next else { return false }
+        pixelSize = next
+        return true
     }
 }
