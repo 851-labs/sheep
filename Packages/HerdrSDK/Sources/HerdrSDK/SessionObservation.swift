@@ -107,6 +107,8 @@ extension HerdrClient {
     public func refreshSession() async {
         do {
             try await refreshAuthoritativeSnapshot()
+        } catch is CancellationError {
+            return
         } catch {
             requestSessionReconnect(error.localizedDescription)
         }
@@ -212,7 +214,12 @@ extension HerdrClient {
         guard sessionRunTask != nil else { return }
         sessionRefreshTask?.cancel()
         sessionRefreshTask = Task { [weak self] in
-            try? await Task.sleep(for: .milliseconds(75))
+            do {
+                try await Task.sleep(for: .milliseconds(75))
+            } catch {
+                return
+            }
+            guard !Task.isCancelled else { return }
             await self?.refreshSession()
         }
     }
