@@ -27,7 +27,7 @@ public struct HerdrSession: Codable, Equatable, Sendable {
     public let workspaces: [Workspace]
     public let tabs: [Tab]
     public let panes: [Pane]
-    public let layouts: [PaneLayout]
+    public let layouts: [HerdrLayoutSnapshot]
     public let agents: [Agent]
 
     public init(
@@ -39,7 +39,7 @@ public struct HerdrSession: Codable, Equatable, Sendable {
         workspaces: [Workspace],
         tabs: [Tab],
         panes: [Pane],
-        layouts: [PaneLayout] = [],
+        layouts: [HerdrLayoutSnapshot] = [],
         agents: [Agent]
     ) {
         self.version = version
@@ -112,8 +112,57 @@ public struct HerdrSession: Codable, Equatable, Sendable {
         workspaces = try container.decode([Workspace].self, forKey: .workspaces)
         tabs = try container.decode([Tab].self, forKey: .tabs)
         panes = try container.decode([Pane].self, forKey: .panes)
-        layouts = try container.decodeIfPresent([PaneLayout].self, forKey: .layouts) ?? []
+        layouts = try container.decodeIfPresent(
+            [HerdrLayoutSnapshot].self,
+            forKey: .layouts
+        ) ?? []
         agents = try container.decode([Agent].self, forKey: .agents)
+    }
+}
+
+public struct HerdrLayoutSnapshot: Codable, Equatable, Sendable {
+    public let workspaceID: WorkspaceID
+    public let tabID: TabID
+    public let zoomed: Bool
+    public let area: Rect
+    public let focusedPaneID: PaneID
+    public let panes: [Pane]
+    public let splits: [Split]
+
+    public struct Rect: Codable, Equatable, Sendable {
+        public let x: UInt16
+        public let y: UInt16
+        public let width: UInt16
+        public let height: UInt16
+    }
+
+    public struct Pane: Codable, Equatable, Sendable {
+        public let paneID: PaneID
+        public let focused: Bool
+        public let rect: Rect
+
+        private enum CodingKeys: String, CodingKey {
+            case paneID = "pane_id"
+            case focused
+            case rect
+        }
+    }
+
+    public struct Split: Codable, Equatable, Sendable {
+        public let id: String
+        public let direction: PaneLayout.SplitDirection
+        public let ratio: Double
+        public let rect: Rect
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case workspaceID = "workspace_id"
+        case tabID = "tab_id"
+        case zoomed
+        case area
+        case focusedPaneID = "focused_pane_id"
+        case panes
+        case splits
     }
 }
 

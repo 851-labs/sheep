@@ -123,13 +123,13 @@ public struct HerdrEventData: Codable, Sendable {
     public let tabs: [HerdrEventTab]?
     public let pane: HerdrEventPane?
     public let paneID: PaneID?
-    public let closedTabID: String?
-    public let closedWorkspaceID: String?
+    public let closedTabID: TabID?
+    public let closedWorkspaceID: WorkspaceID?
     public let createdTab: HerdrEventTab?
     public let createdWorkspace: HerdrEventWorkspace?
-    public let previousPaneID: String?
-    public let previousTabID: String?
-    public let previousWorkspaceID: String?
+    public let previousPaneID: PaneID?
+    public let previousTabID: TabID?
+    public let previousWorkspaceID: WorkspaceID?
     public let revision: Int?
     public let agent: String?
     public let finalStatus: HerdrEventAgentStatus?
@@ -173,7 +173,7 @@ public struct HerdrEventData: Codable, Sendable {
         case layout = "layout"
     }
 
-    public init(type: HerdrEventEvent, workspace: HerdrEventWorkspace?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrEventWorkspace]?, worktree: HerdrEventWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrEventTab?, tabID: TabID?, tabs: [HerdrEventTab]?, pane: HerdrEventPane?, paneID: PaneID?, closedTabID: String?, closedWorkspaceID: String?, createdTab: HerdrEventTab?, createdWorkspace: HerdrEventWorkspace?, previousPaneID: String?, previousTabID: String?, previousWorkspaceID: String?, revision: Int?, agent: String?, finalStatus: HerdrEventAgentStatus?, released: Bool?, agentStatus: HerdrEventAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrEventLayout?) {
+    public init(type: HerdrEventEvent, workspace: HerdrEventWorkspace?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrEventWorkspace]?, worktree: HerdrEventWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrEventTab?, tabID: TabID?, tabs: [HerdrEventTab]?, pane: HerdrEventPane?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrEventTab?, createdWorkspace: HerdrEventWorkspace?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrEventAgentStatus?, released: Bool?, agentStatus: HerdrEventAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrEventLayout?) {
         self.type = type
         self.workspace = workspace
         self.workspaceID = workspaceID
@@ -240,13 +240,13 @@ public extension HerdrEventData {
         tabs: [HerdrEventTab]?? = nil,
         pane: HerdrEventPane?? = nil,
         paneID: PaneID?? = nil,
-        closedTabID: String?? = nil,
-        closedWorkspaceID: String?? = nil,
+        closedTabID: TabID?? = nil,
+        closedWorkspaceID: WorkspaceID?? = nil,
         createdTab: HerdrEventTab?? = nil,
         createdWorkspace: HerdrEventWorkspace?? = nil,
-        previousPaneID: String?? = nil,
-        previousTabID: String?? = nil,
-        previousWorkspaceID: String?? = nil,
+        previousPaneID: PaneID?? = nil,
+        previousTabID: TabID?? = nil,
+        previousWorkspaceID: WorkspaceID?? = nil,
         revision: Int?? = nil,
         agent: String?? = nil,
         finalStatus: HerdrEventAgentStatus?? = nil,
@@ -388,7 +388,7 @@ public extension HerdrEventTab {
 
 // MARK: - HerdrEventWorkspace
 public struct HerdrEventWorkspace: Codable, Sendable {
-    public let activeTabID: String
+    public let activeTabID: TabID
     public let agentStatus: HerdrEventAgentStatus
     public let focused: Bool
     public let label: String
@@ -412,7 +412,7 @@ public struct HerdrEventWorkspace: Codable, Sendable {
         case worktree = "worktree"
     }
 
-    public init(activeTabID: String, agentStatus: HerdrEventAgentStatus, focused: Bool, label: String, number: Int, paneCount: Int, tabCount: Int, tokens: [String: String]?, workspaceID: WorkspaceID, worktree: HerdrEventWorktreeClass?) {
+    public init(activeTabID: TabID, agentStatus: HerdrEventAgentStatus, focused: Bool, label: String, number: Int, paneCount: Int, tabCount: Int, tokens: [String: String]?, workspaceID: WorkspaceID, worktree: HerdrEventWorktreeClass?) {
         self.activeTabID = activeTabID
         self.agentStatus = agentStatus
         self.focused = focused
@@ -445,7 +445,7 @@ public extension HerdrEventWorkspace {
     }
 
     func with(
-        activeTabID: String? = nil,
+        activeTabID: TabID? = nil,
         agentStatus: HerdrEventAgentStatus? = nil,
         focused: Bool? = nil,
         label: String? = nil,
@@ -550,7 +550,7 @@ public extension HerdrEventWorktreeClass {
 // MARK: - HerdrEventLayout
 public struct HerdrEventLayout: Codable, Sendable {
     public let area: HerdrEventArea
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let panes: [HerdrEventPaneElement]
     public let splits: [HerdrEventSplitElement]
     public let tabID: TabID
@@ -567,7 +567,7 @@ public struct HerdrEventLayout: Codable, Sendable {
         case zoomed = "zoomed"
     }
 
-    public init(area: HerdrEventArea, focusedPaneID: String, panes: [HerdrEventPaneElement], splits: [HerdrEventSplitElement], tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool) {
+    public init(area: HerdrEventArea, focusedPaneID: PaneID, panes: [HerdrEventPaneElement], splits: [HerdrEventSplitElement], tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool) {
         self.area = area
         self.focusedPaneID = focusedPaneID
         self.panes = panes
@@ -598,7 +598,7 @@ public extension HerdrEventLayout {
 
     func with(
         area: HerdrEventArea? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         panes: [HerdrEventPaneElement]? = nil,
         splits: [HerdrEventSplitElement]? = nil,
         tabID: TabID? = nil,
@@ -1114,7 +1114,7 @@ public struct HerdrEventWorktree: Codable, Sendable {
     public let isLinkedWorktree: Bool
     public let isPrunable: Bool
     public let label: String
-    public let openWorkspaceID: String?
+    public let openWorkspaceID: WorkspaceID?
     public let path: String
 
     public enum CodingKeys: String, CodingKey {
@@ -1128,7 +1128,7 @@ public struct HerdrEventWorktree: Codable, Sendable {
         case path = "path"
     }
 
-    public init(branch: String?, isBare: Bool, isDetached: Bool, isLinkedWorktree: Bool, isPrunable: Bool, label: String, openWorkspaceID: String?, path: String) {
+    public init(branch: String?, isBare: Bool, isDetached: Bool, isLinkedWorktree: Bool, isPrunable: Bool, label: String, openWorkspaceID: WorkspaceID?, path: String) {
         self.branch = branch
         self.isBare = isBare
         self.isDetached = isDetached
@@ -1165,7 +1165,7 @@ public extension HerdrEventWorktree {
         isLinkedWorktree: Bool? = nil,
         isPrunable: Bool? = nil,
         label: String? = nil,
-        openWorkspaceID: String?? = nil,
+        openWorkspaceID: WorkspaceID?? = nil,
         path: String? = nil
     ) -> HerdrEventWorktree {
         return HerdrEventWorktree(

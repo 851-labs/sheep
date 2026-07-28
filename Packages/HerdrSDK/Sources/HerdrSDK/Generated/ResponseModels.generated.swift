@@ -782,7 +782,7 @@ public struct HerdrResponseContext: Codable, Sendable {
     public let correlationID: String?
     public let focusedPaneAgent: String?
     public let focusedPaneCwd: String?
-    public let focusedPaneID: String?
+    public let focusedPaneID: PaneID?
     public let focusedPaneStatus: HerdrResponseAgentStatus?
     public let invocationSource: String?
     public let linkHandlerID: String?
@@ -812,7 +812,7 @@ public struct HerdrResponseContext: Codable, Sendable {
         case worktree = "worktree"
     }
 
-    public init(clickedURL: String?, correlationID: String?, focusedPaneAgent: String?, focusedPaneCwd: String?, focusedPaneID: String?, focusedPaneStatus: HerdrResponseAgentStatus?, invocationSource: String?, linkHandlerID: String?, selectedText: String?, tabID: TabID?, tabLabel: String?, workspaceCwd: String?, workspaceID: WorkspaceID?, workspaceLabel: String?, worktree: HerdrResponseContextWorktree?) {
+    public init(clickedURL: String?, correlationID: String?, focusedPaneAgent: String?, focusedPaneCwd: String?, focusedPaneID: PaneID?, focusedPaneStatus: HerdrResponseAgentStatus?, invocationSource: String?, linkHandlerID: String?, selectedText: String?, tabID: TabID?, tabLabel: String?, workspaceCwd: String?, workspaceID: WorkspaceID?, workspaceLabel: String?, worktree: HerdrResponseContextWorktree?) {
         self.clickedURL = clickedURL
         self.correlationID = correlationID
         self.focusedPaneAgent = focusedPaneAgent
@@ -854,7 +854,7 @@ public extension HerdrResponseContext {
         correlationID: String?? = nil,
         focusedPaneAgent: String?? = nil,
         focusedPaneCwd: String?? = nil,
-        focusedPaneID: String?? = nil,
+        focusedPaneID: PaneID?? = nil,
         focusedPaneStatus: HerdrResponseAgentStatus?? = nil,
         invocationSource: String?? = nil,
         linkHandlerID: String?? = nil,
@@ -1086,7 +1086,7 @@ public extension HerdrResponseEdges {
 // MARK: - HerdrResponseLayoutElement
 public struct HerdrResponseLayoutElement: Codable, Sendable {
     public let area: HerdrResponseArea
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let panes: [HerdrResponseLayoutPane]
     public let splits: [HerdrResponseSplitElement]
     public let tabID: TabID
@@ -1103,7 +1103,7 @@ public struct HerdrResponseLayoutElement: Codable, Sendable {
         case zoomed = "zoomed"
     }
 
-    public init(area: HerdrResponseArea, focusedPaneID: String, panes: [HerdrResponseLayoutPane], splits: [HerdrResponseSplitElement], tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool) {
+    public init(area: HerdrResponseArea, focusedPaneID: PaneID, panes: [HerdrResponseLayoutPane], splits: [HerdrResponseSplitElement], tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool) {
         self.area = area
         self.focusedPaneID = focusedPaneID
         self.panes = panes
@@ -1134,7 +1134,7 @@ public extension HerdrResponseLayoutElement {
 
     func with(
         area: HerdrResponseArea? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         panes: [HerdrResponseLayoutPane]? = nil,
         splits: [HerdrResponseSplitElement]? = nil,
         tabID: TabID? = nil,
@@ -1419,13 +1419,13 @@ public struct HerdrResponseData: Codable, Sendable {
     public let tabs: [HerdrResponseTabElement]?
     public let pane: HerdrResponseRootPaneElement?
     public let paneID: PaneID?
-    public let closedTabID: String?
-    public let closedWorkspaceID: String?
+    public let closedTabID: TabID?
+    public let closedWorkspaceID: WorkspaceID?
     public let createdTab: HerdrResponseTabElement?
     public let createdWorkspace: HerdrResponseWorkspaceElement?
-    public let previousPaneID: String?
-    public let previousTabID: String?
-    public let previousWorkspaceID: String?
+    public let previousPaneID: PaneID?
+    public let previousTabID: TabID?
+    public let previousWorkspaceID: WorkspaceID?
     public let revision: Int?
     public let agent: String?
     public let finalStatus: HerdrResponseAgentStatus?
@@ -1469,7 +1469,7 @@ public struct HerdrResponseData: Codable, Sendable {
         case layout = "layout"
     }
 
-    public init(type: HerdrResponseEventEnum, workspace: HerdrResponseWorkspaceElement?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrResponseWorkspaceElement]?, worktree: HerdrResponseDataWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrResponseTabElement?, tabID: TabID?, tabs: [HerdrResponseTabElement]?, pane: HerdrResponseRootPaneElement?, paneID: PaneID?, closedTabID: String?, closedWorkspaceID: String?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, previousPaneID: String?, previousTabID: String?, previousWorkspaceID: String?, revision: Int?, agent: String?, finalStatus: HerdrResponseAgentStatus?, released: Bool?, agentStatus: HerdrResponseAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrResponseLayoutElement?) {
+    public init(type: HerdrResponseEventEnum, workspace: HerdrResponseWorkspaceElement?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrResponseWorkspaceElement]?, worktree: HerdrResponseDataWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrResponseTabElement?, tabID: TabID?, tabs: [HerdrResponseTabElement]?, pane: HerdrResponseRootPaneElement?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrResponseAgentStatus?, released: Bool?, agentStatus: HerdrResponseAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrResponseLayoutElement?) {
         self.type = type
         self.workspace = workspace
         self.workspaceID = workspaceID
@@ -1536,13 +1536,13 @@ public extension HerdrResponseData {
         tabs: [HerdrResponseTabElement]?? = nil,
         pane: HerdrResponseRootPaneElement?? = nil,
         paneID: PaneID?? = nil,
-        closedTabID: String?? = nil,
-        closedWorkspaceID: String?? = nil,
+        closedTabID: TabID?? = nil,
+        closedWorkspaceID: WorkspaceID?? = nil,
         createdTab: HerdrResponseTabElement?? = nil,
         createdWorkspace: HerdrResponseWorkspaceElement?? = nil,
-        previousPaneID: String?? = nil,
-        previousTabID: String?? = nil,
-        previousWorkspaceID: String?? = nil,
+        previousPaneID: PaneID?? = nil,
+        previousTabID: TabID?? = nil,
+        previousWorkspaceID: WorkspaceID?? = nil,
         revision: Int?? = nil,
         agent: String?? = nil,
         finalStatus: HerdrResponseAgentStatus?? = nil,
@@ -1676,7 +1676,7 @@ public extension HerdrResponseTabElement {
 
 // MARK: - HerdrResponseWorkspaceElement
 public struct HerdrResponseWorkspaceElement: Codable, Sendable {
-    public let activeTabID: String
+    public let activeTabID: TabID
     public let agentStatus: HerdrResponseAgentStatus
     public let focused: Bool
     public let label: String
@@ -1700,7 +1700,7 @@ public struct HerdrResponseWorkspaceElement: Codable, Sendable {
         case worktree = "worktree"
     }
 
-    public init(activeTabID: String, agentStatus: HerdrResponseAgentStatus, focused: Bool, label: String, number: Int, paneCount: Int, tabCount: Int, tokens: [String: String]?, workspaceID: WorkspaceID, worktree: HerdrResponseContextWorktree?) {
+    public init(activeTabID: TabID, agentStatus: HerdrResponseAgentStatus, focused: Bool, label: String, number: Int, paneCount: Int, tabCount: Int, tokens: [String: String]?, workspaceID: WorkspaceID, worktree: HerdrResponseContextWorktree?) {
         self.activeTabID = activeTabID
         self.agentStatus = agentStatus
         self.focused = focused
@@ -1733,7 +1733,7 @@ public extension HerdrResponseWorkspaceElement {
     }
 
     func with(
-        activeTabID: String? = nil,
+        activeTabID: TabID? = nil,
         agentStatus: HerdrResponseAgentStatus? = nil,
         focused: Bool? = nil,
         label: String? = nil,
@@ -1999,7 +1999,7 @@ public struct HerdrResponseDataWorktree: Codable, Sendable {
     public let isLinkedWorktree: Bool
     public let isPrunable: Bool
     public let label: String
-    public let openWorkspaceID: String?
+    public let openWorkspaceID: WorkspaceID?
     public let path: String
 
     public enum CodingKeys: String, CodingKey {
@@ -2013,7 +2013,7 @@ public struct HerdrResponseDataWorktree: Codable, Sendable {
         case path = "path"
     }
 
-    public init(branch: String?, isBare: Bool, isDetached: Bool, isLinkedWorktree: Bool, isPrunable: Bool, label: String, openWorkspaceID: String?, path: String) {
+    public init(branch: String?, isBare: Bool, isDetached: Bool, isLinkedWorktree: Bool, isPrunable: Bool, label: String, openWorkspaceID: WorkspaceID?, path: String) {
         self.branch = branch
         self.isBare = isBare
         self.isDetached = isDetached
@@ -2050,7 +2050,7 @@ public extension HerdrResponseDataWorktree {
         isLinkedWorktree: Bool? = nil,
         isPrunable: Bool? = nil,
         label: String? = nil,
-        openWorkspaceID: String?? = nil,
+        openWorkspaceID: WorkspaceID?? = nil,
         path: String? = nil
     ) -> HerdrResponseDataWorktree {
         return HerdrResponseDataWorktree(
@@ -2077,10 +2077,10 @@ public extension HerdrResponseDataWorktree {
 // MARK: - HerdrResponseFocus
 public struct HerdrResponseFocus: Codable, Sendable {
     public let changed: Bool
-    public let focusedPaneID: String?
+    public let focusedPaneID: PaneID?
     public let layout: HerdrResponseLayoutElement
     public let reason: HerdrResponseFocusReason?
-    public let sourcePaneID: String
+    public let sourcePaneID: PaneID
 
     public enum CodingKeys: String, CodingKey {
         case changed = "changed"
@@ -2090,7 +2090,7 @@ public struct HerdrResponseFocus: Codable, Sendable {
         case sourcePaneID = "source_pane_id"
     }
 
-    public init(changed: Bool, focusedPaneID: String?, layout: HerdrResponseLayoutElement, reason: HerdrResponseFocusReason?, sourcePaneID: String) {
+    public init(changed: Bool, focusedPaneID: PaneID?, layout: HerdrResponseLayoutElement, reason: HerdrResponseFocusReason?, sourcePaneID: PaneID) {
         self.changed = changed
         self.focusedPaneID = focusedPaneID
         self.layout = layout
@@ -2119,10 +2119,10 @@ public extension HerdrResponseFocus {
 
     func with(
         changed: Bool? = nil,
-        focusedPaneID: String?? = nil,
+        focusedPaneID: PaneID?? = nil,
         layout: HerdrResponseLayoutElement? = nil,
         reason: HerdrResponseFocusReason?? = nil,
-        sourcePaneID: String? = nil
+        sourcePaneID: PaneID? = nil
     ) -> HerdrResponseFocus {
         return HerdrResponseFocus(
             changed: changed ?? self.changed,
@@ -2149,7 +2149,7 @@ public enum HerdrResponseFocusReason: String, Codable, Sendable {
 // MARK: - HerdrResponseResponseResultLayout
 public struct HerdrResponseResponseResultLayout: Codable, Sendable {
     public let area: HerdrResponseArea?
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let panes: [HerdrResponseLayoutPane]?
     public let splits: [HerdrResponseSplitElement]?
     public let tabID: TabID
@@ -2168,7 +2168,7 @@ public struct HerdrResponseResponseResultLayout: Codable, Sendable {
         case root = "root"
     }
 
-    public init(area: HerdrResponseArea?, focusedPaneID: String, panes: [HerdrResponseLayoutPane]?, splits: [HerdrResponseSplitElement]?, tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool, root: HerdrResponseRoot?) {
+    public init(area: HerdrResponseArea?, focusedPaneID: PaneID, panes: [HerdrResponseLayoutPane]?, splits: [HerdrResponseSplitElement]?, tabID: TabID, workspaceID: WorkspaceID, zoomed: Bool, root: HerdrResponseRoot?) {
         self.area = area
         self.focusedPaneID = focusedPaneID
         self.panes = panes
@@ -2200,7 +2200,7 @@ public extension HerdrResponseResponseResultLayout {
 
     func with(
         area: HerdrResponseArea?? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         panes: [HerdrResponseLayoutPane]?? = nil,
         splits: [HerdrResponseSplitElement]?? = nil,
         tabID: TabID? = nil,
@@ -2533,15 +2533,15 @@ public extension HerdrResponseManifestElement {
 // MARK: - HerdrResponseMoveResult
 public struct HerdrResponseMoveResult: Codable, Sendable {
     public let changed: Bool
-    public let closedTabID: String?
-    public let closedWorkspaceID: String?
+    public let closedTabID: TabID?
+    public let closedWorkspaceID: WorkspaceID?
     public let createdTab: HerdrResponseTabElement?
     public let createdWorkspace: HerdrResponseWorkspaceElement?
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let pane: HerdrResponseRootPaneElement
-    public let previousPaneID: String
-    public let previousTabID: String
-    public let previousWorkspaceID: String
+    public let previousPaneID: PaneID
+    public let previousTabID: TabID
+    public let previousWorkspaceID: WorkspaceID
     public let reason: HerdrResponseMoveResultReason?
     public let sourceLayout: HerdrResponseLayoutElement?
     public let targetLayout: HerdrResponseLayoutElement
@@ -2562,7 +2562,7 @@ public struct HerdrResponseMoveResult: Codable, Sendable {
         case targetLayout = "target_layout"
     }
 
-    public init(changed: Bool, closedTabID: String?, closedWorkspaceID: String?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, focusedPaneID: String, pane: HerdrResponseRootPaneElement, previousPaneID: String, previousTabID: String, previousWorkspaceID: String, reason: HerdrResponseMoveResultReason?, sourceLayout: HerdrResponseLayoutElement?, targetLayout: HerdrResponseLayoutElement) {
+    public init(changed: Bool, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, focusedPaneID: PaneID, pane: HerdrResponseRootPaneElement, previousPaneID: PaneID, previousTabID: TabID, previousWorkspaceID: WorkspaceID, reason: HerdrResponseMoveResultReason?, sourceLayout: HerdrResponseLayoutElement?, targetLayout: HerdrResponseLayoutElement) {
         self.changed = changed
         self.closedTabID = closedTabID
         self.closedWorkspaceID = closedWorkspaceID
@@ -2599,15 +2599,15 @@ public extension HerdrResponseMoveResult {
 
     func with(
         changed: Bool? = nil,
-        closedTabID: String?? = nil,
-        closedWorkspaceID: String?? = nil,
+        closedTabID: TabID?? = nil,
+        closedWorkspaceID: WorkspaceID?? = nil,
         createdTab: HerdrResponseTabElement?? = nil,
         createdWorkspace: HerdrResponseWorkspaceElement?? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         pane: HerdrResponseRootPaneElement? = nil,
-        previousPaneID: String? = nil,
-        previousTabID: String? = nil,
-        previousWorkspaceID: String? = nil,
+        previousPaneID: PaneID? = nil,
+        previousTabID: TabID? = nil,
+        previousWorkspaceID: WorkspaceID? = nil,
         reason: HerdrResponseMoveResultReason?? = nil,
         sourceLayout: HerdrResponseLayoutElement?? = nil,
         targetLayout: HerdrResponseLayoutElement? = nil
@@ -2647,7 +2647,7 @@ public enum HerdrResponseMoveResultReason: String, Codable, Sendable {
 public struct HerdrResponseNeighbor: Codable, Sendable {
     public let direction: HerdrResponseNeighborDirection
     public let layout: HerdrResponseLayoutElement
-    public let neighborPaneID: String?
+    public let neighborPaneID: PaneID?
     public let paneID: PaneID
 
     public enum CodingKeys: String, CodingKey {
@@ -2657,7 +2657,7 @@ public struct HerdrResponseNeighbor: Codable, Sendable {
         case paneID = "pane_id"
     }
 
-    public init(direction: HerdrResponseNeighborDirection, layout: HerdrResponseLayoutElement, neighborPaneID: String?, paneID: PaneID) {
+    public init(direction: HerdrResponseNeighborDirection, layout: HerdrResponseLayoutElement, neighborPaneID: PaneID?, paneID: PaneID) {
         self.direction = direction
         self.layout = layout
         self.neighborPaneID = neighborPaneID
@@ -2686,7 +2686,7 @@ public extension HerdrResponseNeighbor {
     func with(
         direction: HerdrResponseNeighborDirection? = nil,
         layout: HerdrResponseLayoutElement? = nil,
-        neighborPaneID: String?? = nil,
+        neighborPaneID: PaneID?? = nil,
         paneID: PaneID? = nil
     ) -> HerdrResponseNeighbor {
         return HerdrResponseNeighbor(
@@ -3669,7 +3669,7 @@ public enum HerdrResponseReason: String, Codable, Sendable {
 // MARK: - HerdrResponseRes
 public struct HerdrResponseRes: Codable, Sendable {
     public let changed: Bool
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let layout: HerdrResponseLayoutElement
     public let paneID: PaneID
     public let reason: HerdrResponseResizeReason?
@@ -3682,7 +3682,7 @@ public struct HerdrResponseRes: Codable, Sendable {
         case reason = "reason"
     }
 
-    public init(changed: Bool, focusedPaneID: String, layout: HerdrResponseLayoutElement, paneID: PaneID, reason: HerdrResponseResizeReason?) {
+    public init(changed: Bool, focusedPaneID: PaneID, layout: HerdrResponseLayoutElement, paneID: PaneID, reason: HerdrResponseResizeReason?) {
         self.changed = changed
         self.focusedPaneID = focusedPaneID
         self.layout = layout
@@ -3711,7 +3711,7 @@ public extension HerdrResponseRes {
 
     func with(
         changed: Bool? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         layout: HerdrResponseLayoutElement? = nil,
         paneID: PaneID? = nil,
         reason: HerdrResponseResizeReason?? = nil
@@ -3741,9 +3741,9 @@ public enum HerdrResponseResizeReason: String, Codable, Sendable {
 // MARK: - HerdrResponseSnapshot
 public struct HerdrResponseSnapshot: Codable, Sendable {
     public let agents: [HerdrResponseAgentElement]
-    public let focusedPaneID: String?
-    public let focusedTabID: String?
-    public let focusedWorkspaceID: String?
+    public let focusedPaneID: PaneID?
+    public let focusedTabID: TabID?
+    public let focusedWorkspaceID: WorkspaceID?
     public let layouts: [HerdrResponseLayoutElement]
     public let panes: [HerdrResponseRootPaneElement]
     public let snapshotProtocol: Int
@@ -3764,7 +3764,7 @@ public struct HerdrResponseSnapshot: Codable, Sendable {
         case workspaces = "workspaces"
     }
 
-    public init(agents: [HerdrResponseAgentElement], focusedPaneID: String?, focusedTabID: String?, focusedWorkspaceID: String?, layouts: [HerdrResponseLayoutElement], panes: [HerdrResponseRootPaneElement], snapshotProtocol: Int, tabs: [HerdrResponseTabElement], version: String, workspaces: [HerdrResponseWorkspaceElement]) {
+    public init(agents: [HerdrResponseAgentElement], focusedPaneID: PaneID?, focusedTabID: TabID?, focusedWorkspaceID: WorkspaceID?, layouts: [HerdrResponseLayoutElement], panes: [HerdrResponseRootPaneElement], snapshotProtocol: Int, tabs: [HerdrResponseTabElement], version: String, workspaces: [HerdrResponseWorkspaceElement]) {
         self.agents = agents
         self.focusedPaneID = focusedPaneID
         self.focusedTabID = focusedTabID
@@ -3798,9 +3798,9 @@ public extension HerdrResponseSnapshot {
 
     func with(
         agents: [HerdrResponseAgentElement]? = nil,
-        focusedPaneID: String?? = nil,
-        focusedTabID: String?? = nil,
-        focusedWorkspaceID: String?? = nil,
+        focusedPaneID: PaneID?? = nil,
+        focusedTabID: TabID?? = nil,
+        focusedWorkspaceID: WorkspaceID?? = nil,
         layouts: [HerdrResponseLayoutElement]? = nil,
         panes: [HerdrResponseRootPaneElement]? = nil,
         snapshotProtocol: Int? = nil,
@@ -3872,7 +3872,7 @@ public struct HerdrResponseSourceSource: Codable, Sendable {
     public let repoName: String
     public let repoRoot: String
     public let sourceCheckoutPath: String
-    public let sourceWorkspaceID: String?
+    public let sourceWorkspaceID: WorkspaceID?
 
     public enum CodingKeys: String, CodingKey {
         case repoKey = "repo_key"
@@ -3882,7 +3882,7 @@ public struct HerdrResponseSourceSource: Codable, Sendable {
         case sourceWorkspaceID = "source_workspace_id"
     }
 
-    public init(repoKey: String, repoName: String, repoRoot: String, sourceCheckoutPath: String, sourceWorkspaceID: String?) {
+    public init(repoKey: String, repoName: String, repoRoot: String, sourceCheckoutPath: String, sourceWorkspaceID: WorkspaceID?) {
         self.repoKey = repoKey
         self.repoName = repoName
         self.repoRoot = repoRoot
@@ -3914,7 +3914,7 @@ public extension HerdrResponseSourceSource {
         repoName: String? = nil,
         repoRoot: String? = nil,
         sourceCheckoutPath: String? = nil,
-        sourceWorkspaceID: String?? = nil
+        sourceWorkspaceID: WorkspaceID?? = nil
     ) -> HerdrResponseSourceSource {
         return HerdrResponseSourceSource(
             repoKey: repoKey ?? self.repoKey,
@@ -3943,11 +3943,11 @@ public enum HerdrResponseResponseResultStatus: String, Codable, Sendable {
 // MARK: - HerdrResponseSwap
 public struct HerdrResponseSwap: Codable, Sendable {
     public let changed: Bool
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let layout: HerdrResponseLayoutElement
     public let reason: HerdrResponseSwapReason?
-    public let sourcePaneID: String
-    public let targetPaneID: String?
+    public let sourcePaneID: PaneID
+    public let targetPaneID: PaneID?
 
     public enum CodingKeys: String, CodingKey {
         case changed = "changed"
@@ -3958,7 +3958,7 @@ public struct HerdrResponseSwap: Codable, Sendable {
         case targetPaneID = "target_pane_id"
     }
 
-    public init(changed: Bool, focusedPaneID: String, layout: HerdrResponseLayoutElement, reason: HerdrResponseSwapReason?, sourcePaneID: String, targetPaneID: String?) {
+    public init(changed: Bool, focusedPaneID: PaneID, layout: HerdrResponseLayoutElement, reason: HerdrResponseSwapReason?, sourcePaneID: PaneID, targetPaneID: PaneID?) {
         self.changed = changed
         self.focusedPaneID = focusedPaneID
         self.layout = layout
@@ -3988,11 +3988,11 @@ public extension HerdrResponseSwap {
 
     func with(
         changed: Bool? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         layout: HerdrResponseLayoutElement? = nil,
         reason: HerdrResponseSwapReason?? = nil,
-        sourcePaneID: String? = nil,
-        targetPaneID: String?? = nil
+        sourcePaneID: PaneID? = nil,
+        targetPaneID: PaneID?? = nil
     ) -> HerdrResponseSwap {
         return HerdrResponseSwap(
             changed: changed ?? self.changed,
@@ -4101,7 +4101,7 @@ public enum HerdrResponseResponseResultType: String, Codable, Sendable {
 public struct HerdrResponseZoom: Codable, Sendable {
     public let changed: Bool
     public let focusChanged: Bool
-    public let focusedPaneID: String
+    public let focusedPaneID: PaneID
     public let layout: HerdrResponseLayoutElement
     public let paneID: PaneID
     public let reason: HerdrResponseZoomReason?
@@ -4119,7 +4119,7 @@ public struct HerdrResponseZoom: Codable, Sendable {
         case zoomed = "zoomed"
     }
 
-    public init(changed: Bool, focusChanged: Bool, focusedPaneID: String, layout: HerdrResponseLayoutElement, paneID: PaneID, reason: HerdrResponseZoomReason?, zoomChanged: Bool, zoomed: Bool) {
+    public init(changed: Bool, focusChanged: Bool, focusedPaneID: PaneID, layout: HerdrResponseLayoutElement, paneID: PaneID, reason: HerdrResponseZoomReason?, zoomChanged: Bool, zoomed: Bool) {
         self.changed = changed
         self.focusChanged = focusChanged
         self.focusedPaneID = focusedPaneID
@@ -4152,7 +4152,7 @@ public extension HerdrResponseZoom {
     func with(
         changed: Bool? = nil,
         focusChanged: Bool? = nil,
-        focusedPaneID: String? = nil,
+        focusedPaneID: PaneID? = nil,
         layout: HerdrResponseLayoutElement? = nil,
         paneID: PaneID? = nil,
         reason: HerdrResponseZoomReason?? = nil,

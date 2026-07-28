@@ -169,13 +169,16 @@ for (const group of groups) {
     /public var hashValue: Int \{\n\s+return 0\n\s+\}/g,
     "public func hash(into hasher: inout Hasher) {\n        hasher.combine(0)\n    }",
   );
-  for (const [property, type] of [
-    ["workspaceID", "WorkspaceID"],
-    ["tabID", "TabID"],
-    ["paneID", "PaneID"],
-    ["terminalID", "TerminalID"],
+  for (const [suffix, type] of [
+    ["[Ww]orkspaceID", "WorkspaceID"],
+    ["[Tt]abID", "TabID"],
+    ["[Pp]aneID", "PaneID"],
+    ["[Tt]erminalID", "TerminalID"],
   ]) {
-    source = source.replaceAll(`${property}: String`, `${property}: ${type}`);
+    source = source.replace(
+      new RegExp(`([A-Za-z0-9_]*${suffix}): String`, "g"),
+      `$1: ${type}`,
+    );
   }
   fs.writeFileSync(generatedPath, source);
 }

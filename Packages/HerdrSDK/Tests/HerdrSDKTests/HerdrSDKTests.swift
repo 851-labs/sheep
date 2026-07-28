@@ -87,4 +87,37 @@ final class HerdrSDKTests: XCTestCase {
         let encodedValue = try JSONEncoder().encode(value)
         XCTAssertEqual(try JSONDecoder().decode(HerdrJSONValue.self, from: encodedValue), value)
     }
+
+    func testInstalledHerdrSnapshotContractWhenAvailable() throws {
+        let executable: URL
+        do {
+            executable = try HerdrExecutableLocator().locate()
+        } catch {
+            throw XCTSkip("Herdr is not installed")
+        }
+
+        let process = Process()
+        let output = Pipe()
+        process.executableURL = executable
+        process.arguments = ["api", "snapshot"]
+        process.standardOutput = output
+        try process.run()
+        let data = output.fileHandleForReading.readDataToEndOfFile()
+        process.waitUntilExit()
+        guard process.terminationStatus == 0 else {
+            throw XCTSkip("No running local Herdr server")
+        }
+
+        let response = try JSONDecoder().decode(SnapshotEnvelope.self, from: data)
+        XCTAssertEqual(response.result.snapshot.protocolVersion, 17)
+        XCTAssertFalse(response.result.snapshot.workspaces.isEmpty)
+    }
+}
+
+private struct SnapshotEnvelope: Decodable {
+    struct Result: Decodable {
+        let snapshot: HerdrSession
+    }
+
+    let result: Result
 }

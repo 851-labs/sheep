@@ -2595,13 +2595,13 @@ public extension HerdrRequestPaneClearAgentAuthorityParams {
 
 // MARK: - HerdrRequestPaneCurrentParams
 public struct HerdrRequestPaneCurrentParams: Codable, Sendable {
-    public let callerPaneID: String?
+    public let callerPaneID: PaneID?
 
     public enum CodingKeys: String, CodingKey {
         case callerPaneID = "caller_pane_id"
     }
 
-    public init(callerPaneID: String?) {
+    public init(callerPaneID: PaneID?) {
         self.callerPaneID = callerPaneID
     }
 }
@@ -2625,7 +2625,7 @@ public extension HerdrRequestPaneCurrentParams {
     }
 
     func with(
-        callerPaneID: String?? = nil
+        callerPaneID: PaneID?? = nil
     ) -> HerdrRequestPaneCurrentParams {
         return HerdrRequestPaneCurrentParams(
             callerPaneID: callerPaneID ?? self.callerPaneID
@@ -3040,7 +3040,7 @@ public struct HerdrRequestPaneMoveDestination: Codable, Sendable {
     public let ratio: Double?
     public let split: HerdrRequestDirection?
     public let tabID: TabID?
-    public let targetPaneID: String?
+    public let targetPaneID: PaneID?
     public let type: HerdrRequestPaneMoveDestinationType
     public let label: String?
     public let workspaceID: WorkspaceID?
@@ -3057,7 +3057,7 @@ public struct HerdrRequestPaneMoveDestination: Codable, Sendable {
         case tabLabel = "tab_label"
     }
 
-    public init(ratio: Double?, split: HerdrRequestDirection?, tabID: TabID?, targetPaneID: String?, type: HerdrRequestPaneMoveDestinationType, label: String?, workspaceID: WorkspaceID?, tabLabel: String?) {
+    public init(ratio: Double?, split: HerdrRequestDirection?, tabID: TabID?, targetPaneID: PaneID?, type: HerdrRequestPaneMoveDestinationType, label: String?, workspaceID: WorkspaceID?, tabLabel: String?) {
         self.ratio = ratio
         self.split = split
         self.tabID = tabID
@@ -3091,7 +3091,7 @@ public extension HerdrRequestPaneMoveDestination {
         ratio: Double?? = nil,
         split: HerdrRequestDirection?? = nil,
         tabID: TabID?? = nil,
-        targetPaneID: String?? = nil,
+        targetPaneID: PaneID?? = nil,
         type: HerdrRequestPaneMoveDestinationType? = nil,
         label: String?? = nil,
         workspaceID: WorkspaceID?? = nil,
@@ -3965,7 +3965,7 @@ public struct HerdrRequestPaneSplitParams: Codable, Sendable {
     public let env: [String: String]?
     public let focus: Bool?
     public let ratio: Double?
-    public let targetPaneID: String?
+    public let targetPaneID: PaneID?
     public let workspaceID: WorkspaceID?
 
     public enum CodingKeys: String, CodingKey {
@@ -3978,7 +3978,7 @@ public struct HerdrRequestPaneSplitParams: Codable, Sendable {
         case workspaceID = "workspace_id"
     }
 
-    public init(cwd: String?, direction: HerdrRequestDirection, env: [String: String]?, focus: Bool?, ratio: Double?, targetPaneID: String?, workspaceID: WorkspaceID?) {
+    public init(cwd: String?, direction: HerdrRequestDirection, env: [String: String]?, focus: Bool?, ratio: Double?, targetPaneID: PaneID?, workspaceID: WorkspaceID?) {
         self.cwd = cwd
         self.direction = direction
         self.env = env
@@ -4013,7 +4013,7 @@ public extension HerdrRequestPaneSplitParams {
         env: [String: String]?? = nil,
         focus: Bool?? = nil,
         ratio: Double?? = nil,
-        targetPaneID: String?? = nil,
+        targetPaneID: PaneID?? = nil,
         workspaceID: WorkspaceID?? = nil
     ) -> HerdrRequestPaneSplitParams {
         return HerdrRequestPaneSplitParams(
@@ -4040,8 +4040,8 @@ public extension HerdrRequestPaneSplitParams {
 public struct HerdrRequestPaneSwapParams: Codable, Sendable {
     public let direction: HerdrRequestPaneDirection?
     public let paneID: PaneID?
-    public let sourcePaneID: String?
-    public let targetPaneID: String?
+    public let sourcePaneID: PaneID?
+    public let targetPaneID: PaneID?
 
     public enum CodingKeys: String, CodingKey {
         case direction = "direction"
@@ -4050,7 +4050,7 @@ public struct HerdrRequestPaneSwapParams: Codable, Sendable {
         case targetPaneID = "target_pane_id"
     }
 
-    public init(direction: HerdrRequestPaneDirection?, paneID: PaneID?, sourcePaneID: String?, targetPaneID: String?) {
+    public init(direction: HerdrRequestPaneDirection?, paneID: PaneID?, sourcePaneID: PaneID?, targetPaneID: PaneID?) {
         self.direction = direction
         self.paneID = paneID
         self.sourcePaneID = sourcePaneID
@@ -4079,8 +4079,8 @@ public extension HerdrRequestPaneSwapParams {
     func with(
         direction: HerdrRequestPaneDirection?? = nil,
         paneID: PaneID?? = nil,
-        sourcePaneID: String?? = nil,
-        targetPaneID: String?? = nil
+        sourcePaneID: PaneID?? = nil,
+        targetPaneID: PaneID?? = nil
     ) -> HerdrRequestPaneSwapParams {
         return HerdrRequestPaneSwapParams(
             direction: direction ?? self.direction,
@@ -4343,7 +4343,7 @@ public struct HerdrRequestPluginInvocationContextClass: Codable, Sendable {
     public let correlationID: String?
     public let focusedPaneAgent: String?
     public let focusedPaneCwd: String?
-    public let focusedPaneID: String?
+    public let focusedPaneID: PaneID?
     public let focusedPaneStatus: HerdrRequestAgentStatusElement?
     public let invocationSource: String?
     public let linkHandlerID: String?
@@ -4373,7 +4373,7 @@ public struct HerdrRequestPluginInvocationContextClass: Codable, Sendable {
         case worktree = "worktree"
     }
 
-    public init(clickedURL: String?, correlationID: String?, focusedPaneAgent: String?, focusedPaneCwd: String?, focusedPaneID: String?, focusedPaneStatus: HerdrRequestAgentStatusElement?, invocationSource: String?, linkHandlerID: String?, selectedText: String?, tabID: TabID?, tabLabel: String?, workspaceCwd: String?, workspaceID: WorkspaceID?, workspaceLabel: String?, worktree: HerdrRequestWorkspaceWorktreeInfoClass?) {
+    public init(clickedURL: String?, correlationID: String?, focusedPaneAgent: String?, focusedPaneCwd: String?, focusedPaneID: PaneID?, focusedPaneStatus: HerdrRequestAgentStatusElement?, invocationSource: String?, linkHandlerID: String?, selectedText: String?, tabID: TabID?, tabLabel: String?, workspaceCwd: String?, workspaceID: WorkspaceID?, workspaceLabel: String?, worktree: HerdrRequestWorkspaceWorktreeInfoClass?) {
         self.clickedURL = clickedURL
         self.correlationID = correlationID
         self.focusedPaneAgent = focusedPaneAgent
@@ -4415,7 +4415,7 @@ public extension HerdrRequestPluginInvocationContextClass {
         correlationID: String?? = nil,
         focusedPaneAgent: String?? = nil,
         focusedPaneCwd: String?? = nil,
-        focusedPaneID: String?? = nil,
+        focusedPaneID: PaneID?? = nil,
         focusedPaneStatus: HerdrRequestAgentStatusElement?? = nil,
         invocationSource: String?? = nil,
         linkHandlerID: String?? = nil,
@@ -4924,7 +4924,7 @@ public struct HerdrRequestPluginPaneOpenParams: Codable, Sendable {
     public let height: HerdrRequestHeight?
     public let placement: HerdrRequestPluginPanePlacementEnum?
     public let pluginID: String
-    public let targetPaneID: String?
+    public let targetPaneID: PaneID?
     public let width: HerdrRequestHeight?
     public let workspaceID: WorkspaceID?
 
@@ -4942,7 +4942,7 @@ public struct HerdrRequestPluginPaneOpenParams: Codable, Sendable {
         case workspaceID = "workspace_id"
     }
 
-    public init(cwd: String?, direction: HerdrRequestDirection?, entrypoint: String, env: [String: String]?, focus: Bool?, height: HerdrRequestHeight?, placement: HerdrRequestPluginPanePlacementEnum?, pluginID: String, targetPaneID: String?, width: HerdrRequestHeight?, workspaceID: WorkspaceID?) {
+    public init(cwd: String?, direction: HerdrRequestDirection?, entrypoint: String, env: [String: String]?, focus: Bool?, height: HerdrRequestHeight?, placement: HerdrRequestPluginPanePlacementEnum?, pluginID: String, targetPaneID: PaneID?, width: HerdrRequestHeight?, workspaceID: WorkspaceID?) {
         self.cwd = cwd
         self.direction = direction
         self.entrypoint = entrypoint
@@ -4984,7 +4984,7 @@ public extension HerdrRequestPluginPaneOpenParams {
         height: HerdrRequestHeight?? = nil,
         placement: HerdrRequestPluginPanePlacementEnum?? = nil,
         pluginID: String? = nil,
-        targetPaneID: String?? = nil,
+        targetPaneID: PaneID?? = nil,
         width: HerdrRequestHeight?? = nil,
         workspaceID: WorkspaceID?? = nil
     ) -> HerdrRequestPluginPaneOpenParams {
