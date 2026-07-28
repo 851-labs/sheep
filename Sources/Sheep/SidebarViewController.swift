@@ -9,7 +9,6 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     private let agentsOutline = NSOutlineView()
     private var agentGroups: [AgentGroup] = []
     private var isApplyingSnapshot = false
-    var onToggleSidebar: (() -> Void)?
 
     init(model: AppModel) {
         self.model = model
@@ -20,7 +19,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let root = AdaptiveBackgroundView(color: Palette.sidebar)
+        let root = NSVisualEffectView()
+        root.material = .sidebar
+        root.blendingMode = .behindWindow
+        root.state = .followsWindowActiveState
 
         let spacesHeader = sectionHeader("SPACES")
         spacesTable.headerView = nil
@@ -62,19 +64,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         menuButton.isBordered = false
         menuButton.contentTintColor = .secondaryLabelColor
 
-        let collapseButton = NSButton(
-            image: NSImage(
-                systemSymbolName: "sidebar.left",
-                accessibilityDescription: "Collapse sidebar"
-            )!,
-            target: self,
-            action: #selector(toggleSidebar)
-        )
-        collapseButton.isBordered = false
-        collapseButton.contentTintColor = .secondaryLabelColor
-        collapseButton.setAccessibilityLabel("Collapse sidebar")
-
-        let footer = NSStackView(views: [newButton, NSView(), menuButton, collapseButton])
+        let footer = NSStackView(views: [newButton, NSView(), menuButton])
         footer.orientation = .horizontal
         footer.alignment = .centerY
         footer.edgeInsets = NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
@@ -295,9 +285,6 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         model.createTab()
     }
 
-    @objc private func toggleSidebar() {
-        onToggleSidebar?()
-    }
 }
 
 private final class AgentGroup {

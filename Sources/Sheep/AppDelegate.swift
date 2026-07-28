@@ -5,6 +5,7 @@ import SheepInfrastructure
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowController: NSWindowController?
     private var mainController: MainSplitViewController?
+    private var mainToolbar: MainWindowToolbar?
     private var ghosttyRuntime: GhosttyRuntime?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -31,8 +32,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
+        window.toolbarStyle = .unified
         window.backgroundColor = .windowBackgroundColor
         window.isMovableByWindowBackground = true
+        let toolbar = MainWindowToolbar()
+        mainToolbar = toolbar
+        window.toolbar = toolbar.toolbar
         window.center()
 
         installMainMenu()
@@ -55,7 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggleSidebar() {
-        mainController?.toggleSidebar()
+        mainController?.toggleSidebar(nil)
     }
 
     private func installMainMenu() {

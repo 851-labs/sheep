@@ -9,7 +9,6 @@ import XCTest
 final class AppKitStructureTests: XCTestCase {
     func testPaletteUsesAdaptiveSystemColors() {
         XCTAssertEqual(Palette.window, .windowBackgroundColor)
-        XCTAssertEqual(Palette.sidebar, .controlBackgroundColor)
         XCTAssertEqual(Palette.terminal, .textBackgroundColor)
         XCTAssertEqual(Palette.selected, .selectedContentBackgroundColor)
         XCTAssertEqual(Palette.idle, .systemTeal)
@@ -60,9 +59,17 @@ final class AppKitStructureTests: XCTestCase {
         XCTAssertTrue(labels.contains("Spaces"))
         XCTAssertTrue(labels.contains("Agents grouped by space"))
         XCTAssertTrue(labels.contains("Create space"))
-        XCTAssertTrue(labels.contains("Collapse sidebar"))
+        XCTAssertFalse(labels.contains("Collapse sidebar"))
         XCTAssertTrue(labels.contains("Tab 1"))
         XCTAssertFalse(labels.contains("Tab other"))
+
+        XCTAssertEqual(controller.splitViewItems.first?.behavior, .sidebar)
+        let visualEffects: [NSVisualEffectView] = allSubviews(in: controller.view)
+        XCTAssertTrue(visualEffects.contains { $0.material == .sidebar })
+        XCTAssertEqual(
+            MainWindowToolbar.itemIdentifiers,
+            [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace]
+        )
 
         let textFields: [NSTextField] = allSubviews(in: controller.view)
         let buttons: [NSButton] = allSubviews(in: controller.view)

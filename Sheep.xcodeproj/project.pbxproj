@@ -47,6 +47,7 @@
 		F18D88158BFCADCAC9A6ED97 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */; };
+		FE626CF0CDE1CA6660B40417 /* MainWindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */; };
 		FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +173,7 @@
 		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitStructureTests.swift; sourceTree = "<group>"; };
+		A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowToolbar.swift; sourceTree = "<group>"; };
 		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
 		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */,
 				1C7925FF80ED98D4F28CF247 /* main.swift */,
 				92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */,
+				A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */,
 				1A565582B6D4CFC0EB1C4ABE /* Palette.swift */,
 				4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */,
 				40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */,
@@ -486,6 +489,7 @@
 				AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */,
 				A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */,
 				FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */,
+				FE626CF0CDE1CA6660B40417 /* MainWindowToolbar.swift in Sources */,
 				DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */,
 				784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */,
 				F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */,

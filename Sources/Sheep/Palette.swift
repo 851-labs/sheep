@@ -2,7 +2,6 @@ import AppKit
 
 enum Palette {
     static let window = NSColor.windowBackgroundColor
-    static let sidebar = NSColor.controlBackgroundColor
     static let terminal = NSColor.textBackgroundColor
     static let selected = NSColor.selectedContentBackgroundColor
     static let idle = NSColor.systemTeal

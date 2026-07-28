@@ -20,9 +20,6 @@ final class MainSplitViewController: NSSplitViewController {
             herdrExecutable: herdrExecutable
         )
         super.init(nibName: nil, bundle: nil)
-        sidebar.onToggleSidebar = { [weak self] in
-            self?.toggleSidebar()
-        }
     }
 
     @available(*, unavailable)
@@ -73,10 +70,5 @@ final class MainSplitViewController: NSSplitViewController {
 
     func createWorkspace() {
         model.createWorkspace()
-    }
-
-    func toggleSidebar() {
-        guard let item = splitViewItems.first else { return }
-        item.animator().isCollapsed = !item.isCollapsed
     }
 }
