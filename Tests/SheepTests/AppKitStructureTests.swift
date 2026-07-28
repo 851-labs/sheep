@@ -94,6 +94,24 @@ final class AppKitStructureTests: XCTestCase {
 
         let splitViews: [NSSplitView] = allSubviews(in: controller.view)
         XCTAssertGreaterThanOrEqual(splitViews.count, 3)
+        let terminalSplits: [TerminalCardSplitView] = allSubviews(in: controller.view)
+        XCTAssertEqual(terminalSplits.count, 2)
+        XCTAssertTrue(terminalSplits.allSatisfy {
+            $0.dividerThickness == TerminalCardSplitView.gutter
+        })
+
+        let terminalCards: [TerminalCardView] = allSubviews(in: controller.view)
+        XCTAssertEqual(terminalCards.count, 3)
+        XCTAssertTrue(terminalCards.allSatisfy {
+            $0.layer?.cornerRadius == TerminalCardView.cornerRadius
+                && $0.layer?.masksToBounds == true
+                && $0.layer?.borderWidth == 1
+        })
+        let cardLabels = terminalCards.compactMap { $0.accessibilityLabel() }
+        XCTAssertEqual(
+            Set(cardLabels),
+            Set(["Terminal card w1:p1", "Terminal card w1:p2", "Terminal card w1:p3"])
+        )
 
         let outlines: [NSOutlineView] = allSubviews(in: controller.view)
         XCTAssertEqual(outlines.first?.numberOfRows, 3)

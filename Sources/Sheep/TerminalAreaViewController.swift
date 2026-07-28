@@ -4,6 +4,7 @@ import SheepDomain
 
 @MainActor
 final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
+    private static let layoutInset: CGFloat = 10
     private let model: AppModel
     private let ghosttyRuntime: GhosttyRuntime?
     private let herdrExecutable: URL?
@@ -30,7 +31,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let root = AdaptiveBackgroundView(color: Palette.terminal)
+        let root = AdaptiveBackgroundView(color: Palette.window)
 
         tabStack.orientation = .horizontal
         tabStack.alignment = .centerY
@@ -91,7 +92,9 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             }
             renderedLayout = layout
             splitMetadata.removeAll()
-            replaceContent(with: build(node: node, tabID: tabID, path: []))
+            replaceContent(with: layoutCanvas(
+                containing: build(node: node, tabID: tabID, path: [])
+            ))
         case let .failure(error):
             replaceContent(with: stateLabel(
                 title: "Unable to load terminal layout",
@@ -160,18 +163,22 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private func build(node: PaneLayout.Node, tabID: TabID, path: [Bool]) -> NSView {
         switch node {
         case let .pane(id):
+            let paneContent: NSView
             guard let pane = model.session?.panes.first(where: { $0.id == id }) else {
-                return stateLabel(title: "Pane unavailable", detail: id.rawValue)
+                return terminalCard(
+                    containing: stateLabel(title: "Pane unavailable", detail: id.rawValue),
+                    paneID: id
+                )
             }
             guard let ghosttyRuntime, let herdrExecutable else {
-                return stateLabel(
+                return terminalCard(containing: stateLabel(
                     title: "Terminal unavailable",
                     detail: ghosttyRuntime == nil
                         ? "Ghostty 1.3.1 could not be initialized."
                         : "The Herdr executable could not be found."
-                )
+                ), paneID: id)
             }
-            return GhosttyTerminalView(
+            paneContent = GhosttyTerminalView(
                 runtime: ghosttyRuntime,
                 herdrExecutable: herdrExecutable,
                 pane: pane
@@ -181,10 +188,10 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                 title: "Terminal attach failed",
                 detail: "Could not attach \(pane.terminalID.rawValue)."
             )
+            return terminalCard(containing: paneContent, paneID: id)
         case let .split(direction, ratio, first, second):
-            let split = NSSplitView()
+            let split = TerminalCardSplitView()
             split.isVertical = direction == .right
-            split.dividerStyle = .thin
             split.delegate = self
             split.addArrangedSubview(build(node: first, tabID: tabID, path: path + [false]))
             split.addArrangedSubview(build(node: second, tabID: tabID, path: path + [true]))
@@ -196,6 +203,45 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             }
             return split
         }
+    }
+
+    private func terminalCard(containing terminal: NSView, paneID: PaneID) -> NSView {
+        let card = TerminalCardView()
+        terminal.translatesAutoresizingMaskIntoConstraints = false
+        card.addSubview(terminal)
+        NSLayoutConstraint.activate([
+            terminal.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 8),
+            terminal.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -8),
+            terminal.topAnchor.constraint(equalTo: card.topAnchor, constant: 8),
+            terminal.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -8),
+        ])
+        card.setAccessibilityLabel("Terminal card \(paneID.rawValue)")
+        return card
+    }
+
+    private func layoutCanvas(containing layout: NSView) -> NSView {
+        let canvas = AdaptiveBackgroundView(color: Palette.window)
+        layout.translatesAutoresizingMaskIntoConstraints = false
+        canvas.addSubview(layout)
+        NSLayoutConstraint.activate([
+            layout.leadingAnchor.constraint(
+                equalTo: canvas.leadingAnchor,
+                constant: Self.layoutInset
+            ),
+            layout.trailingAnchor.constraint(
+                equalTo: canvas.trailingAnchor,
+                constant: -Self.layoutInset
+            ),
+            layout.topAnchor.constraint(
+                equalTo: canvas.topAnchor,
+                constant: Self.layoutInset
+            ),
+            layout.bottomAnchor.constraint(
+                equalTo: canvas.bottomAnchor,
+                constant: -Self.layoutInset
+            ),
+        ])
+        return canvas
     }
 
     func splitViewDidResizeSubviews(_ notification: Notification) {
@@ -270,6 +316,51 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private func replaceContent(with newView: NSView) {
         content.subviews.forEach { $0.removeFromSuperview() }
         content.pinSubview(newView)
+    }
+}
+
+@MainActor
+final class TerminalCardView: NSView {
+    static let cornerRadius: CGFloat = 12
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.cornerRadius = Self.cornerRadius
+        layer?.cornerCurve = .continuous
+        layer?.borderWidth = 1
+        layer?.masksToBounds = true
+        updateAdaptiveAppearance()
+    }
+
+    convenience init() {
+        self.init(frame: .zero)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateAdaptiveAppearance()
+    }
+
+    private func updateAdaptiveAppearance() {
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+            layer?.borderColor = NSColor.separatorColor.cgColor
+        }
+    }
+}
+
+@MainActor
+final class TerminalCardSplitView: NSSplitView {
+    static let gutter: CGFloat = 10
+
+    override var dividerThickness: CGFloat { Self.gutter }
+
+    override func drawDivider(in rect: NSRect) {
+        // The window background showing through this draggable region is the gutter.
     }
 }
 
