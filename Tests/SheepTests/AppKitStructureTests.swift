@@ -66,10 +66,12 @@ final class AppKitStructureTests: XCTestCase {
         XCTAssertEqual(controller.splitViewItems.first?.behavior, .sidebar)
         let visualEffects: [NSVisualEffectView] = allSubviews(in: controller.view)
         XCTAssertTrue(visualEffects.contains { $0.material == .sidebar })
+        let toolbar = MainWindowToolbar(splitView: controller.splitView)
         XCTAssertEqual(
-            MainWindowToolbar.itemIdentifiers,
-            [.toggleSidebar, .sidebarTrackingSeparator, .flexibleSpace]
+            toolbar.toolbar.items.map(\.itemIdentifier),
+            MainWindowToolbar.itemIdentifiers
         )
+        XCTAssertTrue(toolbar.toolbar.items[1] is NSTrackingSeparatorToolbarItem)
 
         let textFields: [NSTextField] = allSubviews(in: controller.view)
         let buttons: [NSButton] = allSubviews(in: controller.view)

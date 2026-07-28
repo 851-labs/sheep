@@ -35,7 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.toolbarStyle = .unified
         window.backgroundColor = .windowBackgroundColor
         window.isMovableByWindowBackground = true
-        let toolbar = MainWindowToolbar()
+        let toolbar = MainWindowToolbar(splitView: content.splitView)
         mainToolbar = toolbar
         window.toolbar = toolbar.toolbar
         window.center()
