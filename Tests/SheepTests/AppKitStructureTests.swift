@@ -109,6 +109,15 @@ final class AppKitStructureTests: XCTestCase {
                 && $0.layer?.masksToBounds == true
                 && $0.layer?.borderWidth == 1
         })
+        XCTAssertTrue(terminalCards.allSatisfy { card in
+            guard let terminal = card.subviews.first else { return false }
+            let edgeConstraints = card.constraints.filter {
+                ($0.firstItem as? NSView) === terminal
+                    || ($0.secondItem as? NSView) === terminal
+            }
+            return edgeConstraints.count == 4
+                && edgeConstraints.allSatisfy { $0.constant == 0 }
+        })
         let cardLabels = terminalCards.compactMap { $0.accessibilityLabel() }
         XCTAssertEqual(
             Set(cardLabels),

@@ -207,14 +207,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
 
     private func terminalCard(containing terminal: NSView, paneID: PaneID) -> NSView {
         let card = TerminalCardView()
-        terminal.translatesAutoresizingMaskIntoConstraints = false
-        card.addSubview(terminal)
-        NSLayoutConstraint.activate([
-            terminal.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 8),
-            terminal.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -8),
-            terminal.topAnchor.constraint(equalTo: card.topAnchor, constant: 8),
-            terminal.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -8),
-        ])
+        card.pinSubview(terminal)
         card.setAccessibilityLabel("Terminal card \(paneID.rawValue)")
         return card
     }
