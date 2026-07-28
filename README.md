@@ -12,11 +12,21 @@ AppKit, and Ghostty.
 
 ## Development
 
-Clone the pinned Ghostty 1.3.1 source and build its universal XCFramework:
+Initialize the pinned Herdr 0.7.5 and Ghostty 1.3.1 source trees, then build
+Ghostty's universal XCFramework:
 
 ```sh
 git submodule update --init --recursive
 Scripts/bootstrap-ghostty.sh
+```
+
+Sheep uses an installed Herdr executable by default. To develop against the
+pinned Herdr source instead:
+
+```sh
+cargo build --release --manifest-path Dependencies/herdr/Cargo.toml
+HERDR_BIN_PATH="$PWD/Dependencies/herdr/target/release/herdr" \
+  /path/to/sheep.app/Contents/MacOS/sheep
 ```
 
 The generated `GhosttyKit.xcframework` is cached locally but intentionally not

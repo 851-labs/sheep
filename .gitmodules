@@ -1,3 +1,6 @@
 [submodule "Dependencies/ghostty"]
 	path = Dependencies/ghostty
 	url = https://github.com/ghostty-org/ghostty.git
+[submodule "Dependencies/herdr"]
+	path = Dependencies/herdr
+	url = https://github.com/ogulcancelik/herdr.git
