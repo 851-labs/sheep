@@ -58,7 +58,7 @@ final class AppKitStructureTests: XCTestCase {
         let labels = allSubviews(in: controller.view).compactMap { $0.accessibilityLabel() }
         XCTAssertTrue(labels.contains("Spaces"))
         XCTAssertTrue(labels.contains("Agents grouped by space"))
-        XCTAssertTrue(labels.contains("Create space"))
+        XCTAssertFalse(labels.contains("Create space"))
         XCTAssertFalse(labels.contains("Collapse sidebar"))
         XCTAssertTrue(labels.contains("Tab 1"))
         XCTAssertFalse(labels.contains("Tab other"))
@@ -75,9 +75,21 @@ final class AppKitStructureTests: XCTestCase {
 
         let textFields: [NSTextField] = allSubviews(in: controller.view)
         let buttons: [NSButton] = allSubviews(in: controller.view)
+        XCTAssertTrue(textFields.contains { $0.stringValue == "GROUPED" })
+        XCTAssertFalse(buttons.contains { $0.title == "New" })
+        XCTAssertTrue(
+            textFields
+                .filter { $0.stringValue == "sheep" || $0.stringValue == "codex" }
+                .allSatisfy { $0.alignment == .left }
+        )
         let nativeFonts = (textFields.compactMap(\.font) + buttons.compactMap(\.font))
         XCTAssertFalse(nativeFonts.contains {
             $0.fontDescriptor.symbolicTraits.contains(.monoSpace)
+        })
+
+        let tables: [NSTableView] = allSubviews(in: controller.view)
+        XCTAssertTrue(tables.allSatisfy {
+            $0.tableColumns.first?.resizingMask.contains(.autoresizingMask) == true
         })
 
         let splitViews: [NSSplitView] = allSubviews(in: controller.view)

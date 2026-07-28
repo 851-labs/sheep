@@ -27,22 +27,29 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         let spacesHeader = sectionHeader("SPACES")
         spacesTable.headerView = nil
         spacesTable.backgroundColor = .clear
-        spacesTable.selectionHighlightStyle = .regular
+        spacesTable.style = .sourceList
+        spacesTable.selectionHighlightStyle = .sourceList
         spacesTable.rowHeight = 43
         spacesTable.intercellSpacing = .zero
-        spacesTable.addTableColumn(NSTableColumn(identifier: .init("space")))
+        spacesTable.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
+        let spaceColumn = NSTableColumn(identifier: .init("space"))
+        spaceColumn.resizingMask = .autoresizingMask
+        spacesTable.addTableColumn(spaceColumn)
         spacesTable.dataSource = self
         spacesTable.delegate = self
         spacesTable.setAccessibilityLabel("Spaces")
         let spacesScroll = scrollView(document: spacesTable)
 
-        let agentsHeader = sectionHeader("AGENTS")
+        let agentsHeader = sectionHeader("AGENTS", trailing: "GROUPED")
         agentsOutline.headerView = nil
         agentsOutline.backgroundColor = .clear
-        agentsOutline.selectionHighlightStyle = .regular
+        agentsOutline.style = .sourceList
+        agentsOutline.selectionHighlightStyle = .sourceList
         agentsOutline.rowHeight = 40
         agentsOutline.indentationPerLevel = 10
+        agentsOutline.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
         let agentColumn = NSTableColumn(identifier: .init("agent"))
+        agentColumn.resizingMask = .autoresizingMask
         agentsOutline.addTableColumn(agentColumn)
         agentsOutline.outlineTableColumn = agentColumn
         agentsOutline.dataSource = self
@@ -50,52 +57,33 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         agentsOutline.setAccessibilityLabel("Agents grouped by space")
         let agentsScroll = scrollView(document: agentsOutline)
 
-        let newButton = NSButton(title: "New", target: self, action: #selector(createWorkspace))
-        newButton.isBordered = false
-        newButton.font = .systemFont(ofSize: 12, weight: .regular)
-        newButton.contentTintColor = .secondaryLabelColor
-        newButton.setAccessibilityLabel("Create space")
+        let sectionDivider = NSBox()
+        sectionDivider.boxType = .separator
 
-        let menuButton = NSButton(
-            image: NSImage(systemSymbolName: "ellipsis.circle", accessibilityDescription: "Menu")!,
-            target: self,
-            action: #selector(showMenu(_:))
-        )
-        menuButton.isBordered = false
-        menuButton.contentTintColor = .secondaryLabelColor
-
-        let footer = NSStackView(views: [newButton, NSView(), menuButton])
-        footer.orientation = .horizontal
-        footer.alignment = .centerY
-        footer.edgeInsets = NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        let footerSeparator = NSBox()
-        footerSeparator.boxType = .separator
-
-        [spacesHeader, spacesScroll, footerSeparator, footer, agentsHeader, agentsScroll].forEach {
+        [spacesHeader, spacesScroll, sectionDivider, agentsHeader, agentsScroll].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview($0)
         }
         NSLayoutConstraint.activate([
-            spacesHeader.topAnchor.constraint(equalTo: root.topAnchor, constant: 8),
-            spacesHeader.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 10),
-            spacesHeader.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            spacesHeader.heightAnchor.constraint(equalToConstant: 24),
+            spacesHeader.topAnchor.constraint(
+                equalTo: root.safeAreaLayoutGuide.topAnchor,
+                constant: 8
+            ),
+            spacesHeader.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 12),
+            spacesHeader.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -12),
+            spacesHeader.heightAnchor.constraint(equalToConstant: 22),
             spacesScroll.topAnchor.constraint(equalTo: spacesHeader.bottomAnchor),
             spacesScroll.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             spacesScroll.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            spacesScroll.heightAnchor.constraint(equalTo: root.heightAnchor, multiplier: 0.43),
-            footerSeparator.topAnchor.constraint(equalTo: spacesScroll.bottomAnchor),
-            footerSeparator.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            footerSeparator.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            footerSeparator.heightAnchor.constraint(equalToConstant: 1),
-            footer.topAnchor.constraint(equalTo: footerSeparator.bottomAnchor),
-            footer.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            footer.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            footer.heightAnchor.constraint(equalToConstant: 38),
-            agentsHeader.topAnchor.constraint(equalTo: footer.bottomAnchor, constant: 5),
-            agentsHeader.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 10),
-            agentsHeader.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            agentsHeader.heightAnchor.constraint(equalToConstant: 24),
+            spacesScroll.heightAnchor.constraint(equalTo: root.heightAnchor, multiplier: 0.40),
+            sectionDivider.topAnchor.constraint(equalTo: spacesScroll.bottomAnchor),
+            sectionDivider.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            sectionDivider.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            sectionDivider.heightAnchor.constraint(equalToConstant: 1),
+            agentsHeader.topAnchor.constraint(equalTo: sectionDivider.bottomAnchor, constant: 6),
+            agentsHeader.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 12),
+            agentsHeader.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -12),
+            agentsHeader.heightAnchor.constraint(equalToConstant: 22),
             agentsScroll.topAnchor.constraint(equalTo: agentsHeader.bottomAnchor),
             agentsScroll.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             agentsScroll.trailingAnchor.constraint(equalTo: root.trailingAnchor),
@@ -140,10 +128,11 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     ) -> NSView? {
         guard let workspace = model.session?.workspaces[row] else { return nil }
         return rowView(
-            dot: color(for: workspace.agentStatus),
+            status: workspace.agentStatus,
             title: workspace.label,
             detail: model.gitSummaries[workspace.id]?.compactDescription ?? "",
-            accessibility: "\(workspace.label) space"
+            accessibility: "\(workspace.label) space",
+            leadingInset: 10
         )
     }
 
@@ -175,21 +164,40 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
 
     func outlineView(
         _ outlineView: NSOutlineView,
+        heightOfRowByItem item: Any
+    ) -> CGFloat {
+        item is AgentGroup ? 24 : 40
+    }
+
+    func outlineView(
+        _ outlineView: NSOutlineView,
         viewFor tableColumn: NSTableColumn?,
         item: Any
     ) -> NSView? {
         if let group = item as? AgentGroup {
+            let container = NSView()
             let label = NSTextField(labelWithString: group.name.uppercased())
             label.font = .systemFont(ofSize: 10, weight: .semibold)
             label.textColor = .tertiaryLabelColor
-            return label
+            label.alignment = .left
+            label.lineBreakMode = .byTruncatingTail
+            label.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 2),
+                label.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor),
+                label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            ])
+            container.setAccessibilityLabel("\(group.name) agent group")
+            return container
         }
         guard let agent = (item as? AgentItem)?.value else { return nil }
         return rowView(
-            dot: color(for: agent.agentStatus),
+            status: agent.agentStatus,
             title: agent.displayName,
             detail: agent.displayContext,
-            accessibility: "\(agent.displayName), \(agent.agentStatus.rawValue)"
+            accessibility: "\(agent.displayName), \(agent.agentStatus.rawValue)",
+            leadingInset: 2
         )
     }
 
@@ -212,35 +220,65 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     }
 
     private func rowView(
-        dot: NSColor,
+        status agentStatus: AgentStatus,
         title: String,
         detail: String,
-        accessibility: String
+        accessibility: String,
+        leadingInset: CGFloat
     ) -> NSView {
-        let status = NSTextField(labelWithString: "●")
-        status.font = .systemFont(ofSize: 10)
-        status.textColor = dot
-        status.setContentHuggingPriority(.required, for: .horizontal)
+        let status = statusIndicator(for: agentStatus)
 
         let titleLabel = NSTextField(labelWithString: title)
         titleLabel.font = .systemFont(ofSize: 12, weight: .medium)
         titleLabel.textColor = .labelColor
+        titleLabel.alignment = .left
         titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.toolTip = title
         let detailLabel = NSTextField(labelWithString: detail)
         detailLabel.font = .systemFont(ofSize: 10, weight: .regular)
         detailLabel.textColor = .secondaryLabelColor
+        detailLabel.alignment = .left
         detailLabel.lineBreakMode = .byTruncatingMiddle
-        let text = NSStackView(views: [titleLabel, detailLabel])
-        text.orientation = .vertical
-        text.spacing = 1
+        detailLabel.toolTip = detail
 
-        let row = NSStackView(views: [status, text])
-        row.orientation = .horizontal
-        row.alignment = .centerY
-        row.spacing = 7
-        row.edgeInsets = NSEdgeInsets(top: 3, left: 9, bottom: 3, right: 8)
+        let row = NSView()
+        [status, titleLabel, detailLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            row.addSubview($0)
+        }
+        NSLayoutConstraint.activate([
+            status.leadingAnchor.constraint(equalTo: row.leadingAnchor, constant: leadingInset),
+            status.centerYAnchor.constraint(equalTo: row.centerYAnchor),
+            status.widthAnchor.constraint(equalToConstant: 10),
+            status.heightAnchor.constraint(equalToConstant: 10),
+            titleLabel.leadingAnchor.constraint(equalTo: status.trailingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(equalTo: row.trailingAnchor, constant: -8),
+            titleLabel.topAnchor.constraint(equalTo: row.topAnchor, constant: 5),
+            detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 1),
+            detailLabel.bottomAnchor.constraint(lessThanOrEqualTo: row.bottomAnchor, constant: -4),
+        ])
         row.setAccessibilityLabel(accessibility)
         return row
+    }
+
+    private func statusIndicator(for status: AgentStatus) -> NSImageView {
+        let symbol: String
+        switch status {
+        case .done:
+            symbol = "checkmark"
+        case .unknown:
+            symbol = "circle"
+        default:
+            symbol = "circle.fill"
+        }
+        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: status.rawValue)?
+            .withSymbolConfiguration(.init(pointSize: 7, weight: .bold))
+        let indicator = NSImageView(image: image ?? NSImage())
+        indicator.contentTintColor = color(for: status)
+        indicator.imageScaling = .scaleProportionallyDown
+        return indicator
     }
 
     private func color(for status: AgentStatus) -> NSColor {
@@ -253,11 +291,27 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         }
     }
 
-    private func sectionHeader(_ title: String) -> NSTextField {
-        let label = NSTextField(labelWithString: title)
-        label.font = .systemFont(ofSize: 11, weight: .semibold)
-        label.textColor = .tertiaryLabelColor
-        return label
+    private func sectionHeader(_ title: String, trailing: String? = nil) -> NSView {
+        let titleLabel = NSTextField(labelWithString: title)
+        titleLabel.font = .systemFont(ofSize: 11, weight: .semibold)
+        titleLabel.textColor = .tertiaryLabelColor
+        titleLabel.alignment = .left
+
+        var views: [NSView] = [titleLabel, NSView()]
+        if let trailing {
+            let trailingLabel = NSTextField(labelWithString: trailing)
+            trailingLabel.font = .systemFont(ofSize: 10, weight: .medium)
+            trailingLabel.textColor = .tertiaryLabelColor
+            trailingLabel.alignment = .right
+            views.append(trailingLabel)
+        }
+        let header = NSStackView(views: views)
+        header.orientation = .horizontal
+        header.alignment = .centerY
+        header.setAccessibilityLabel(
+            trailing.map { "\(title), \($0)" } ?? title
+        )
+        return header
     }
 
     private func scrollView(document: NSView) -> NSScrollView {
@@ -267,22 +321,6 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         scroll.autohidesScrollers = true
         scroll.documentView = document
         return scroll
-    }
-
-    @objc private func createWorkspace() {
-        model.createWorkspace()
-    }
-
-    @objc private func showMenu(_ sender: NSButton) {
-        let menu = NSMenu()
-        menu.addItem(withTitle: "New Space…", action: #selector(createWorkspace), keyEquivalent: "")
-        menu.addItem(withTitle: "New Tab", action: #selector(createTab), keyEquivalent: "t")
-        menu.items.forEach { $0.target = self }
-        menu.popUp(positioning: nil, at: NSPoint(x: 0, y: sender.bounds.maxY), in: sender)
-    }
-
-    @objc private func createTab() {
-        model.createTab()
     }
 
 }
