@@ -6,6 +6,7 @@ final class MainWindowToolbar: NSObject, NSToolbarDelegate {
         "SheepSidebarTrackingSeparator"
     )
     static let itemIdentifiers: [NSToolbarItem.Identifier] = [
+        .flexibleSpace,
         .toggleSidebar,
         sidebarTrackingIdentifier,
         .flexibleSpace,
