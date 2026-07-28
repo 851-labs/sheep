@@ -1,14 +1,62 @@
 import AppKit
 
 enum Palette {
-    static let window = NSColor(srgbRed: 0.105, green: 0.115, blue: 0.145, alpha: 1)
-    static let sidebar = NSColor(srgbRed: 0.115, green: 0.125, blue: 0.16, alpha: 1)
-    static let terminal = NSColor(srgbRed: 0.12, green: 0.135, blue: 0.16, alpha: 1)
-    static let selected = NSColor(srgbRed: 0.18, green: 0.17, blue: 0.27, alpha: 1)
-    static let line = NSColor.white.withAlphaComponent(0.075)
-    static let cyan = NSColor(srgbRed: 0.47, green: 0.9, blue: 0.82, alpha: 1)
-    static let yellow = NSColor(srgbRed: 0.97, green: 0.76, blue: 0.42, alpha: 1)
-    static let pink = NSColor(srgbRed: 0.9, green: 0.55, blue: 0.7, alpha: 1)
+    static let window = NSColor.windowBackgroundColor
+    static let sidebar = NSColor.controlBackgroundColor
+    static let terminal = NSColor.textBackgroundColor
+    static let selected = NSColor.selectedContentBackgroundColor
+    static let idle = NSColor.systemTeal
+    static let working = NSColor.systemYellow
+    static let warning = NSColor.systemOrange
+    static let blocked = NSColor.systemPink
+    static let error = NSColor.systemRed
+}
+
+@MainActor
+final class AdaptiveBackgroundView: NSView {
+    private let fillColor: NSColor
+
+    init(color: NSColor) {
+        fillColor = color
+        super.init(frame: .zero)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        fillColor.setFill()
+        dirtyRect.fill()
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        needsDisplay = true
+    }
+}
+
+@MainActor
+final class AdaptiveBackgroundStackView: NSStackView {
+    private let fillColor: NSColor
+
+    init(color: NSColor) {
+        fillColor = color
+        super.init(frame: .zero)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        fillColor.setFill()
+        dirtyRect.fill()
+        super.draw(dirtyRect)
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        needsDisplay = true
+    }
 }
 
 extension NSView {

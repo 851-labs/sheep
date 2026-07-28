@@ -20,9 +20,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let root = NSView()
-        root.wantsLayer = true
-        root.layer?.backgroundColor = Palette.sidebar.cgColor
+        let root = AdaptiveBackgroundView(color: Palette.sidebar)
 
         let spacesHeader = sectionHeader("SPACES")
         spacesTable.headerView = nil
@@ -80,11 +78,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         footer.orientation = .horizontal
         footer.alignment = .centerY
         footer.edgeInsets = NSEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        footer.wantsLayer = true
-        footer.layer?.borderColor = Palette.line.cgColor
-        footer.layer?.borderWidth = 1
+        let footerSeparator = NSBox()
+        footerSeparator.boxType = .separator
 
-        [spacesHeader, spacesScroll, footer, agentsHeader, agentsScroll].forEach {
+        [spacesHeader, spacesScroll, footerSeparator, footer, agentsHeader, agentsScroll].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview($0)
         }
@@ -97,7 +94,11 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
             spacesScroll.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             spacesScroll.trailingAnchor.constraint(equalTo: root.trailingAnchor),
             spacesScroll.heightAnchor.constraint(equalTo: root.heightAnchor, multiplier: 0.43),
-            footer.topAnchor.constraint(equalTo: spacesScroll.bottomAnchor),
+            footerSeparator.topAnchor.constraint(equalTo: spacesScroll.bottomAnchor),
+            footerSeparator.leadingAnchor.constraint(equalTo: root.leadingAnchor),
+            footerSeparator.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            footerSeparator.heightAnchor.constraint(equalToConstant: 1),
+            footer.topAnchor.constraint(equalTo: footerSeparator.bottomAnchor),
             footer.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             footer.trailingAnchor.constraint(equalTo: root.trailingAnchor),
             footer.heightAnchor.constraint(equalToConstant: 38),
@@ -254,10 +255,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
 
     private func color(for status: AgentStatus) -> NSColor {
         switch status {
-        case .working: Palette.yellow
-        case .blocked: Palette.pink
+        case .working: Palette.working
+        case .blocked: Palette.blocked
         case .done: .systemGreen
-        case .idle: Palette.cyan
+        case .idle: Palette.idle
         case .unknown: .tertiaryLabelColor
         }
     }

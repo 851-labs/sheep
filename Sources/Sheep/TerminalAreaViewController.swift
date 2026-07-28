@@ -7,7 +7,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private let model: AppModel
     private let ghosttyRuntime: GhosttyRuntime?
     private let herdrExecutable: URL?
-    private let tabStack = NSStackView()
+    private let tabStack = AdaptiveBackgroundStackView(color: Palette.window)
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
@@ -30,16 +30,12 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let root = NSView()
-        root.wantsLayer = true
-        root.layer?.backgroundColor = Palette.terminal.cgColor
+        let root = AdaptiveBackgroundView(color: Palette.terminal)
 
         tabStack.orientation = .horizontal
         tabStack.alignment = .centerY
         tabStack.spacing = 4
         tabStack.edgeInsets = NSEdgeInsets(top: 5, left: 7, bottom: 5, right: 7)
-        tabStack.wantsLayer = true
-        tabStack.layer?.backgroundColor = Palette.window.cgColor
 
         banner.font = .systemFont(ofSize: 11, weight: .medium)
         banner.alignment = .center
@@ -122,11 +118,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             button.isBordered = false
             button.font = .monospacedSystemFont(ofSize: 11, weight: tab.focused ? .semibold : .regular)
             button.contentTintColor = tab.focused ? .labelColor : .secondaryLabelColor
-            button.wantsLayer = true
-            button.layer?.cornerRadius = 7
-            button.layer?.backgroundColor = tab.focused
-                ? NSColor.white.withAlphaComponent(0.1).cgColor
-                : NSColor.clear.cgColor
+            button.showsSelectedBackground = tab.focused
             button.setAccessibilityLabel("Tab \(tab.label)")
             tabStack.addArrangedSubview(button)
         }
@@ -151,11 +143,11 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             banner.stringValue = ""
             banner.backgroundColor = .clear
         case .connecting:
-            showBanner("Connecting to Herdr…", color: Palette.yellow)
+            showBanner("Connecting to Herdr…", color: Palette.warning)
         case let .disconnected(message):
-            showBanner("Disconnected — \(message). Retrying…", color: Palette.yellow)
+            showBanner("Disconnected — \(message). Retrying…", color: Palette.warning)
         case let .unavailable(message):
-            showBanner(message, color: Palette.pink)
+            showBanner(message, color: Palette.error)
         }
     }
 
@@ -289,6 +281,9 @@ private struct SplitMetadata {
 @MainActor
 private final class ClosureButton: NSButton {
     private let closure: () -> Void
+    var showsSelectedBackground = false {
+        didSet { needsDisplay = true }
+    }
 
     init(title: String, closure: @escaping () -> Void) {
         self.closure = closure
@@ -308,6 +303,19 @@ private final class ClosureButton: NSButton {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
+
+    override func draw(_ dirtyRect: NSRect) {
+        if showsSelectedBackground {
+            Palette.selected.withAlphaComponent(0.18).setFill()
+            NSBezierPath(roundedRect: bounds, xRadius: 7, yRadius: 7).fill()
+        }
+        super.draw(dirtyRect)
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        needsDisplay = true
+    }
 
     @objc private func invoke() { closure() }
 }

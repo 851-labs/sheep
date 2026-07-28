@@ -21,7 +21,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         self.focusPane = focusPane
         super.init(frame: NSRect(x: 0, y: 0, width: 800, height: 600))
         wantsLayer = true
-        layer?.backgroundColor = Palette.terminal.cgColor
+        updateAdaptiveAppearance()
 
         let command = [
             Self.shellQuote(herdrExecutable.path),
@@ -47,6 +47,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             return ghostty_surface_new(app, &configuration)
         }
         guard surface != nil else { return nil }
+        updateGhosttyColorScheme()
         updateSurfaceGeometry()
         updateTrackingAreas()
         setAccessibilityLabel("Terminal \(pane.displayTitle)")
@@ -83,6 +84,12 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     override func viewDidChangeBackingProperties() {
         super.viewDidChangeBackingProperties()
         updateSurfaceGeometry()
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateAdaptiveAppearance()
+        updateGhosttyColorScheme()
     }
 
     override func viewDidMoveToWindow() {
@@ -360,6 +367,21 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             UInt32(max(1, bounds.width * scale)),
             UInt32(max(1, bounds.height * scale))
         )
+    }
+
+    private func updateAdaptiveAppearance() {
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            layer?.backgroundColor = Palette.terminal.cgColor
+        }
+    }
+
+    private func updateGhosttyColorScheme() {
+        guard let surface else { return }
+        let appearance = effectiveAppearance.bestMatch(from: [.aqua, .darkAqua])
+        let scheme = appearance == .darkAqua
+            ? GHOSTTY_COLOR_SCHEME_DARK
+            : GHOSTTY_COLOR_SCHEME_LIGHT
+        ghostty_surface_set_color_scheme(surface, scheme)
     }
 
     private func sendMouseButton(

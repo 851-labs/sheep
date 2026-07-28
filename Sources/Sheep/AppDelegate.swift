@@ -11,7 +11,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
             return
         }
-        NSApp.appearance = NSAppearance(named: .darkAqua)
 
         let supervisor = HerdrServerSupervisorAdapter()
         let repository = HerdrSessionRepositoryAdapter(supervisor: supervisor)
@@ -32,7 +31,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
-        window.backgroundColor = Palette.window
+        window.backgroundColor = .windowBackgroundColor
         window.isMovableByWindowBackground = true
         window.center()
 

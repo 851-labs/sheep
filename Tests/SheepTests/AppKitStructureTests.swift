@@ -7,6 +7,18 @@ import XCTest
 
 @MainActor
 final class AppKitStructureTests: XCTestCase {
+    func testPaletteUsesAdaptiveSystemColors() {
+        XCTAssertEqual(Palette.window, .windowBackgroundColor)
+        XCTAssertEqual(Palette.sidebar, .controlBackgroundColor)
+        XCTAssertEqual(Palette.terminal, .textBackgroundColor)
+        XCTAssertEqual(Palette.selected, .selectedContentBackgroundColor)
+        XCTAssertEqual(Palette.idle, .systemTeal)
+        XCTAssertEqual(Palette.working, .systemYellow)
+        XCTAssertEqual(Palette.warning, .systemOrange)
+        XCTAssertEqual(Palette.blocked, .systemPink)
+        XCTAssertEqual(Palette.error, .systemRed)
+    }
+
     func testSidebarTabsNestedSplitsAndAccessibilityLabels() async throws {
         let session = try Self.session()
         let layout = PaneLayout(
