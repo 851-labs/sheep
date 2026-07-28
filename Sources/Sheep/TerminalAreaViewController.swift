@@ -8,7 +8,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private let model: AppModel
     private let ghosttyRuntime: GhosttyRuntime?
     private let herdrExecutable: URL?
-    private let tabStack = AdaptiveBackgroundStackView(color: Palette.window)
+    private let tabStack = NSStackView()
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
@@ -31,7 +31,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
-        let root = AdaptiveBackgroundView(color: Palette.window)
+        let root = NativeContentBackgroundView()
 
         tabStack.orientation = .horizontal
         tabStack.alignment = .centerY
@@ -213,7 +213,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     }
 
     private func layoutCanvas(containing layout: NSView) -> NSView {
-        let canvas = AdaptiveBackgroundView(color: Palette.window)
+        let canvas = NSView()
         layout.translatesAutoresizingMaskIntoConstraints = false
         canvas.addSubview(layout)
         NSLayoutConstraint.activate([

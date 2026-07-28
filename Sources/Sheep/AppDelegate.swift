@@ -33,7 +33,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.toolbarStyle = .unified
-        window.backgroundColor = .windowBackgroundColor
+        window.isOpaque = false
+        window.backgroundColor = .clear
         window.isMovableByWindowBackground = true
         let toolbar = MainWindowToolbar(splitView: content.splitView)
         mainToolbar = toolbar

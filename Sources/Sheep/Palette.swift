@@ -1,7 +1,6 @@
 import AppKit
 
 enum Palette {
-    static let window = NSColor.windowBackgroundColor
     static let terminal = NSColor.textBackgroundColor
     static let selected = NSColor.selectedContentBackgroundColor
     static let idle = NSColor.systemTeal
@@ -12,50 +11,20 @@ enum Palette {
 }
 
 @MainActor
-final class AdaptiveBackgroundView: NSView {
-    private let fillColor: NSColor
+final class NativeContentBackgroundView: NSVisualEffectView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        material = .contentBackground
+        blendingMode = .behindWindow
+        state = .followsWindowActiveState
+    }
 
-    init(color: NSColor) {
-        fillColor = color
-        super.init(frame: .zero)
+    convenience init() {
+        self.init(frame: .zero)
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
-
-    override func draw(_ dirtyRect: NSRect) {
-        fillColor.setFill()
-        dirtyRect.fill()
-    }
-
-    override func viewDidChangeEffectiveAppearance() {
-        super.viewDidChangeEffectiveAppearance()
-        needsDisplay = true
-    }
-}
-
-@MainActor
-final class AdaptiveBackgroundStackView: NSStackView {
-    private let fillColor: NSColor
-
-    init(color: NSColor) {
-        fillColor = color
-        super.init(frame: .zero)
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError() }
-
-    override func draw(_ dirtyRect: NSRect) {
-        fillColor.setFill()
-        dirtyRect.fill()
-        super.draw(dirtyRect)
-    }
-
-    override func viewDidChangeEffectiveAppearance() {
-        super.viewDidChangeEffectiveAppearance()
-        needsDisplay = true
-    }
 }
 
 extension NSView {

@@ -8,7 +8,6 @@ import XCTest
 @MainActor
 final class AppKitStructureTests: XCTestCase {
     func testPaletteUsesAdaptiveSystemColors() {
-        XCTAssertEqual(Palette.window, .windowBackgroundColor)
         XCTAssertEqual(Palette.terminal, .textBackgroundColor)
         XCTAssertEqual(Palette.selected, .selectedContentBackgroundColor)
         XCTAssertEqual(Palette.idle, .systemTeal)
@@ -66,6 +65,11 @@ final class AppKitStructureTests: XCTestCase {
         XCTAssertEqual(controller.splitViewItems.first?.behavior, .sidebar)
         let visualEffects: [NSVisualEffectView] = allSubviews(in: controller.view)
         XCTAssertTrue(visualEffects.contains { $0.material == .sidebar })
+        XCTAssertTrue(visualEffects.contains {
+            $0.material == .contentBackground
+                && $0.blendingMode == .behindWindow
+                && $0.state == .followsWindowActiveState
+        })
         let toolbar = MainWindowToolbar(splitView: controller.splitView)
         XCTAssertEqual(
             toolbar.toolbar.items.map(\.itemIdentifier),
