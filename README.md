@@ -41,6 +41,23 @@ xcodebuild \
   build test
 ```
 
+## HerdrSDK
+
+Sheep is built on the in-repository `HerdrSDK` Swift package. It provides the
+complete Herdr protocol-17 API, typed events, reconnecting session observation,
+local server supervision, and direct terminal attachment configuration.
+
+Regenerate its public protocol models after updating the pinned Herdr source:
+
+```sh
+npm ci --prefix Tools/HerdrSDKGenerator
+node Scripts/generate-herdr-sdk.mjs
+swift test --package-path Packages/HerdrSDK
+```
+
+Generated Swift sources are committed so applications consuming the package do
+not need Node, Rust, or the Herdr source tree.
+
 Xcode 27 beta's archive tools require 8-byte member alignment while Zig 0.15.2
 emits valid 2-byte-aligned Darwin archives. If that beta rejects an archive,
 `Scripts/repack-darwin-archive.mjs` can repack it with Apple's `ar`. Stable

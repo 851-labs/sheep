@@ -8,3 +8,4 @@ xcuserdata/
 Dependencies/GhosttyKit.xcframework/
 Dependencies/ghostty/macos/GhosttyKit.xcframework/
 *.log
+node_modules/

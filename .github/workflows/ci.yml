@@ -27,6 +27,12 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
+      - name: Verify HerdrSDK schema generation
+        run: Scripts/check-herdr-sdk-generation.sh
+
+      - name: Test HerdrSDK
+        run: swift test --package-path Packages/HerdrSDK
+
       - name: Cache GhosttyKit
         id: ghostty-cache
         uses: actions/cache/restore@v4

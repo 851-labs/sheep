@@ -1,0 +1,8 @@
+{
+  "name": "herdr-sdk-generator",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "quicktype": "23.2.6"
+  }
+}
