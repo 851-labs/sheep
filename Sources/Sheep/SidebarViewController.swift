@@ -50,7 +50,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
 
         let newButton = NSButton(title: "New", target: self, action: #selector(createWorkspace))
         newButton.isBordered = false
-        newButton.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
+        newButton.font = .systemFont(ofSize: 12, weight: .regular)
         newButton.contentTintColor = .secondaryLabelColor
         newButton.setAccessibilityLabel("Create space")
 
@@ -190,7 +190,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
     ) -> NSView? {
         if let group = item as? AgentGroup {
             let label = NSTextField(labelWithString: group.name.uppercased())
-            label.font = .monospacedSystemFont(ofSize: 10, weight: .semibold)
+            label.font = .systemFont(ofSize: 10, weight: .semibold)
             label.textColor = .tertiaryLabelColor
             return label
         }
@@ -233,11 +233,11 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         status.setContentHuggingPriority(.required, for: .horizontal)
 
         let titleLabel = NSTextField(labelWithString: title)
-        titleLabel.font = .monospacedSystemFont(ofSize: 12, weight: .medium)
+        titleLabel.font = .systemFont(ofSize: 12, weight: .medium)
         titleLabel.textColor = .labelColor
         titleLabel.lineBreakMode = .byTruncatingTail
         let detailLabel = NSTextField(labelWithString: detail)
-        detailLabel.font = .monospacedSystemFont(ofSize: 10, weight: .regular)
+        detailLabel.font = .systemFont(ofSize: 10, weight: .regular)
         detailLabel.textColor = .secondaryLabelColor
         detailLabel.lineBreakMode = .byTruncatingMiddle
         let text = NSStackView(views: [titleLabel, detailLabel])
@@ -265,7 +265,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
 
     private func sectionHeader(_ title: String) -> NSTextField {
         let label = NSTextField(labelWithString: title)
-        label.font = .monospacedSystemFont(ofSize: 11, weight: .semibold)
+        label.font = .systemFont(ofSize: 11, weight: .semibold)
         label.textColor = .tertiaryLabelColor
         return label
     }

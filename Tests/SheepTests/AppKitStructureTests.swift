@@ -64,6 +64,13 @@ final class AppKitStructureTests: XCTestCase {
         XCTAssertTrue(labels.contains("Tab 1"))
         XCTAssertFalse(labels.contains("Tab other"))
 
+        let textFields: [NSTextField] = allSubviews(in: controller.view)
+        let buttons: [NSButton] = allSubviews(in: controller.view)
+        let nativeFonts = (textFields.compactMap(\.font) + buttons.compactMap(\.font))
+        XCTAssertFalse(nativeFonts.contains {
+            $0.fontDescriptor.symbolicTraits.contains(.monoSpace)
+        })
+
         let splitViews: [NSSplitView] = allSubviews(in: controller.view)
         XCTAssertGreaterThanOrEqual(splitViews.count, 3)
 

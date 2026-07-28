@@ -116,7 +116,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                 self?.model.focusTab(tab.id)
             }
             button.isBordered = false
-            button.font = .monospacedSystemFont(ofSize: 11, weight: tab.focused ? .semibold : .regular)
+            button.font = .systemFont(ofSize: 11, weight: tab.focused ? .semibold : .regular)
             button.contentTintColor = tab.focused ? .labelColor : .secondaryLabelColor
             button.showsSelectedBackground = tab.focused
             button.setAccessibilityLabel("Tab \(tab.label)")
