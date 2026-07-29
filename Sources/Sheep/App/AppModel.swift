@@ -1,7 +1,5 @@
 import AppKit
 import HerdrSDK
-import SheepApplication
-import SheepDomain
 
 @MainActor
 final class AppModel {

@@ -1,5 +1,5 @@
 // Generated from Herdr protocol 17, schema 1.
-// Do not edit by hand; run Scripts/generate-herdr-sdk.mjs.
+// Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 // To parse the JSON, add this file to your project and do:
 //
 //   let herdrEventTypes = try HerdrEventTypes(json)

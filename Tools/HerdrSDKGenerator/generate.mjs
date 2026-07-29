@@ -127,7 +127,7 @@ for (const group of groups) {
   let source = fs.readFileSync(generatedPath, "utf8");
   source = source.replace(
     /^\/\/ This file was generated.*\n/,
-    `// Generated from Herdr protocol ${schema.protocol}, schema ${schema.schema_version}.\n// Do not edit by hand; run Scripts/generate-herdr-sdk.mjs.\n`,
+    `// Generated from Herdr protocol ${schema.protocol}, schema ${schema.schema_version}.\n// Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.\n`,
   );
   source = source.replaceAll("JSONAny", `Herdr${group.name}JSONValue`);
   source = source.replaceAll("JSONNull", `Herdr${group.name}JSONNull`);
@@ -238,7 +238,7 @@ const resultSwitchCases = resultTypes
   .join("\n");
 
 const catalog = `// Generated from Herdr protocol ${schema.protocol}, schema ${schema.schema_version}.
-// Do not edit by hand; run Scripts/generate-herdr-sdk.mjs.
+// Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 
 import Foundation
 

@@ -1,6 +1,5 @@
 import AppKit
 import HerdrSDKLocal
-import SheepInfrastructure
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {

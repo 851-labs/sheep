@@ -1,9 +1,8 @@
+import Foundation
 import HerdrSDK
 import XCTest
-@testable import SheepDomain
-@testable import SheepApplication
 
-final class DomainTests: XCTestCase {
+final class ModelTests: XCTestCase {
     func testAgentStatusUrgency() {
         XCTAssertEqual(
             [
@@ -17,13 +16,7 @@ final class DomainTests: XCTestCase {
         )
     }
 
-    func testGitSummaryDescription() {
-        let summary = GitSummary(branch: "main", ahead: 2, behind: 3)
-        XCTAssertEqual(summary.compactDescription, "main ↑2 ↓3")
-        XCTAssertEqual(GitSummary(branch: "detached").compactDescription, "detached")
-    }
-
-    func testLayoutDecodesHerdrShape() throws {
+    func testLayoutDecodesHerdrShapeAndZoom() throws {
         let json = """
         {
           "workspace_id": "w1",
@@ -124,12 +117,5 @@ final class DomainTests: XCTestCase {
         XCTAssertEqual(session.focusedWorkspace?.id, WorkspaceID(rawValue: "w1"))
         XCTAssertEqual(session.focusedTab?.id, TabID(rawValue: "w1:t1"))
         XCTAssertEqual(session.focusedPane?.id, PaneID(rawValue: "w1:p1"))
-        XCTAssertEqual(
-            WorkspaceProjection.repositoryDirectory(
-                for: try XCTUnwrap(session.focusedWorkspace),
-                in: session
-            )?.path,
-            "/tmp/sheep"
-        )
     }
 }

@@ -6,11 +6,11 @@ import HerdrSDKLocal
 @MainActor
 final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     nonisolated(unsafe) private(set) var surface: ghostty_surface_t?
-    private var markedText = NSMutableAttributedString()
-    private var keyText: [String]?
+    var markedText = NSMutableAttributedString()
+    var keyText: [String]?
     private let focusPane: () -> Void
     private var tracking: NSTrackingArea?
-    private var cursorHidden = false
+    var cursorHidden = false
     private var geometry = GhosttySurfaceGeometryState()
 
     init?(
@@ -231,146 +231,6 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         ghostty_surface_mouse_pressure(surface, UInt32(event.stage), Double(event.pressure))
     }
 
-    @objc func copy(_ sender: Any?) {
-        guard let surface else { return }
-        var text = ghostty_text_s()
-        guard ghostty_surface_read_selection(surface, &text) else { return }
-        defer { ghostty_surface_free_text(surface, &text) }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(String(cString: text.text), forType: .string)
-    }
-
-    @objc func paste(_ sender: Any?) {
-        guard let surface,
-              let text = NSPasteboard.general.string(forType: .string) else { return }
-        text.withCString { ghostty_surface_text(surface, $0, UInt(text.utf8.count)) }
-    }
-
-    func insertText(_ string: Any, replacementRange: NSRange) {
-        let value = (string as? NSAttributedString)?.string ?? (string as? String) ?? ""
-        unmarkText()
-        if keyText != nil {
-            keyText?.append(value)
-        } else if let surface {
-            value.withCString { ghostty_surface_text(surface, $0, UInt(value.utf8.count)) }
-        }
-    }
-
-    func setMarkedText(
-        _ string: Any,
-        selectedRange: NSRange,
-        replacementRange: NSRange
-    ) {
-        markedText = NSMutableAttributedString(
-            attributedString: (string as? NSAttributedString)
-                ?? NSAttributedString(string: (string as? String) ?? "")
-        )
-        syncPreedit()
-    }
-
-    func unmarkText() {
-        markedText = NSMutableAttributedString()
-        syncPreedit()
-    }
-
-    func selectedRange() -> NSRange { NSRange(location: NSNotFound, length: 0) }
-    func markedRange() -> NSRange {
-        markedText.length == 0
-            ? NSRange(location: NSNotFound, length: 0)
-            : NSRange(location: 0, length: markedText.length)
-    }
-    func hasMarkedText() -> Bool { markedText.length > 0 }
-    func attributedSubstring(forProposedRange range: NSRange, actualRange: NSRangePointer?) -> NSAttributedString? { nil }
-    func validAttributesForMarkedText() -> [NSAttributedString.Key] { [] }
-    func characterIndex(for point: NSPoint) -> Int { 0 }
-    func firstRect(forCharacterRange range: NSRange, actualRange: NSRangePointer?) -> NSRect {
-        guard let surface else { return window?.frame ?? .zero }
-        var x = 0.0, y = 0.0, width = 0.0, height = 0.0
-        ghostty_surface_ime_point(surface, &x, &y, &width, &height)
-        let local = NSRect(x: x, y: bounds.height - y, width: width, height: max(height, 1))
-        guard let window else { return local }
-        return window.convertToScreen(convert(local, to: nil))
-    }
-
-    nonisolated static func handle(target: ghostty_target_s, action: ghostty_action_s) -> Bool {
-        guard target.tag == GHOSTTY_TARGET_SURFACE,
-              let surface = target.target.surface,
-              let pointer = ghostty_surface_userdata(surface) else { return false }
-        let view = Unmanaged<GhosttyTerminalView>.fromOpaque(pointer).takeUnretainedValue()
-        switch action.tag {
-        case GHOSTTY_ACTION_MOUSE_SHAPE:
-            Task { @MainActor in view.applyCursor(action.action.mouse_shape) }
-            return true
-        case GHOSTTY_ACTION_MOUSE_VISIBILITY:
-            Task { @MainActor in
-                view.applyCursorVisibility(action.action.mouse_visibility)
-            }
-            return true
-        case GHOSTTY_ACTION_MOUSE_OVER_LINK:
-            let link = Self.string(
-                action.action.mouse_over_link.url,
-                length: action.action.mouse_over_link.len
-            )
-            Task { @MainActor in view.toolTip = link.isEmpty ? nil : link }
-            return true
-        case GHOSTTY_ACTION_OPEN_URL:
-            let link = Self.string(
-                action.action.open_url.url,
-                length: Int(action.action.open_url.len)
-            )
-            Task { @MainActor in
-                guard let url = URL(string: link) else { return }
-                NSWorkspace.shared.open(url)
-            }
-            return true
-        default:
-            return false
-        }
-    }
-
-    nonisolated static func readClipboard(pointer: UnsafeMutableRawPointer?, state: UnsafeMutableRawPointer?) -> Bool {
-        guard let pointer else { return false }
-        let view = Unmanaged<GhosttyTerminalView>.fromOpaque(pointer).takeUnretainedValue()
-        guard let surface = view.surface,
-              let text = NSPasteboard.general.string(forType: .string) else { return false }
-        text.withCString {
-            ghostty_surface_complete_clipboard_request(surface, $0, state, false)
-        }
-        return true
-    }
-
-    nonisolated static func confirmClipboard(
-        pointer: UnsafeMutableRawPointer?,
-        text: UnsafePointer<CChar>?,
-        state: UnsafeMutableRawPointer?
-    ) {
-        guard let pointer, let text else { return }
-        let view = Unmanaged<GhosttyTerminalView>.fromOpaque(pointer).takeUnretainedValue()
-        guard let surface = view.surface else { return }
-        ghostty_surface_complete_clipboard_request(surface, text, state, true)
-    }
-
-    nonisolated static func writeClipboard(
-        pointer: UnsafeMutableRawPointer?,
-        content: UnsafePointer<ghostty_clipboard_content_s>?,
-        count: Int
-    ) {
-        guard let content, count > 0 else { return }
-        for index in 0..<count where String(cString: content[index].mime) == "text/plain" {
-            let value = String(cString: content[index].data)
-            Task { @MainActor in
-                NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(value, forType: .string)
-            }
-        }
-    }
-
-    nonisolated static func didClose(pointer: UnsafeMutableRawPointer?) {
-        guard let pointer else { return }
-        let view = Unmanaged<GhosttyTerminalView>.fromOpaque(pointer).takeUnretainedValue()
-        Task { @MainActor in view.needsDisplay = true }
-    }
-
     @objc private func windowDidChangeScreen(_ notification: Notification) {
         updateSurfaceEnvironment()
     }
@@ -459,42 +319,6 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         }
     }
 
-    private func syncPreedit() {
-        guard let surface else { return }
-        let text = markedText.string
-        if text.isEmpty {
-            ghostty_surface_preedit(surface, nil, 0)
-        } else {
-            text.withCString { ghostty_surface_preedit(surface, $0, UInt(text.utf8.count)) }
-        }
-    }
-
-    private func applyCursor(_ shape: ghostty_action_mouse_shape_e) {
-        switch shape {
-        case GHOSTTY_MOUSE_SHAPE_POINTER:
-            NSCursor.pointingHand.set()
-        case GHOSTTY_MOUSE_SHAPE_TEXT:
-            NSCursor.iBeam.set()
-        case GHOSTTY_MOUSE_SHAPE_CROSSHAIR:
-            NSCursor.crosshair.set()
-        default:
-            NSCursor.arrow.set()
-        }
-    }
-
-    private func applyCursorVisibility(_ visibility: ghostty_action_mouse_visibility_e) {
-        switch visibility {
-        case GHOSTTY_MOUSE_HIDDEN where !cursorHidden:
-            NSCursor.hide()
-            cursorHidden = true
-        case GHOSTTY_MOUSE_VISIBLE where cursorHidden:
-            NSCursor.unhide()
-            cursorHidden = false
-        default:
-            break
-        }
-    }
-
     private static func modifiers(_ flags: NSEvent.ModifierFlags) -> ghostty_input_mods_e {
         var value = GHOSTTY_MODS_NONE.rawValue
         if flags.contains(.shift) { value |= GHOSTTY_MODS_SHIFT.rawValue }
@@ -521,57 +345,4 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         }
     }
 
-    private nonisolated static func string(
-        _ pointer: UnsafePointer<CChar>?,
-        length: Int
-    ) -> String {
-        guard let pointer, length > 0 else { return "" }
-        return String(
-            data: Data(bytes: pointer, count: length),
-            encoding: .utf8
-        ) ?? ""
-    }
-}
-
-struct GhosttySurfaceContentScale: Equatable {
-    let x: CGFloat
-    let y: CGFloat
-
-    init(x: Double, y: Double) {
-        self.x = CGFloat(x)
-        self.y = CGFloat(y)
-    }
-}
-
-struct GhosttySurfacePixelSize: Equatable {
-    let width: UInt32
-    let height: UInt32
-}
-
-struct GhosttySurfaceGeometryState {
-    private(set) var contentScale: GhosttySurfaceContentScale?
-    private(set) var displayID: UInt32?
-    private(set) var pixelSize: GhosttySurfacePixelSize?
-
-    @discardableResult
-    mutating func recordContentScale(x: Double, y: Double) -> Bool {
-        let next = GhosttySurfaceContentScale(x: x, y: y)
-        guard contentScale != next else { return false }
-        contentScale = next
-        return true
-    }
-
-    @discardableResult
-    mutating func recordDisplayID(_ next: UInt32) -> Bool {
-        guard displayID != next else { return false }
-        displayID = next
-        return true
-    }
-
-    @discardableResult
-    mutating func recordPixelSize(_ next: GhosttySurfacePixelSize) -> Bool {
-        guard pixelSize != next else { return false }
-        pixelSize = next
-        return true
-    }
 }

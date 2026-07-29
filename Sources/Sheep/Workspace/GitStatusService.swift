@@ -1,6 +1,4 @@
 import Foundation
-import SheepApplication
-import SheepDomain
 
 public actor GitStatusService: GitStatusProvider {
     public init() {}
@@ -44,4 +42,3 @@ public actor GitStatusService: GitStatusProvider {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
-

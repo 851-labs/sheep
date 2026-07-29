@@ -7,59 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01EB17296A4EDE191037A962 /* libSheepInfrastructure.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */; };
-		039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = D1F2B11F011AE93DE4CC8330 /* HerdrSDK */; };
 		099A170654FFDDC2D4E0BC1C /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E06A0E6019C73A13376F3AA8 /* GameController.framework */; };
-		27C91C80C99A07AFF9F25478 /* libSheepApplication.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */; };
-		2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */; };
-		31FBB8BEDBDDFDE470D4E266 /* libSheepDomain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */; };
+		09CA9A04A58EB952FD9E2647 /* TerminalCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B61D1D946AB4D58440F9037 /* TerminalCardView.swift */; };
+		0AAFF17D6D974C33C2B78D23 /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E3F6DCCC50AD13A01CF515 /* GitSummary.swift */; };
+		0C60C20C8B81CCB76C638A02 /* MainWindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A3064BA4D6ECBDE149114A /* MainWindowToolbar.swift */; };
+		150858D7FAA8D42DF3548F50 /* GhosttyTerminalView+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209DDCDF14055F1D6EADC5F1 /* GhosttyTerminalView+Input.swift */; };
+		1BCF3C7C65EE155F06E9B9C0 /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE5F503FC4DBBB023AE4800 /* GhosttyRuntime.swift */; };
+		20975096E746279CA224C899 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F431DF7876CA2807485B36CC /* AppDelegate.swift */; };
+		2CD46DC0ACBEF416A30EE03C /* GitStatusProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AFC29EE02A4EB6F0E4657B /* GitStatusProviding.swift */; };
+		3152B7B51C559F087E366DAF /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B28048C896A7F369DB2D074 /* GitStatusService.swift */; };
+		325B1F58EC1D0A21B78B51C0 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83847971403AAA8A1E4FF79D /* Palette.swift */; };
+		34E3B6AEA5154A7ED6AEBC00 /* ClosureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627D822E005B2A30CA6E7546 /* ClosureButton.swift */; };
 		3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8C67A9051645E3250C56549E /* HerdrSDK */; };
-		4036CC4CB649D2E2FB5371F3 /* libSheepInfrastructure.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */; };
-		49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48606E38D19B5A7548A279BC /* AppDelegate.swift */; };
-		5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */; };
-		66410F795BA7FB12A01B046A /* libSheepDomain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */; };
-		784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */; };
-		A0441950F017D79ED78703C9 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E451D7BBC74EACA9AC4976D /* AppModel.swift */; };
+		3A302DB3E871E1A84B4D36D4 /* GitSummaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FF5CE23F80DB1F7ADBCA84 /* GitSummaryTests.swift */; };
+		3CDF910070C1FF8A70078103 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842951AD2C5DBF4E8D0B2923 /* AppModel.swift */; };
+		5A54373DCEC4EBE8CE68A693 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34735E6171B79AE7C3D343C /* SidebarViewController.swift */; };
+		6098FFFDB4404D557D92675E /* WorkspaceProjectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5039C1396B41B6EF6B30A1D9 /* WorkspaceProjectionTests.swift */; };
+		6C3FC5FB86D2CC7D64ABB713 /* SidebarRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C86D21BABB627B13815E4 /* SidebarRowView.swift */; };
+		73F1CDB6290FB8506193157C /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B1632B09D74D5E272B8499 /* TerminalAreaViewController.swift */; };
+		800E4ED767ECE0B05E095A9C /* GhosttyTerminalView+Callbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6711F1BFB485AF16DDD255D4 /* GhosttyTerminalView+Callbacks.swift */; };
+		965E8678C80B0F049449F3AF /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD88BFD19151053A4350C48 /* main.swift */; };
+		9A071485DC97112A86108A3A /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC129A7C59FDDCF1595F3D7 /* WorkspaceProjection.swift */; };
 		A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */; };
-		A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */; };
-		A43780D542051077309A4C70 /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E116FBCA3178E61F006B3C /* GitStatusService.swift */; };
-		AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */; };
-		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
-		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
-		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
+		A9AA7D904A56BF7D2DB18014 /* AppKitIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028D9F565725B90FD773A835 /* AppKitIntegrationTests.swift */; };
 		C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */; };
-		CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */; };
-		D102A1AA5644148CD64E19AB /* libSheepApplication.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */; };
-		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
+		D9707A578EB8AA74B51E2426 /* GhosttySurfaceGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513CB2E1FC4382F7DAF25A1B /* GhosttySurfaceGeometry.swift */; };
+		E6B2C9A987C4E5F9369F68FC /* AppearanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2840DE10B63C1CCD9A59B6E1 /* AppearanceTests.swift */; };
 		ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA6EE6E193A66A9E5280102F /* Carbon.framework */; };
-		EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE77EFCF9C51576670E513 /* ModuleTests.swift */; };
-		F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */; };
-		FE626CF0CDE1CA6660B40417 /* MainWindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */; };
-		FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */; };
+		EDD95C5DF2F833C0451CEFB4 /* AgentGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6FF9BDD312DD5DA45A91C2 /* AgentGroup.swift */; };
+		EED5476EDFD33719D7CFE09F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB938113EAD33DF759518255 /* MainSplitViewController.swift */; };
+		FC46CC918F72EEDC028B645F /* GhosttyTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216AFCCC0E62F8FA3709B44C /* GhosttyTerminalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		337AD8CCC2738D45A543FBF5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30A2B7C946B9507F80A7A65A;
-			remoteInfo = SheepDomain;
-		};
-		38EEDD8E4CC98A6D66C5C125 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 28D76C9A4F72AF904E83FC05;
-			remoteInfo = SheepInfrastructure;
-		};
-		752DE72042F3D812E4C04E56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE6773330A196B662F114F9F;
-			remoteInfo = SheepApplication;
-		};
 		8D0A42AB92EED1CDFC42C40F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
@@ -67,98 +47,47 @@
 			remoteGlobalIDString = EBF459FF4724A41A1F7083FF;
 			remoteInfo = Sheep;
 		};
-		989747728A449A400C1E209D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE6773330A196B662F114F9F;
-			remoteInfo = SheepApplication;
-		};
-		BB610E975BA3A242B295E81C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30A2B7C946B9507F80A7A65A;
-			remoteInfo = SheepDomain;
-		};
-		C566499411B0D205C99B41A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30A2B7C946B9507F80A7A65A;
-			remoteInfo = SheepDomain;
-		};
-		D6C09DB7F60D2D5A7B86F7A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30A2B7C946B9507F80A7A65A;
-			remoteInfo = SheepDomain;
-		};
-		DF5A04A7039CA5B66DE97165 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE6773330A196B662F114F9F;
-			remoteInfo = SheepApplication;
-		};
-		FAAE0F92718588DA4A6BC816 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 76EACB87837AA1667F803F03 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 28D76C9A4F72AF904E83FC05;
-			remoteInfo = SheepInfrastructure;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		028D9F565725B90FD773A835 /* AppKitIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitIntegrationTests.swift; sourceTree = "<group>"; };
 		0473F1D911C4BEF3ECD7A548 /* HerdrSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = HerdrSDK; path = Packages/HerdrSDK; sourceTree = SOURCE_ROOT; };
-		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
-		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
-		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		18A3064BA4D6ECBDE149114A /* MainWindowToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowToolbar.swift; sourceTree = "<group>"; };
+		209DDCDF14055F1D6EADC5F1 /* GhosttyTerminalView+Input.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GhosttyTerminalView+Input.swift"; sourceTree = "<group>"; };
+		216AFCCC0E62F8FA3709B44C /* GhosttyTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyTerminalView.swift; sourceTree = "<group>"; };
 		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = .repos/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
-		3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepDomain.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
-		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
-		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
-		69F87AB413A66CDF40E2E832 /* libSheepApplication.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepApplication.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
-		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
-		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
-		A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitStructureTests.swift; sourceTree = "<group>"; };
-		A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowToolbar.swift; sourceTree = "<group>"; };
-		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
-		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
-		D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyTerminalView.swift; sourceTree = "<group>"; };
+		2840DE10B63C1CCD9A59B6E1 /* AppearanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceTests.swift; sourceTree = "<group>"; };
+		4EE5F503FC4DBBB023AE4800 /* GhosttyRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyRuntime.swift; sourceTree = "<group>"; };
+		5039C1396B41B6EF6B30A1D9 /* WorkspaceProjectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjectionTests.swift; sourceTree = "<group>"; };
+		513CB2E1FC4382F7DAF25A1B /* GhosttySurfaceGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttySurfaceGeometry.swift; sourceTree = "<group>"; };
+		5B28048C896A7F369DB2D074 /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
+		5B61D1D946AB4D58440F9037 /* TerminalCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalCardView.swift; sourceTree = "<group>"; };
+		61E3F6DCCC50AD13A01CF515 /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
+		627D822E005B2A30CA6E7546 /* ClosureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureButton.swift; sourceTree = "<group>"; };
+		6711F1BFB485AF16DDD255D4 /* GhosttyTerminalView+Callbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GhosttyTerminalView+Callbacks.swift"; sourceTree = "<group>"; };
+		83847971403AAA8A1E4FF79D /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
+		842951AD2C5DBF4E8D0B2923 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		99FF5CE23F80DB1F7ADBCA84 /* GitSummaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummaryTests.swift; sourceTree = "<group>"; };
+		A7AFC29EE02A4EB6F0E4657B /* GitStatusProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusProviding.swift; sourceTree = "<group>"; };
+		AAD88BFD19151053A4350C48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		D34735E6171B79AE7C3D343C /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		D93C27078727AA9D1A1121DC /* Sheep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sheep.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyRuntime.swift; sourceTree = "<group>"; };
+		DB938113EAD33DF759518255 /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SheepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF2C86D21BABB627B13815E4 /* SidebarRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarRowView.swift; sourceTree = "<group>"; };
 		E06A0E6019C73A13376F3AA8 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
-		E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepInfrastructure.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8B1632B09D74D5E272B8499 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
 		EA6EE6E193A66A9E5280102F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		F431DF7876CA2807485B36CC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FF6FF9BDD312DD5DA45A91C2 /* AgentGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentGroup.swift; sourceTree = "<group>"; };
+		FFC129A7C59FDDCF1595F3D7 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		44A6310924B29B6BD9C0F926 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				66410F795BA7FB12A01B046A /* libSheepDomain.a in Frameworks */,
-				27C91C80C99A07AFF9F25478 /* libSheepApplication.a in Frameworks */,
-				01EB17296A4EDE191037A962 /* libSheepInfrastructure.a in Frameworks */,
-				039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */,
-				2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4ED7CBEF75F5F30E284380B8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31FBB8BEDBDDFDE470D4E266 /* libSheepDomain.a in Frameworks */,
-				D102A1AA5644148CD64E19AB /* libSheepApplication.a in Frameworks */,
-				4036CC4CB649D2E2FB5371F3 /* libSheepInfrastructure.a in Frameworks */,
 				3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */,
 				C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */,
 				A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */,
@@ -170,15 +99,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0CD021218A3D296D2D39DB63 /* SheepApplication */ = {
-			isa = PBXGroup;
-			children = (
-				5B5218861D153263DA868DD9 /* Ports.swift */,
-				0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */,
-			);
-			path = SheepApplication;
-			sourceTree = "<group>";
-		};
 		1658A02843B4F81E4982EE6A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,30 +120,56 @@
 		32A09B70745E449387FEE66F /* SheepTests */ = {
 			isa = PBXGroup;
 			children = (
-				A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */,
-				8AFE77EFCF9C51576670E513 /* ModuleTests.swift */,
+				2840DE10B63C1CCD9A59B6E1 /* AppearanceTests.swift */,
+				028D9F565725B90FD773A835 /* AppKitIntegrationTests.swift */,
+				99FF5CE23F80DB1F7ADBCA84 /* GitSummaryTests.swift */,
+				5039C1396B41B6EF6B30A1D9 /* WorkspaceProjectionTests.swift */,
 			);
 			path = SheepTests;
 			sourceTree = "<group>";
 		};
-		404C19DA3412DF09AA0A4B10 /* SheepDomain */ = {
+		331F48A8F876D279B67BBCAC /* Terminal */ = {
 			isa = PBXGroup;
 			children = (
-				A8664C0B9B4802B6EE1E056B /* GitSummary.swift */,
+				627D822E005B2A30CA6E7546 /* ClosureButton.swift */,
+				4EE5F503FC4DBBB023AE4800 /* GhosttyRuntime.swift */,
+				513CB2E1FC4382F7DAF25A1B /* GhosttySurfaceGeometry.swift */,
+				216AFCCC0E62F8FA3709B44C /* GhosttyTerminalView.swift */,
+				6711F1BFB485AF16DDD255D4 /* GhosttyTerminalView+Callbacks.swift */,
+				209DDCDF14055F1D6EADC5F1 /* GhosttyTerminalView+Input.swift */,
+				E8B1632B09D74D5E272B8499 /* TerminalAreaViewController.swift */,
+				5B61D1D946AB4D58440F9037 /* TerminalCardView.swift */,
 			);
-			path = SheepDomain;
+			path = Terminal;
+			sourceTree = "<group>";
+		};
+		4C7CEAD5697DD930608B6011 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F431DF7876CA2807485B36CC /* AppDelegate.swift */,
+				842951AD2C5DBF4E8D0B2923 /* AppModel.swift */,
+				AAD88BFD19151053A4350C48 /* main.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 		5AAB0DDDF8DE74CB5816EDAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				69F87AB413A66CDF40E2E832 /* libSheepApplication.a */,
-				3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */,
-				E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */,
 				D93C27078727AA9D1A1121DC /* Sheep.app */,
 				DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		771518A75163F116EC0AF128 /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				FF6FF9BDD312DD5DA45A91C2 /* AgentGroup.swift */,
+				DF2C86D21BABB627B13815E4 /* SidebarRowView.swift */,
+				D34735E6171B79AE7C3D343C /* SidebarViewController.swift */,
+			);
+			path = Sidebar;
 			sourceTree = "<group>";
 		};
 		8858C17C48ACB853B57CD7AF /* Packages */ = {
@@ -232,6 +178,17 @@
 				0473F1D911C4BEF3ECD7A548 /* HerdrSDK */,
 			);
 			path = Packages;
+			sourceTree = "<group>";
+		};
+		8C38A3761DB95F2D1D549533 /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				A7AFC29EE02A4EB6F0E4657B /* GitStatusProviding.swift */,
+				5B28048C896A7F369DB2D074 /* GitStatusService.swift */,
+				61E3F6DCCC50AD13A01CF515 /* GitSummary.swift */,
+				FFC129A7C59FDDCF1595F3D7 /* WorkspaceProjection.swift */,
+			);
+			path = Workspace;
 			sourceTree = "<group>";
 		};
 		C5F07418AF13D20C160E732C = {
@@ -245,40 +202,42 @@
 			);
 			sourceTree = "<group>";
 		};
+		C633D2BA1A4DD979EF2A3119 /* Window */ = {
+			isa = PBXGroup;
+			children = (
+				DB938113EAD33DF759518255 /* MainSplitViewController.swift */,
+				18A3064BA4D6ECBDE149114A /* MainWindowToolbar.swift */,
+			);
+			path = Window;
+			sourceTree = "<group>";
+		};
 		DCEF44F2724E65EA2A5BB55C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				EC480A424241F525FC96A84B /* Sheep */,
-				0CD021218A3D296D2D39DB63 /* SheepApplication */,
-				404C19DA3412DF09AA0A4B10 /* SheepDomain */,
-				E43684F1058BAA0A2BF6D1A5 /* SheepInfrastructure */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		E43684F1058BAA0A2BF6D1A5 /* SheepInfrastructure */ = {
-			isa = PBXGroup;
-			children = (
-				B4E116FBCA3178E61F006B3C /* GitStatusService.swift */,
-			);
-			path = SheepInfrastructure;
 			sourceTree = "<group>";
 		};
 		EC480A424241F525FC96A84B /* Sheep */ = {
 			isa = PBXGroup;
 			children = (
-				48606E38D19B5A7548A279BC /* AppDelegate.swift */,
-				9E451D7BBC74EACA9AC4976D /* AppModel.swift */,
-				DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */,
-				D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */,
-				1C7925FF80ED98D4F28CF247 /* main.swift */,
-				92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */,
-				A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */,
-				1A565582B6D4CFC0EB1C4ABE /* Palette.swift */,
-				4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */,
-				40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */,
+				4C7CEAD5697DD930608B6011 /* App */,
+				F622C537EDD87FC9D8A6E520 /* Design */,
+				771518A75163F116EC0AF128 /* Sidebar */,
+				331F48A8F876D279B67BBCAC /* Terminal */,
+				C633D2BA1A4DD979EF2A3119 /* Window */,
+				8C38A3761DB95F2D1D549533 /* Workspace */,
 			);
 			path = Sheep;
+			sourceTree = "<group>";
+		};
+		F622C537EDD87FC9D8A6E520 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				83847971403AAA8A1E4FF79D /* Palette.swift */,
+			);
+			path = Design;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,83 +248,18 @@
 			buildConfigurationList = 0C29543101E60BA0684C49EB /* Build configuration list for PBXNativeTarget "SheepTests" */;
 			buildPhases = (
 				FD3B46C9D6C73BC1CC0843D3 /* Sources */,
-				44A6310924B29B6BD9C0F926 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				C1164DCC4B57A097BCB208BE /* PBXTargetDependency */,
-				543F85E8EED39CCE2B49CB83 /* PBXTargetDependency */,
-				F0F4C99964FD2536CDCE7F0F /* PBXTargetDependency */,
-				69D94274F53EC5699E5465C2 /* PBXTargetDependency */,
 			);
 			name = SheepTests;
 			packageProductDependencies = (
-				D1F2B11F011AE93DE4CC8330 /* HerdrSDK */,
-				DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */,
 			);
 			productName = SheepTests;
 			productReference = DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		28D76C9A4F72AF904E83FC05 /* SheepInfrastructure */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37338D8711CF2C67419A323C /* Build configuration list for PBXNativeTarget "SheepInfrastructure" */;
-			buildPhases = (
-				4DE993641F939A2052A31E60 /* Sources */,
-				DA549AA2FD6F1ADC9237994D /* Copy Swift Objective-C Interface Header */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3C19B52FF2C596FC22A6DEA7 /* PBXTargetDependency */,
-				73E2F7E3DCFDFBA41A180F83 /* PBXTargetDependency */,
-			);
-			name = SheepInfrastructure;
-			packageProductDependencies = (
-			);
-			productName = SheepInfrastructure;
-			productReference = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		30A2B7C946B9507F80A7A65A /* SheepDomain */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BB698F6DAC7077659CCB619A /* Build configuration list for PBXNativeTarget "SheepDomain" */;
-			buildPhases = (
-				E6CC4214648EA4693F3629F8 /* Sources */,
-				DF2194F8C4D41CCD15D6AC57 /* Copy Swift Objective-C Interface Header */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SheepDomain;
-			packageProductDependencies = (
-			);
-			productName = SheepDomain;
-			productReference = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		BE6773330A196B662F114F9F /* SheepApplication */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 76609297532A1C963F475BAE /* Build configuration list for PBXNativeTarget "SheepApplication" */;
-			buildPhases = (
-				D98C33227F31F9DDD560C293 /* Sources */,
-				24F40D11F8BA980E894DB537 /* Copy Swift Objective-C Interface Header */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AFCDD247049D4940F6B869A6 /* PBXTargetDependency */,
-				60F62036A6C984A4E54AD722 /* PBXTargetDependency */,
-			);
-			name = SheepApplication;
-			packageProductDependencies = (
-				8D51F8F586972D435475B2E0 /* HerdrSDK */,
-			);
-			productName = SheepApplication;
-			productReference = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */;
-			productType = "com.apple.product-type.library.static";
 		};
 		EBF459FF4724A41A1F7083FF /* Sheep */ = {
 			isa = PBXNativeTarget;
@@ -377,9 +271,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				807F164E16F106A69F70D574 /* PBXTargetDependency */,
-				7FBC2438AE4045CB3E99832D /* PBXTargetDependency */,
-				1512BB9EE62097602B522743 /* PBXTargetDependency */,
 			);
 			name = Sheep;
 			packageProductDependencies = (
@@ -419,105 +310,37 @@
 			projectRoot = "";
 			targets = (
 				EBF459FF4724A41A1F7083FF /* Sheep */,
-				BE6773330A196B662F114F9F /* SheepApplication */,
-				30A2B7C946B9507F80A7A65A /* SheepDomain */,
-				28D76C9A4F72AF904E83FC05 /* SheepInfrastructure */,
 				0F33595B54724108238EB6B1 /* SheepTests */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		24F40D11F8BA980E894DB537 /* Copy Swift Objective-C Interface Header */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			name = "Copy Swift Objective-C Interface Header";
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-		};
-		DA549AA2FD6F1ADC9237994D /* Copy Swift Objective-C Interface Header */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			name = "Copy Swift Objective-C Interface Header";
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-		};
-		DF2194F8C4D41CCD15D6AC57 /* Copy Swift Objective-C Interface Header */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			name = "Copy Swift Objective-C Interface Header";
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1065998D92D2ABB1B8793E33 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */,
-				A0441950F017D79ED78703C9 /* AppModel.swift in Sources */,
-				AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */,
-				A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */,
-				FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */,
-				FE626CF0CDE1CA6660B40417 /* MainWindowToolbar.swift in Sources */,
-				DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */,
-				784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */,
-				F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */,
-				B8997E14601964BEE704F9B8 /* main.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4DE993641F939A2052A31E60 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A43780D542051077309A4C70 /* GitStatusService.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D98C33227F31F9DDD560C293 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */,
-				5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E6CC4214648EA4693F3629F8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */,
+				EDD95C5DF2F833C0451CEFB4 /* AgentGroup.swift in Sources */,
+				20975096E746279CA224C899 /* AppDelegate.swift in Sources */,
+				3CDF910070C1FF8A70078103 /* AppModel.swift in Sources */,
+				34E3B6AEA5154A7ED6AEBC00 /* ClosureButton.swift in Sources */,
+				1BCF3C7C65EE155F06E9B9C0 /* GhosttyRuntime.swift in Sources */,
+				D9707A578EB8AA74B51E2426 /* GhosttySurfaceGeometry.swift in Sources */,
+				800E4ED767ECE0B05E095A9C /* GhosttyTerminalView+Callbacks.swift in Sources */,
+				150858D7FAA8D42DF3548F50 /* GhosttyTerminalView+Input.swift in Sources */,
+				FC46CC918F72EEDC028B645F /* GhosttyTerminalView.swift in Sources */,
+				2CD46DC0ACBEF416A30EE03C /* GitStatusProviding.swift in Sources */,
+				3152B7B51C559F087E366DAF /* GitStatusService.swift in Sources */,
+				0AAFF17D6D974C33C2B78D23 /* GitSummary.swift in Sources */,
+				EED5476EDFD33719D7CFE09F /* MainSplitViewController.swift in Sources */,
+				0C60C20C8B81CCB76C638A02 /* MainWindowToolbar.swift in Sources */,
+				325B1F58EC1D0A21B78B51C0 /* Palette.swift in Sources */,
+				6C3FC5FB86D2CC7D64ABB713 /* SidebarRowView.swift in Sources */,
+				5A54373DCEC4EBE8CE68A693 /* SidebarViewController.swift in Sources */,
+				73F1CDB6290FB8506193157C /* TerminalAreaViewController.swift in Sources */,
+				09CA9A04A58EB952FD9E2647 /* TerminalCardView.swift in Sources */,
+				9A071485DC97112A86108A3A /* WorkspaceProjection.swift in Sources */,
+				965E8678C80B0F049449F3AF /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,67 +348,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */,
-				EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */,
+				A9AA7D904A56BF7D2DB18014 /* AppKitIntegrationTests.swift in Sources */,
+				E6B2C9A987C4E5F9369F68FC /* AppearanceTests.swift in Sources */,
+				3A302DB3E871E1A84B4D36D4 /* GitSummaryTests.swift in Sources */,
+				6098FFFDB4404D557D92675E /* WorkspaceProjectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1512BB9EE62097602B522743 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 28D76C9A4F72AF904E83FC05 /* SheepInfrastructure */;
-			targetProxy = FAAE0F92718588DA4A6BC816 /* PBXContainerItemProxy */;
-		};
-		3C19B52FF2C596FC22A6DEA7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
-			targetProxy = BB610E975BA3A242B295E81C /* PBXContainerItemProxy */;
-		};
-		543F85E8EED39CCE2B49CB83 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
-			targetProxy = C566499411B0D205C99B41A5 /* PBXContainerItemProxy */;
-		};
-		60F62036A6C984A4E54AD722 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 8D51F8F586972D435475B2E0 /* HerdrSDK */;
-		};
-		69D94274F53EC5699E5465C2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 28D76C9A4F72AF904E83FC05 /* SheepInfrastructure */;
-			targetProxy = 38EEDD8E4CC98A6D66C5C125 /* PBXContainerItemProxy */;
-		};
-		73E2F7E3DCFDFBA41A180F83 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE6773330A196B662F114F9F /* SheepApplication */;
-			targetProxy = DF5A04A7039CA5B66DE97165 /* PBXContainerItemProxy */;
-		};
-		7FBC2438AE4045CB3E99832D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE6773330A196B662F114F9F /* SheepApplication */;
-			targetProxy = 752DE72042F3D812E4C04E56 /* PBXContainerItemProxy */;
-		};
-		807F164E16F106A69F70D574 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
-			targetProxy = D6C09DB7F60D2D5A7B86F7A5 /* PBXContainerItemProxy */;
-		};
-		AFCDD247049D4940F6B869A6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
-			targetProxy = 337AD8CCC2738D45A543FBF5 /* PBXContainerItemProxy */;
-		};
 		C1164DCC4B57A097BCB208BE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = EBF459FF4724A41A1F7083FF /* Sheep */;
 			targetProxy = 8D0A42AB92EED1CDFC42C40F /* PBXContainerItemProxy */;
-		};
-		F0F4C99964FD2536CDCE7F0F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE6773330A196B662F114F9F /* SheepApplication */;
-			targetProxy = 989747728A449A400C1E209D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -601,31 +377,11 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.tests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sheep.app/Contents/MacOS/sheep";
 			};
 			name = Release;
-		};
-		2A9287F0D044AF931F13694D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.infrastructure;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
 		};
 		2CBC1D45C73F84824C96CEE6 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -685,86 +441,6 @@
 			};
 			name = Release;
 		};
-		31E76F2E4359436032920440 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.infrastructure;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		3F183484E60E119BD7F78511 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.domain;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		5763AC3656A02B2C6410D3D9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.application;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		6915AB7B71BC271AD768BC23 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.domain;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		9678AA7807606B4CA69A769F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.application;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		A4837254BB2FACE434162617 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -783,10 +459,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited) -lstdc++",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "$(inherited) -lstdc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -811,10 +484,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited) -lstdc++",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "$(inherited) -lstdc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -831,10 +501,6 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.tests;
 				SDKROOT = macosx;
@@ -928,33 +594,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		37338D8711CF2C67419A323C /* Build configuration list for PBXNativeTarget "SheepInfrastructure" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2A9287F0D044AF931F13694D /* Debug */,
-				31E76F2E4359436032920440 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		76609297532A1C963F475BAE /* Build configuration list for PBXNativeTarget "SheepApplication" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5763AC3656A02B2C6410D3D9 /* Debug */,
-				9678AA7807606B4CA69A769F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		BB698F6DAC7077659CCB619A /* Build configuration list for PBXNativeTarget "SheepDomain" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3F183484E60E119BD7F78511 /* Debug */,
-				6915AB7B71BC271AD768BC23 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		D232322C5AF71A3A36EAE93D /* Build configuration list for PBXProject "Sheep" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -978,19 +617,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = HerdrSDK;
 		};
-		8D51F8F586972D435475B2E0 /* HerdrSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HerdrSDK;
-		};
 		A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HerdrSDKLocal;
-		};
-		D1F2B11F011AE93DE4CC8330 /* HerdrSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HerdrSDK;
-		};
-		DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HerdrSDKLocal;
 		};

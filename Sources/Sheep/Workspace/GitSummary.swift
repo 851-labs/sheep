@@ -16,4 +16,3 @@ public struct GitSummary: Equatable, Sendable {
         return components.joined(separator: " ")
     }
 }
-

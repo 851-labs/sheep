@@ -24,11 +24,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         root.blendingMode = .behindWindow
         root.state = .followsWindowActiveState
 
-        let spacesHeader = sectionHeader("SPACES")
+        let spacesHeader = SidebarSectionHeaderView(title: "SPACES")
         spacesTable.headerView = nil
         spacesTable.backgroundColor = .clear
         spacesTable.style = .sourceList
-        spacesTable.selectionHighlightStyle = .sourceList
         spacesTable.rowHeight = 43
         spacesTable.intercellSpacing = .zero
         spacesTable.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
@@ -40,11 +39,10 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         spacesTable.setAccessibilityLabel("Spaces")
         let spacesScroll = scrollView(document: spacesTable)
 
-        let agentsHeader = sectionHeader("AGENTS", trailing: "GROUPED")
+        let agentsHeader = SidebarSectionHeaderView(title: "AGENTS", trailing: "GROUPED")
         agentsOutline.headerView = nil
         agentsOutline.backgroundColor = .clear
         agentsOutline.style = .sourceList
-        agentsOutline.selectionHighlightStyle = .sourceList
         agentsOutline.rowHeight = 40
         agentsOutline.indentationPerLevel = 10
         agentsOutline.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
@@ -127,7 +125,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         row: Int
     ) -> NSView? {
         guard let workspace = model.session?.workspaces[row] else { return nil }
-        return rowView(
+        return SidebarRowView(
             status: workspace.agentStatus,
             title: workspace.label,
             detail: model.gitSummaries[workspace.id]?.compactDescription ?? "",
@@ -192,7 +190,7 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
             return container
         }
         guard let agent = (item as? AgentItem)?.value else { return nil }
-        return rowView(
+        return SidebarRowView(
             status: agent.agentStatus,
             title: agent.displayName,
             detail: agent.displayContext,
@@ -219,101 +217,6 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         }
     }
 
-    private func rowView(
-        status agentStatus: AgentStatus,
-        title: String,
-        detail: String,
-        accessibility: String,
-        leadingInset: CGFloat
-    ) -> NSView {
-        let status = statusIndicator(for: agentStatus)
-
-        let titleLabel = NSTextField(labelWithString: title)
-        titleLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        titleLabel.textColor = .labelColor
-        titleLabel.alignment = .left
-        titleLabel.lineBreakMode = .byTruncatingTail
-        titleLabel.toolTip = title
-        let detailLabel = NSTextField(labelWithString: detail)
-        detailLabel.font = .systemFont(ofSize: 10, weight: .regular)
-        detailLabel.textColor = .secondaryLabelColor
-        detailLabel.alignment = .left
-        detailLabel.lineBreakMode = .byTruncatingMiddle
-        detailLabel.toolTip = detail
-
-        let row = NSView()
-        [status, titleLabel, detailLabel].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            row.addSubview($0)
-        }
-        NSLayoutConstraint.activate([
-            status.leadingAnchor.constraint(equalTo: row.leadingAnchor, constant: leadingInset),
-            status.centerYAnchor.constraint(equalTo: row.centerYAnchor),
-            status.widthAnchor.constraint(equalToConstant: 10),
-            status.heightAnchor.constraint(equalToConstant: 10),
-            titleLabel.leadingAnchor.constraint(equalTo: status.trailingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(equalTo: row.trailingAnchor, constant: -8),
-            titleLabel.topAnchor.constraint(equalTo: row.topAnchor, constant: 5),
-            detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 1),
-            detailLabel.bottomAnchor.constraint(lessThanOrEqualTo: row.bottomAnchor, constant: -4),
-        ])
-        row.setAccessibilityLabel(accessibility)
-        return row
-    }
-
-    private func statusIndicator(for status: AgentStatus) -> NSImageView {
-        let symbol: String
-        switch status {
-        case .done:
-            symbol = "checkmark"
-        case .unknown:
-            symbol = "circle"
-        default:
-            symbol = "circle.fill"
-        }
-        let image = NSImage(systemSymbolName: symbol, accessibilityDescription: status.rawValue)?
-            .withSymbolConfiguration(.init(pointSize: 7, weight: .bold))
-        let indicator = NSImageView(image: image ?? NSImage())
-        indicator.contentTintColor = color(for: status)
-        indicator.imageScaling = .scaleProportionallyDown
-        return indicator
-    }
-
-    private func color(for status: AgentStatus) -> NSColor {
-        switch status {
-        case .working: Palette.working
-        case .blocked: Palette.blocked
-        case .done: .systemGreen
-        case .idle: Palette.idle
-        case .unknown: .tertiaryLabelColor
-        }
-    }
-
-    private func sectionHeader(_ title: String, trailing: String? = nil) -> NSView {
-        let titleLabel = NSTextField(labelWithString: title)
-        titleLabel.font = .systemFont(ofSize: 11, weight: .semibold)
-        titleLabel.textColor = .tertiaryLabelColor
-        titleLabel.alignment = .left
-
-        var views: [NSView] = [titleLabel, NSView()]
-        if let trailing {
-            let trailingLabel = NSTextField(labelWithString: trailing)
-            trailingLabel.font = .systemFont(ofSize: 10, weight: .medium)
-            trailingLabel.textColor = .tertiaryLabelColor
-            trailingLabel.alignment = .right
-            views.append(trailingLabel)
-        }
-        let header = NSStackView(views: views)
-        header.orientation = .horizontal
-        header.alignment = .centerY
-        header.setAccessibilityLabel(
-            trailing.map { "\(title), \($0)" } ?? title
-        )
-        return header
-    }
-
     private func scrollView(document: NSView) -> NSScrollView {
         let scroll = NSScrollView()
         scroll.drawsBackground = false
@@ -321,24 +224,5 @@ final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTa
         scroll.autohidesScrollers = true
         scroll.documentView = document
         return scroll
-    }
-
-}
-
-private final class AgentGroup {
-    let name: String
-    let agents: [AgentItem]
-
-    init(name: String, agents: [AgentItem]) {
-        self.name = name
-        self.agents = agents
-    }
-}
-
-private final class AgentItem {
-    let value: Agent
-
-    init(_ value: Agent) {
-        self.value = value
     }
 }

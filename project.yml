@@ -15,48 +15,11 @@ packages:
   HerdrSDK:
     path: Packages/HerdrSDK
 targets:
-  SheepDomain:
-    type: library.static
-    platform: macOS
-    sources: Sources/SheepDomain
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.domain
-        DEFINES_MODULE: YES
-        GENERATE_INFOPLIST_FILE: YES
-  SheepApplication:
-    type: library.static
-    platform: macOS
-    sources: Sources/SheepApplication
-    dependencies:
-      - target: SheepDomain
-      - package: HerdrSDK
-        product: HerdrSDK
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.application
-        DEFINES_MODULE: YES
-        GENERATE_INFOPLIST_FILE: YES
-  SheepInfrastructure:
-    type: library.static
-    platform: macOS
-    sources: Sources/SheepInfrastructure
-    dependencies:
-      - target: SheepDomain
-      - target: SheepApplication
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.infrastructure
-        DEFINES_MODULE: YES
-        GENERATE_INFOPLIST_FILE: YES
   Sheep:
     type: application
     platform: macOS
     sources: Sources/Sheep
     dependencies:
-      - target: SheepDomain
-      - target: SheepApplication
-      - target: SheepInfrastructure
       - package: HerdrSDK
         product: HerdrSDK
       - package: HerdrSDK
@@ -84,13 +47,6 @@ targets:
     sources: Tests/SheepTests
     dependencies:
       - target: Sheep
-      - target: SheepDomain
-      - target: SheepApplication
-      - target: SheepInfrastructure
-      - package: HerdrSDK
-        product: HerdrSDK
-      - package: HerdrSDK
-        product: HerdrSDKLocal
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.tests

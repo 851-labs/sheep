@@ -51,7 +51,7 @@ Regenerate its public protocol models after updating the pinned Herdr source:
 
 ```sh
 npm ci --prefix Tools/HerdrSDKGenerator
-node Scripts/generate-herdr-sdk.mjs
+node Tools/HerdrSDKGenerator/generate.mjs
 swift test --package-path Packages/HerdrSDK
 ```
 

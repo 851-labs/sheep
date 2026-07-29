@@ -20,7 +20,7 @@ The package has two products:
   terminal attachment commands.
 
 Protocol model source is generated from Herdr's bundled JSON Schema. Run
-`Scripts/generate-herdr-sdk.mjs` from the Sheep repository root after updating
+`Tools/HerdrSDKGenerator/generate.mjs` from the Sheep repository root after updating
 the pinned Herdr submodule.
 
 ## License
