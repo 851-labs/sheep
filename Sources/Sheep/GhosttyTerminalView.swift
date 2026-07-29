@@ -1,7 +1,7 @@
 import AppKit
 import GhosttyKit
+import HerdrSDK
 import HerdrSDKLocal
-import SheepDomain
 
 @MainActor
 final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {

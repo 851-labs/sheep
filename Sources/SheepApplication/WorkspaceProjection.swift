@@ -1,5 +1,5 @@
 import Foundation
-import SheepDomain
+import HerdrSDK
 
 public enum WorkspaceProjection {
     public static func repositoryDirectory(
@@ -18,4 +18,3 @@ public enum WorkspaceProjection {
         }
     }
 }
-

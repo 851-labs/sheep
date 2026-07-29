@@ -25,7 +25,6 @@
 		A43780D542051077309A4C70 /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E116FBCA3178E61F006B3C /* GitStatusService.swift */; };
 		AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */; };
 		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
-		B51A2BD51FDB16BB8F6B38FF /* HerdrModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AA2F693A7EC645054C5201 /* HerdrModels.swift */; };
 		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
 		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
 		C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */; };
@@ -124,7 +123,6 @@
 		4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
 		69F87AB413A66CDF40E2E832 /* libSheepApplication.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepApplication.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		85AA2F693A7EC645054C5201 /* HerdrModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrModels.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
 		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		9E451D7BBC74EACA9AC4976D /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
@@ -212,7 +210,6 @@
 			isa = PBXGroup;
 			children = (
 				A8664C0B9B4802B6EE1E056B /* GitSummary.swift */,
-				85AA2F693A7EC645054C5201 /* HerdrModels.swift */,
 			);
 			path = SheepDomain;
 			sourceTree = "<group>";
@@ -341,11 +338,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				4F31244CF7A77D5F21FD4650 /* PBXTargetDependency */,
 			);
 			name = SheepDomain;
 			packageProductDependencies = (
-				97ABBFEFF24581DEE53C93E8 /* HerdrSDK */,
 			);
 			productName = SheepDomain;
 			productReference = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */;
@@ -523,7 +518,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */,
-				B51A2BD51FDB16BB8F6B38FF /* HerdrModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,10 +542,6 @@
 			isa = PBXTargetDependency;
 			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
 			targetProxy = BB610E975BA3A242B295E81C /* PBXContainerItemProxy */;
-		};
-		4F31244CF7A77D5F21FD4650 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 97ABBFEFF24581DEE53C93E8 /* HerdrSDK */;
 		};
 		543F85E8EED39CCE2B49CB83 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -989,10 +979,6 @@
 			productName = HerdrSDK;
 		};
 		8D51F8F586972D435475B2E0 /* HerdrSDK */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = HerdrSDK;
-		};
-		97ABBFEFF24581DEE53C93E8 /* HerdrSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HerdrSDK;
 		};

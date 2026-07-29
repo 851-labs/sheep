@@ -1,5 +1,5 @@
 import AppKit
-import SheepDomain
+import HerdrSDK
 
 @MainActor
 final class SidebarViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate,

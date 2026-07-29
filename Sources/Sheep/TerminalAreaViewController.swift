@@ -1,7 +1,7 @@
 import AppKit
+import HerdrSDK
 import HerdrSDKLocal
 import SheepApplication
-import SheepDomain
 
 @MainActor
 final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {

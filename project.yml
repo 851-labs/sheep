@@ -19,9 +19,6 @@ targets:
     type: library.static
     platform: macOS
     sources: Sources/SheepDomain
-    dependencies:
-      - package: HerdrSDK
-        product: HerdrSDK
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep.domain

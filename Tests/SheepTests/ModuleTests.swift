@@ -1,3 +1,4 @@
+import HerdrSDK
 import XCTest
 @testable import SheepDomain
 @testable import SheepApplication
