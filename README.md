@@ -24,8 +24,8 @@ Sheep uses an installed Herdr executable by default. To develop against the
 pinned Herdr source instead:
 
 ```sh
-cargo build --release --manifest-path Dependencies/herdr/Cargo.toml
-HERDR_BIN_PATH="$PWD/Dependencies/herdr/target/release/herdr" \
+cargo build --release --manifest-path .repos/herdr/Cargo.toml
+HERDR_BIN_PATH="$PWD/.repos/herdr/target/release/herdr" \
   /path/to/sheep.app/Contents/MacOS/sheep
 ```
 

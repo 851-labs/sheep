@@ -3,7 +3,7 @@
 Sheep includes [Herdr](https://github.com/ogulcancelik/herdr) source as a pinned
 Git submodule. Herdr is distributed under the GNU Affero General Public License
 v3.0 or later. Its complete license and corresponding source are available in
-`Dependencies/herdr`.
+`.repos/herdr`.
 
 Sheep links against [Ghostty](https://github.com/ghostty-org/ghostty), which is
 distributed under the MIT License.

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 REPOSITORY_ROOT=${0:A:h:h}
-GHOSTTY_ROOT="$REPOSITORY_ROOT/Dependencies/ghostty"
+GHOSTTY_ROOT="$REPOSITORY_ROOT/.repos/ghostty"
 FRAMEWORK_PATH="$GHOSTTY_ROOT/macos/GhosttyKit.xcframework"
 ZIG_BIN=${SHEEP_ZIG_BIN:-$(command -v zig || true)}
 

@@ -117,7 +117,7 @@
 		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = Dependencies/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
+		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = .repos/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
 		3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepDomain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
 		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -783,7 +783,7 @@
 				ENABLE_DEBUG_DYLIB = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"Dependencies/ghostty/macos\"",
+					"\".repos/ghostty/macos\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = sheep;
@@ -811,7 +811,7 @@
 				ENABLE_DEBUG_DYLIB = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"Dependencies/ghostty/macos\"",
+					"\".repos/ghostty/macos\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = sheep;

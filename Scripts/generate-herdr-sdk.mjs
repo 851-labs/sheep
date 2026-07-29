@@ -10,7 +10,7 @@ import { spawnSync } from "node:child_process";
 const repository = process.cwd();
 const schemaPath = path.join(
   repository,
-  "Dependencies/herdr/docs/next/api/herdr-api.schema.json",
+  ".repos/herdr/docs/next/api/herdr-api.schema.json",
 );
 const outputDirectory = path.join(
   repository,

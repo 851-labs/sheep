@@ -64,7 +64,7 @@ targets:
         product: HerdrSDK
       - package: HerdrSDK
         product: HerdrSDKLocal
-      - framework: Dependencies/ghostty/macos/GhosttyKit.xcframework
+      - framework: .repos/ghostty/macos/GhosttyKit.xcframework
         embed: false
       - sdk: Carbon.framework
       - sdk: GameController.framework
