@@ -7,43 +7,33 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01EB17296A4EDE191037A962 /* libSheepInfrastructure.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */; };
 		039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = D1F2B11F011AE93DE4CC8330 /* HerdrSDK */; };
-		11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
-		184B440A95F9AB4AB58A6EA6 /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		19E13BD9A5361EC9727A792A /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		271650E061B18ED6C79AFE32 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		099A170654FFDDC2D4E0BC1C /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E06A0E6019C73A13376F3AA8 /* GameController.framework */; };
+		27C91C80C99A07AFF9F25478 /* libSheepApplication.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */; };
 		2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = DB6A1781E7D90E13B5787B21 /* HerdrSDKLocal */; };
+		31FBB8BEDBDDFDE470D4E266 /* libSheepDomain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */; };
 		3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8C67A9051645E3250C56549E /* HerdrSDK */; };
-		3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
-		42FACE2BFB74A2A7D0F88D7D /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
+		4036CC4CB649D2E2FB5371F3 /* libSheepInfrastructure.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */; };
 		49BB11E5DDCFABE384D95A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48606E38D19B5A7548A279BC /* AppDelegate.swift */; };
 		5624934F4D383112847C580B /* WorkspaceProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */; };
-		784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
+		66410F795BA7FB12A01B046A /* libSheepDomain.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */; };
 		784FC95A328196C100BE58A0 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */; };
-		7FEFC79DB0D0ECA641B1C7A0 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
-		99E1FFEAFB38549F85F0DA21 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 8D51F8F586972D435475B2E0 /* HerdrSDK */; };
 		A0441950F017D79ED78703C9 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E451D7BBC74EACA9AC4976D /* AppModel.swift */; };
 		A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */; };
 		A2CB63224331E1D3D1A8F82F /* GhosttyTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */; };
 		A43780D542051077309A4C70 /* GitStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E116FBCA3178E61F006B3C /* GitStatusService.swift */; };
-		A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; };
 		AC51BE19616661B011AB16DD /* GhosttyRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */; };
 		B32322C5D61E6B43798A991E /* GitSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8664C0B9B4802B6EE1E056B /* GitSummary.swift */; };
 		B51A2BD51FDB16BB8F6B38FF /* HerdrModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AA2F693A7EC645054C5201 /* HerdrModels.swift */; };
 		B7CF25BF77BDC7F3601705D7 /* Ports.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5218861D153263DA868DD9 /* Ports.swift */; };
 		B8997E14601964BEE704F9B8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7925FF80ED98D4F28CF247 /* main.swift */; };
-		BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B17093567465FC52F481B477 /* SheepDomain.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */ = {isa = PBXBuildFile; productRef = A56CA0EAF4E47BDDD8E87DA2 /* HerdrSDKLocal */; };
 		CF8BF30AE164301DA1159021 /* AppKitStructureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */; };
-		D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D102A1AA5644148CD64E19AB /* libSheepApplication.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */; };
 		DC8EEAFDB99CDE7552027615 /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A565582B6D4CFC0EB1C4ABE /* Palette.swift */; };
-		DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; };
-		E1D29AB2F62E3ABC253E9310 /* HerdrSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 97ABBFEFF24581DEE53C93E8 /* HerdrSDK */; };
 		ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA6EE6E193A66A9E5280102F /* Carbon.framework */; };
-		ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EDECB9CA6B468F37DA12496C /* ModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFE77EFCF9C51576670E513 /* ModuleTests.swift */; };
-		F18D88158BFCADCAC9A6ED97 /* SheepInfrastructure.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */; };
 		F4A58A35B5954B49D26B3FB5 /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */; };
 		FE626CF0CDE1CA6660B40417 /* MainWindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */; };
 		FF416935DAF05A1B29856C64 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */; };
@@ -122,46 +112,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		2BDDECF4FF302702218C20DE /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BF31FF91DACCE2959FBC37E8 /* SheepDomain.framework in Embed Frameworks */,
-				184B440A95F9AB4AB58A6EA6 /* SheepApplication.framework in Embed Frameworks */,
-				D6E342B560BC087136374C09 /* SheepInfrastructure.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3EE095A4F2376B07C406FAFA /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				19E13BD9A5361EC9727A792A /* SheepDomain.framework in Embed Frameworks */,
-				ED32CD3A1C919A0623B9EA7E /* SheepApplication.framework in Embed Frameworks */,
-				F18D88158BFCADCAC9A6ED97 /* SheepInfrastructure.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		0473F1D911C4BEF3ECD7A548 /* HerdrSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = HerdrSDK; path = Packages/HerdrSDK; sourceTree = SOURCE_ROOT; };
 		0C590BA75CD10195A2F853F4 /* WorkspaceProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceProjection.swift; sourceTree = "<group>"; };
 		1A565582B6D4CFC0EB1C4ABE /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		1C7925FF80ED98D4F28CF247 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GhosttyKit.xcframework; path = Dependencies/ghostty/macos/GhosttyKit.xcframework; sourceTree = "<group>"; };
+		3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepDomain.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		40866FA0AA6589C70EC01969 /* TerminalAreaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalAreaViewController.swift; sourceTree = "<group>"; };
-		46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepInfrastructure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		48606E38D19B5A7548A279BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4F6597A2FE4998F77147FB49 /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
 		5B5218861D153263DA868DD9 /* Ports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ports.swift; sourceTree = "<group>"; };
+		69F87AB413A66CDF40E2E832 /* libSheepApplication.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepApplication.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		85AA2F693A7EC645054C5201 /* HerdrModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerdrModels.swift; sourceTree = "<group>"; };
 		8AFE77EFCF9C51576670E513 /* ModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleTests.swift; sourceTree = "<group>"; };
 		92AF337F8876E6FBAF9D72AE /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
@@ -169,41 +131,24 @@
 		A83614A3E75186EE133DDF29 /* AppKitStructureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitStructureTests.swift; sourceTree = "<group>"; };
 		A83708CAE98EF539E6BDC1AF /* MainWindowToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowToolbar.swift; sourceTree = "<group>"; };
 		A8664C0B9B4802B6EE1E056B /* GitSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummary.swift; sourceTree = "<group>"; };
-		B17093567465FC52F481B477 /* SheepDomain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepDomain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E116FBCA3178E61F006B3C /* GitStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusService.swift; sourceTree = "<group>"; };
 		D13AB0CAA3E2292DEC08B942 /* GhosttyTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyTerminalView.swift; sourceTree = "<group>"; };
 		D93C27078727AA9D1A1121DC /* Sheep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sheep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB13F623CAF72960E4AC28A8 /* GhosttyRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhosttyRuntime.swift; sourceTree = "<group>"; };
 		DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SheepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E06A0E6019C73A13376F3AA8 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSheepInfrastructure.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA6EE6E193A66A9E5280102F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
-		EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheepApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		21B5C8BF5E2CAF5A0CED132F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E1D29AB2F62E3ABC253E9310 /* HerdrSDK in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3E10C5D48F13BDE80EE38D54 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A589E7D501418BD357912824 /* SheepDomain.framework in Frameworks */,
-				99E1FFEAFB38549F85F0DA21 /* HerdrSDK in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		44A6310924B29B6BD9C0F926 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				784804784F3B304AAACEAC7B /* SheepDomain.framework in Frameworks */,
-				42FACE2BFB74A2A7D0F88D7D /* SheepApplication.framework in Frameworks */,
-				DDD2A477FECCE63DFE26D0F1 /* SheepInfrastructure.framework in Frameworks */,
+				66410F795BA7FB12A01B046A /* libSheepDomain.a in Frameworks */,
+				27C91C80C99A07AFF9F25478 /* libSheepApplication.a in Frameworks */,
+				01EB17296A4EDE191037A962 /* libSheepInfrastructure.a in Frameworks */,
 				039161C3C7C0199F4B0565EF /* HerdrSDK in Frameworks */,
 				2D56B951544498DCD427B2D3 /* HerdrSDKLocal in Frameworks */,
 			);
@@ -213,22 +158,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AC6984B479D53E600384307 /* SheepDomain.framework in Frameworks */,
-				F2011F1F1C7257C6C7F38DD2 /* SheepApplication.framework in Frameworks */,
-				11FC966DADA3F37241C08332 /* SheepInfrastructure.framework in Frameworks */,
+				31FBB8BEDBDDFDE470D4E266 /* libSheepDomain.a in Frameworks */,
+				D102A1AA5644148CD64E19AB /* libSheepApplication.a in Frameworks */,
+				4036CC4CB649D2E2FB5371F3 /* libSheepInfrastructure.a in Frameworks */,
 				3A1B2845D5337DDD9F1FE905 /* HerdrSDK in Frameworks */,
 				C2D3BBF5F7A1FD6920B1A5CC /* HerdrSDKLocal in Frameworks */,
 				A1F33EED54E787CA1C265124 /* GhosttyKit.xcframework in Frameworks */,
 				ECD3AE243106C679790E4F45 /* Carbon.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		69DE4DB2C24C1626D79A6EFA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				271650E061B18ED6C79AFE32 /* SheepDomain.framework in Frameworks */,
-				7FEFC79DB0D0ECA641B1C7A0 /* SheepApplication.framework in Frameworks */,
+				099A170654FFDDC2D4E0BC1C /* GameController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				EA6EE6E193A66A9E5280102F /* Carbon.framework */,
+				E06A0E6019C73A13376F3AA8 /* GameController.framework */,
 				2344F5849AC1444D05FF7BAC /* GhosttyKit.xcframework */,
 			);
 			name = Frameworks;
@@ -282,10 +220,10 @@
 		5AAB0DDDF8DE74CB5816EDAD /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				69F87AB413A66CDF40E2E832 /* libSheepApplication.a */,
+				3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */,
+				E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */,
 				D93C27078727AA9D1A1121DC /* Sheep.app */,
-				EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */,
-				B17093567465FC52F481B477 /* SheepDomain.framework */,
-				46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */,
 				DDEFD869F732B5000D9B8CA2 /* SheepTests.xctest */,
 			);
 			name = Products;
@@ -355,7 +293,6 @@
 			buildPhases = (
 				FD3B46C9D6C73BC1CC0843D3 /* Sources */,
 				44A6310924B29B6BD9C0F926 /* Frameworks */,
-				3EE095A4F2376B07C406FAFA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -379,7 +316,7 @@
 			buildConfigurationList = 37338D8711CF2C67419A323C /* Build configuration list for PBXNativeTarget "SheepInfrastructure" */;
 			buildPhases = (
 				4DE993641F939A2052A31E60 /* Sources */,
-				69DE4DB2C24C1626D79A6EFA /* Frameworks */,
+				DA549AA2FD6F1ADC9237994D /* Copy Swift Objective-C Interface Header */,
 			);
 			buildRules = (
 			);
@@ -391,47 +328,49 @@
 			packageProductDependencies = (
 			);
 			productName = SheepInfrastructure;
-			productReference = 46995E7BDDA8F93833135504 /* SheepInfrastructure.framework */;
-			productType = "com.apple.product-type.framework";
+			productReference = E6AE513341AEEC1B74F94336 /* libSheepInfrastructure.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 		30A2B7C946B9507F80A7A65A /* SheepDomain */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BB698F6DAC7077659CCB619A /* Build configuration list for PBXNativeTarget "SheepDomain" */;
 			buildPhases = (
 				E6CC4214648EA4693F3629F8 /* Sources */,
-				21B5C8BF5E2CAF5A0CED132F /* Frameworks */,
+				DF2194F8C4D41CCD15D6AC57 /* Copy Swift Objective-C Interface Header */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4F31244CF7A77D5F21FD4650 /* PBXTargetDependency */,
 			);
 			name = SheepDomain;
 			packageProductDependencies = (
 				97ABBFEFF24581DEE53C93E8 /* HerdrSDK */,
 			);
 			productName = SheepDomain;
-			productReference = B17093567465FC52F481B477 /* SheepDomain.framework */;
-			productType = "com.apple.product-type.framework";
+			productReference = 3320ACF5B71DB7DF64B04786 /* libSheepDomain.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 		BE6773330A196B662F114F9F /* SheepApplication */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76609297532A1C963F475BAE /* Build configuration list for PBXNativeTarget "SheepApplication" */;
 			buildPhases = (
 				D98C33227F31F9DDD560C293 /* Sources */,
-				3E10C5D48F13BDE80EE38D54 /* Frameworks */,
+				24F40D11F8BA980E894DB537 /* Copy Swift Objective-C Interface Header */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				AFCDD247049D4940F6B869A6 /* PBXTargetDependency */,
+				60F62036A6C984A4E54AD722 /* PBXTargetDependency */,
 			);
 			name = SheepApplication;
 			packageProductDependencies = (
 				8D51F8F586972D435475B2E0 /* HerdrSDK */,
 			);
 			productName = SheepApplication;
-			productReference = EB01ABBD0BACCD48A4803658 /* SheepApplication.framework */;
-			productType = "com.apple.product-type.framework";
+			productReference = 69F87AB413A66CDF40E2E832 /* libSheepApplication.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 		EBF459FF4724A41A1F7083FF /* Sheep */ = {
 			isa = PBXNativeTarget;
@@ -439,7 +378,6 @@
 			buildPhases = (
 				1065998D92D2ABB1B8793E33 /* Sources */,
 				4ED7CBEF75F5F30E284380B8 /* Frameworks */,
-				2BDDECF4FF302702218C20DE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -493,6 +431,57 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24F40D11F8BA980E894DB537 /* Copy Swift Objective-C Interface Header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			name = "Copy Swift Objective-C Interface Header";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+		DA549AA2FD6F1ADC9237994D /* Copy Swift Objective-C Interface Header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			name = "Copy Swift Objective-C Interface Header";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+		DF2194F8C4D41CCD15D6AC57 /* Copy Swift Objective-C Interface Header */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(DERIVED_SOURCES_DIR)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			name = "Copy Swift Objective-C Interface Header";
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/include/$(PRODUCT_MODULE_NAME)/$(SWIFT_OBJC_INTERFACE_HEADER_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ditto \"${SCRIPT_INPUT_FILE_0}\" \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1065998D92D2ABB1B8793E33 /* Sources */ = {
@@ -560,10 +549,18 @@
 			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
 			targetProxy = BB610E975BA3A242B295E81C /* PBXContainerItemProxy */;
 		};
+		4F31244CF7A77D5F21FD4650 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 97ABBFEFF24581DEE53C93E8 /* HerdrSDK */;
+		};
 		543F85E8EED39CCE2B49CB83 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 30A2B7C946B9507F80A7A65A /* SheepDomain */;
 			targetProxy = C566499411B0D205C99B41A5 /* PBXContainerItemProxy */;
+		};
+		60F62036A6C984A4E54AD722 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 8D51F8F586972D435475B2E0 /* HerdrSDK */;
 		};
 		69D94274F53EC5699E5465C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -614,6 +611,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.tests;
 				SDKROOT = macosx;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sheep.app/Contents/MacOS/sheep";
@@ -623,15 +624,9 @@
 		2A9287F0D044AF931F13694D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -639,7 +634,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.infrastructure;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -704,15 +698,9 @@
 		31E76F2E4359436032920440 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -720,22 +708,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.infrastructure;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		3F183484E60E119BD7F78511 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -743,22 +724,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.domain;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		5763AC3656A02B2C6410D3D9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -766,22 +740,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.application;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		6915AB7B71BC271AD768BC23 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -789,22 +756,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.domain;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
 		9678AA7807606B4CA69A769F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -812,7 +772,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.application;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -834,7 +793,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = "$(inherited) -lstdc++";
+				OTHER_LDFLAGS = (
+					"$(inherited) -lstdc++",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -859,7 +821,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = "$(inherited) -lstdc++";
+				OTHER_LDFLAGS = (
+					"$(inherited) -lstdc++",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep;
 				PRODUCT_NAME = sheep;
 				SDKROOT = macosx;
@@ -876,6 +841,10 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.851labs.sheep.tests;
 				SDKROOT = macosx;

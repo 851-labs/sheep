@@ -8,8 +8,8 @@ let package = Package(
         .macOS(.v14),
     ],
     products: [
-        .library(name: "HerdrSDK", type: .dynamic, targets: ["HerdrSDK"]),
-        .library(name: "HerdrSDKLocal", type: .dynamic, targets: ["HerdrSDKLocal"]),
+        .library(name: "HerdrSDK", type: .static, targets: ["HerdrSDK"]),
+        .library(name: "HerdrSDKLocal", type: .static, targets: ["HerdrSDKLocal"]),
     ],
     targets: [
         .target(name: "HerdrSDK"),

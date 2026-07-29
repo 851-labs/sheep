@@ -16,7 +16,7 @@ packages:
     path: Packages/HerdrSDK
 targets:
   SheepDomain:
-    type: framework
+    type: library.static
     platform: macOS
     sources: Sources/SheepDomain
     dependencies:
@@ -28,7 +28,7 @@ targets:
         DEFINES_MODULE: YES
         GENERATE_INFOPLIST_FILE: YES
   SheepApplication:
-    type: framework
+    type: library.static
     platform: macOS
     sources: Sources/SheepApplication
     dependencies:
@@ -41,7 +41,7 @@ targets:
         DEFINES_MODULE: YES
         GENERATE_INFOPLIST_FILE: YES
   SheepInfrastructure:
-    type: framework
+    type: library.static
     platform: macOS
     sources: Sources/SheepInfrastructure
     dependencies:
@@ -67,6 +67,7 @@ targets:
       - framework: Dependencies/ghostty/macos/GhosttyKit.xcframework
         embed: false
       - sdk: Carbon.framework
+      - sdk: GameController.framework
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.851labs.sheep

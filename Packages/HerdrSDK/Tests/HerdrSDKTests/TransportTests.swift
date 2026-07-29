@@ -79,6 +79,21 @@ final class TransportTests: XCTestCase {
         XCTAssertEqual(snapshot.version, "0.7.5")
     }
 
+    func testFocusMutationsDecodeLightweightAcknowledgements() async throws {
+        let server = try FakeHerdrServer { descriptor, request in
+            FakeHerdrServer.sendJSON([
+                "id": request["id"] ?? "",
+                "result": ["type": "ok"],
+            ], to: descriptor)
+        }
+        defer { server.stop() }
+
+        let client = HerdrClient(socketURL: server.socketURL)
+        try await client.workspaces.focus(WorkspaceID(rawValue: "w1"))
+        try await client.tabs.focus(TabID(rawValue: "t1"))
+        try await client.panes.focus(PaneID(rawValue: "p1"))
+    }
+
     func testSubscriptionPreservesEventCoalescedWithAcknowledgement() async throws {
         let server = try FakeHerdrServer { descriptor, request in
             let acknowledgement = FakeHerdrServer.jsonLine([

@@ -34,6 +34,10 @@ public struct HerdrTabCreation: Codable, Equatable, Sendable {
 
 private struct EmptyParameters: Codable, Sendable {}
 
+private struct MutationAcknowledgement: Decodable, Sendable {
+    let type: HerdrResponseResponseResultType
+}
+
 private struct WorkspaceTarget: Codable, Sendable {
     let workspaceID: WorkspaceID
 
@@ -191,7 +195,7 @@ public struct HerdrWorkspaceService: HerdrService {
         _ = try await client.request(
             method: .workspaceFocus,
             params: WorkspaceTarget(workspaceID: id),
-            response: HerdrResponseResult.self
+            response: MutationAcknowledgement.self
         )
         await client.mutationCompleted()
     }
@@ -234,7 +238,7 @@ public struct HerdrTabService: HerdrService {
         _ = try await client.request(
             method: .tabFocus,
             params: TabTarget(tabID: id),
-            response: HerdrResponseResult.self
+            response: MutationAcknowledgement.self
         )
         await client.mutationCompleted()
     }
@@ -270,7 +274,7 @@ public struct HerdrPaneService: HerdrService {
         _ = try await client.request(
             method: .paneFocus,
             params: PaneTarget(paneID: id),
-            response: HerdrResponseResult.self
+            response: MutationAcknowledgement.self
         )
         await client.mutationCompleted()
     }
