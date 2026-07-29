@@ -41,7 +41,7 @@ public struct HerdrEventFilter: Encodable, Equatable, Sendable {
     }
 }
 
-private struct DynamicCodingKey: CodingKey {
+struct DynamicCodingKey: CodingKey {
     let stringValue: String
     let intValue: Int? = nil
 
@@ -75,25 +75,30 @@ final class HerdrEventConnection: @unchecked Sendable {
         cancel()
     }
 
-    func run(onEvent: @escaping @Sendable (HerdrEvent) -> Void) throws {
+    func run(
+        onSubscribed: @escaping @Sendable () -> Void = {},
+        onEvent: @escaping @Sendable (HerdrEvent) -> Void
+    ) throws {
         defer { cancel() }
+        guard !isClosed else { return }
         try HerdrSocketTransport.writeAll(requestPayload, to: descriptor)
         let reader = DescriptorLineReader(descriptor: descriptor)
         _ = try HerdrSocketTransport.validatedResult(
             from: reader.readLine(),
             requestID: requestID
         )
+        onSubscribed()
 
         let decoder = JSONDecoder()
         while !isClosed {
             let data = try reader.readLine()
             let discriminator = try Self.eventDiscriminator(from: data)
-            if HerdrSchemaCatalog.eventTypes.contains(discriminator) {
-                let event = try decoder.decode(HerdrLifecycleEvent.self, from: data)
-                onEvent(.lifecycle(event))
-            } else if HerdrSchemaCatalog.subscriptionEventTypes.contains(discriminator) {
+            if HerdrSchemaCatalog.subscriptionEventTypes.contains(discriminator) {
                 let event = try decoder.decode(HerdrSubscriptionEnvelope.self, from: data)
                 onEvent(.subscription(event))
+            } else if HerdrSchemaCatalog.eventTypes.contains(discriminator) {
+                let event = try decoder.decode(HerdrLifecycleEvent.self, from: data)
+                onEvent(.lifecycle(event))
             } else {
                 throw HerdrCompatibilityError.unknownEventDiscriminator(
                     discriminator
@@ -141,7 +146,6 @@ public struct HerdrEventsService: HerdrService {
             let task = Task.detached {
                 do {
                     try connection.run { continuation.yield($0) }
-                    continuation.finish()
                 } catch {
                     if !Task.isCancelled {
                         continuation.finish(throwing: error)

@@ -2,9 +2,22 @@ import Foundation
 
 public struct HerdrExecutableLocator: Sendable {
     private let environment: [String: String]
+    private let standardPaths: [String]
 
     public init(environment: [String: String] = ProcessInfo.processInfo.environment) {
         self.environment = environment
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        standardPaths = [
+            "/opt/homebrew/bin/herdr",
+            "/usr/local/bin/herdr",
+            "/opt/local/bin/herdr",
+            "\(home)/.local/bin/herdr",
+        ]
+    }
+
+    init(environment: [String: String], standardPaths: [String]) {
+        self.environment = environment
+        self.standardPaths = standardPaths
     }
 
     public func locate() throws -> URL {
@@ -14,13 +27,7 @@ public struct HerdrExecutableLocator: Sendable {
             return URL(fileURLWithPath: override)
         }
 
-        let home = fileManager.homeDirectoryForCurrentUser.path
-        let candidates = [
-            "/opt/homebrew/bin/herdr",
-            "/usr/local/bin/herdr",
-            "/opt/local/bin/herdr",
-            "\(home)/.local/bin/herdr",
-        ] + (environment["PATH"] ?? "")
+        let candidates = standardPaths + (environment["PATH"] ?? "")
             .split(separator: ":")
             .map { "\($0)/herdr" }
 

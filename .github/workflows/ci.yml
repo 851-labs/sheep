@@ -30,8 +30,8 @@ jobs:
       - name: Verify HerdrSDK schema generation
         run: Scripts/check-herdr-sdk-generation.sh
 
-      - name: Test HerdrSDK
-        run: swift test --package-path Packages/HerdrSDK
+      - name: Test HerdrSDK at 100% handwritten coverage
+        run: Scripts/check-herdr-sdk-coverage.sh
 
       - name: Cache GhosttyKit
         id: ghostty-cache

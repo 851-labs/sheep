@@ -1,5 +1,25 @@
 import Foundation
 
+struct HerdrSessionObservationTiming: Sendable {
+    let reconnectPollInterval: Duration
+    let safetyRefreshInterval: Duration
+    let debounceDelay: Duration
+    let retryDelays: [Duration]
+
+    static let production = Self(
+        reconnectPollInterval: .seconds(1),
+        safetyRefreshInterval: .seconds(5),
+        debounceDelay: .milliseconds(75),
+        retryDelays: [
+            .seconds(1), .seconds(2), .seconds(4), .seconds(8), .seconds(10),
+        ]
+    )
+
+    func retryDelay(at index: Int) -> Duration {
+        retryDelays[min(index, retryDelays.count - 1)]
+    }
+}
+
 public enum HerdrConnectionState: Equatable, Sendable {
     case connecting
     case connected
@@ -126,7 +146,7 @@ extension HerdrClient {
     }
 
     private func runSessionObservation() async {
-        var retrySeconds: UInt64 = 1
+        var retryIndex = 0
         while !Task.isCancelled {
             publishSession(currentSession == nil ? .connecting : sessionConnection)
             do {
@@ -137,18 +157,24 @@ extension HerdrClient {
                     paneIDs: Set(snapshot.panes.map(\.id))
                 )
                 publishSession(.connected)
-                retrySeconds = 1
+                retryIndex = 0
 
-                var secondsUntilSafetyRefresh = 5
+                let clock = ContinuousClock()
+                var safetyDeadline = clock.now.advanced(
+                    by: sessionObservationTiming.safetyRefreshInterval
+                )
                 while !Task.isCancelled {
-                    try await Task.sleep(for: .seconds(1))
+                    try await Task.sleep(
+                        for: sessionObservationTiming.reconnectPollInterval
+                    )
                     if let reason = sessionReconnectReason {
                         throw HerdrAPIError(code: "subscription_lost", message: reason)
                     }
-                    secondsUntilSafetyRefresh -= 1
-                    if secondsUntilSafetyRefresh == 0 {
+                    if clock.now >= safetyDeadline {
                         try await refreshAuthoritativeSnapshot()
-                        secondsUntilSafetyRefresh = 5
+                        safetyDeadline = clock.now.advanced(
+                            by: sessionObservationTiming.safetyRefreshInterval
+                        )
                     }
                 }
             } catch {
@@ -159,8 +185,13 @@ extension HerdrClient {
                         ? .unavailable(error.localizedDescription)
                         : .disconnected(error.localizedDescription)
                 )
-                try? await Task.sleep(for: .seconds(retrySeconds))
-                retrySeconds = min(retrySeconds * 2, 10)
+                try? await Task.sleep(
+                    for: sessionObservationTiming.retryDelay(at: retryIndex)
+                )
+                retryIndex = min(
+                    retryIndex + 1,
+                    sessionObservationTiming.retryDelays.count - 1
+                )
             }
         }
     }
@@ -213,9 +244,10 @@ extension HerdrClient {
     private func scheduleSessionRefresh() {
         guard sessionRunTask != nil else { return }
         sessionRefreshTask?.cancel()
+        let delay = sessionObservationTiming.debounceDelay
         sessionRefreshTask = Task { [weak self] in
             do {
-                try await Task.sleep(for: .milliseconds(75))
+                try await Task.sleep(for: delay)
             } catch {
                 return
             }

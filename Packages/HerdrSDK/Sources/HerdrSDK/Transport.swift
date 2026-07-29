@@ -17,6 +17,17 @@ public struct HerdrStaticEndpoint: HerdrEndpointProvider {
 
 struct HerdrSocketTransport: Sendable {
     let socketURL: URL
+    private let socketFactory: @Sendable () -> Int32
+
+    init(
+        socketURL: URL,
+        socketFactory: @escaping @Sendable () -> Int32 = {
+            Darwin.socket(AF_UNIX, SOCK_STREAM, 0)
+        }
+    ) {
+        self.socketURL = socketURL
+        self.socketFactory = socketFactory
+    }
 
     func makeRequestOperation(
         method: String,
@@ -101,9 +112,9 @@ struct HerdrSocketTransport: Sendable {
     }
 
     func openSocketDescriptor() throws -> Int32 {
-        let descriptor = Darwin.socket(AF_UNIX, SOCK_STREAM, 0)
+        let descriptor = socketFactory()
         guard descriptor >= 0 else {
-            throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+            throw Self.posixError(errno, fallback: .EIO)
         }
         var noSignal: Int32 = 1
         setsockopt(
@@ -136,7 +147,7 @@ struct HerdrSocketTransport: Sendable {
         guard result == 0 else {
             let code = errno
             Darwin.close(descriptor)
-            throw POSIXError(POSIXErrorCode(rawValue: code) ?? .ECONNREFUSED)
+            throw Self.posixError(code, fallback: .ECONNREFUSED)
         }
         return descriptor
     }
@@ -174,8 +185,9 @@ struct HerdrSocketTransport: Sendable {
     }
 
     static func writeAll(_ data: Data, to descriptor: Int32) throws {
+        guard !data.isEmpty else { return }
         try data.withUnsafeBytes { rawBuffer in
-            guard let base = rawBuffer.baseAddress else { return }
+            let base = rawBuffer.baseAddress!
             var sent = 0
             while sent < data.count {
                 let count = Darwin.send(
@@ -185,11 +197,18 @@ struct HerdrSocketTransport: Sendable {
                     0
                 )
                 guard count > 0 else {
-                    throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+                    throw Self.posixError(errno, fallback: .EIO)
                 }
                 sent += count
             }
         }
+    }
+
+    static func posixError(
+        _ code: Int32,
+        fallback: POSIXErrorCode
+    ) -> POSIXError {
+        POSIXError(POSIXErrorCode(rawValue: code) ?? fallback)
     }
 }
 
@@ -277,31 +296,32 @@ private struct SubscribeParameters: Encodable {
 
 final class DescriptorLineReader {
     private let descriptor: Int32
+    private let maximumLineBytes: Int
     private var buffer = Data()
 
-    init(descriptor: Int32) {
+    init(descriptor: Int32, maximumLineBytes: Int = 32 * 1_024 * 1_024) {
         self.descriptor = descriptor
+        self.maximumLineBytes = maximumLineBytes
     }
 
     func readLine() throws -> Data {
-        while true {
-            if let newline = buffer.firstIndex(of: 0x0A) {
-                let line = Data(buffer.prefix(upTo: newline))
-                buffer.removeSubrange(...newline)
-                return line
-            }
+        while buffer.firstIndex(of: 0x0A) == nil {
             var bytes = [UInt8](repeating: 0, count: 4_096)
             let count = Darwin.read(descriptor, &bytes, bytes.count)
-            guard count > 0 else {
-                throw POSIXError(.ECONNRESET)
-            }
+            guard count > 0 else { break }
             buffer.append(contentsOf: bytes.prefix(count))
-            guard buffer.count <= 32 * 1_024 * 1_024 else {
+            guard buffer.count <= maximumLineBytes else {
                 throw HerdrAPIError(
                     code: "oversized_response",
                     message: "Herdr response is larger than 32 MiB."
                 )
             }
         }
+        guard let newline = buffer.firstIndex(of: 0x0A) else {
+            throw POSIXError(.ECONNRESET)
+        }
+        let line = Data(buffer.prefix(upTo: newline))
+        buffer.removeSubrange(...newline)
+        return line
     }
 }

@@ -1,10 +1,12 @@
 import Foundation
 import HerdrSDK
-import XCTest
+import Testing
 @testable import sheep
 
-final class WorkspaceProjectionTests: XCTestCase {
-    func testRepositoryDirectoryFallsBackToActivePaneCWD() throws {
+@Suite
+struct WorkspaceProjectionTests {
+    @Test
+    func repositoryDirectoryFallsBackToActivePaneCWD() throws {
         let json = """
         {
           "version": "0.7.5", "protocol": 17,
@@ -30,11 +32,11 @@ final class WorkspaceProjectionTests: XCTestCase {
         }
         """
         let session = try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
-        let workspace = try XCTUnwrap(session.focusedWorkspace)
+        let workspace = try #require(session.focusedWorkspace)
 
-        XCTAssertEqual(
-            WorkspaceProjection.repositoryDirectory(for: workspace, in: session)?.path,
-            "/tmp/sheep"
+        #expect(
+            WorkspaceProjection.repositoryDirectory(for: workspace, in: session)?.path
+                == "/tmp/sheep"
         )
     }
 }

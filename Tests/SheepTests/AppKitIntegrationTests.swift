@@ -2,11 +2,13 @@ import AppKit
 import Foundation
 import HerdrSDK
 @testable import sheep
-import XCTest
+import Testing
 
 @MainActor
-final class AppKitIntegrationTests: XCTestCase {
-    func testSidebarTabsNestedSplitsAndAccessibilityLabels() async throws {
+@Suite(.serialized)
+struct AppKitIntegrationTests {
+    @Test
+    func sidebarTabsNestedSplitsAndAccessibilityLabels() async throws {
         let session = try Self.session()
         let layout = PaneLayout(
             workspaceID: WorkspaceID(rawValue: "w1"),
@@ -44,65 +46,65 @@ final class AppKitIntegrationTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100))
 
         let labels = allSubviews(in: controller.view).compactMap { $0.accessibilityLabel() }
-        XCTAssertTrue(labels.contains("Spaces"))
-        XCTAssertTrue(labels.contains("Agents grouped by space"))
-        XCTAssertFalse(labels.contains("Create space"))
-        XCTAssertFalse(labels.contains("Collapse sidebar"))
-        XCTAssertTrue(labels.contains("Tab 1"))
-        XCTAssertFalse(labels.contains("Tab other"))
+        #expect(labels.contains("Spaces"))
+        #expect(labels.contains("Agents grouped by space"))
+        #expect(!labels.contains("Create space"))
+        #expect(!labels.contains("Collapse sidebar"))
+        #expect(labels.contains("Tab 1"))
+        #expect(!labels.contains("Tab other"))
 
-        XCTAssertEqual(controller.splitViewItems.first?.behavior, .sidebar)
+        #expect(controller.splitViewItems.first?.behavior == .sidebar)
         let visualEffects: [NSVisualEffectView] = allSubviews(in: controller.view)
-        XCTAssertTrue(visualEffects.contains { $0.material == .sidebar })
-        XCTAssertTrue(visualEffects.contains {
+        #expect(visualEffects.contains { $0.material == .sidebar })
+        #expect(visualEffects.contains {
             $0.material == .contentBackground
                 && $0.blendingMode == .behindWindow
                 && $0.state == .followsWindowActiveState
         })
         let toolbar = MainWindowToolbar(splitView: controller.splitView)
-        XCTAssertEqual(
-            toolbar.toolbar.items.map(\.itemIdentifier),
-            MainWindowToolbar.itemIdentifiers
+        #expect(
+            toolbar.toolbar.items.map(\.itemIdentifier)
+                == MainWindowToolbar.itemIdentifiers
         )
-        XCTAssertEqual(toolbar.toolbar.items[1].itemIdentifier, .toggleSidebar)
-        XCTAssertEqual(toolbar.toolbar.items[2].itemIdentifier, .space)
-        XCTAssertTrue(toolbar.toolbar.items[3] is NSTrackingSeparatorToolbarItem)
+        #expect(toolbar.toolbar.items[1].itemIdentifier == .toggleSidebar)
+        #expect(toolbar.toolbar.items[2].itemIdentifier == .space)
+        #expect(toolbar.toolbar.items[3] is NSTrackingSeparatorToolbarItem)
 
         let textFields: [NSTextField] = allSubviews(in: controller.view)
         let buttons: [NSButton] = allSubviews(in: controller.view)
-        XCTAssertTrue(textFields.contains { $0.stringValue == "GROUPED" })
-        XCTAssertFalse(buttons.contains { $0.title == "New" })
-        XCTAssertTrue(
+        #expect(textFields.contains { $0.stringValue == "GROUPED" })
+        #expect(!buttons.contains { $0.title == "New" })
+        #expect(
             textFields
                 .filter { $0.stringValue == "sheep" || $0.stringValue == "codex" }
                 .allSatisfy { $0.alignment == .left }
         )
         let nativeFonts = (textFields.compactMap(\.font) + buttons.compactMap(\.font))
-        XCTAssertFalse(nativeFonts.contains {
+        #expect(!nativeFonts.contains {
             $0.fontDescriptor.symbolicTraits.contains(.monoSpace)
         })
 
         let tables: [NSTableView] = allSubviews(in: controller.view)
-        XCTAssertTrue(tables.allSatisfy {
+        #expect(tables.allSatisfy {
             $0.tableColumns.first?.resizingMask.contains(.autoresizingMask) == true
         })
 
         let splitViews: [NSSplitView] = allSubviews(in: controller.view)
-        XCTAssertGreaterThanOrEqual(splitViews.count, 3)
+        #expect(splitViews.count >= 3)
         let terminalSplits: [TerminalCardSplitView] = allSubviews(in: controller.view)
-        XCTAssertEqual(terminalSplits.count, 2)
-        XCTAssertTrue(terminalSplits.allSatisfy {
+        #expect(terminalSplits.count == 2)
+        #expect(terminalSplits.allSatisfy {
             $0.dividerThickness == TerminalCardSplitView.gutter
         })
 
         let terminalCards: [TerminalCardView] = allSubviews(in: controller.view)
-        XCTAssertEqual(terminalCards.count, 3)
-        XCTAssertTrue(terminalCards.allSatisfy {
+        #expect(terminalCards.count == 3)
+        #expect(terminalCards.allSatisfy {
             $0.layer?.cornerRadius == TerminalCardView.cornerRadius
                 && $0.layer?.masksToBounds == true
                 && $0.layer?.borderWidth == 1
         })
-        XCTAssertTrue(terminalCards.allSatisfy { card in
+        #expect(terminalCards.allSatisfy { card in
             guard let terminal = card.subviews.first else { return false }
             let edgeConstraints = card.constraints.filter {
                 ($0.firstItem as? NSView) === terminal
@@ -112,17 +114,18 @@ final class AppKitIntegrationTests: XCTestCase {
                 && edgeConstraints.allSatisfy { $0.constant == 0 }
         })
         let cardLabels = terminalCards.compactMap { $0.accessibilityLabel() }
-        XCTAssertEqual(
-            Set(cardLabels),
-            Set(["Terminal card w1:p1", "Terminal card w1:p2", "Terminal card w1:p3"])
+        #expect(
+            Set(cardLabels)
+                == Set(["Terminal card w1:p1", "Terminal card w1:p2", "Terminal card w1:p3"])
         )
 
         let outlines: [NSOutlineView] = allSubviews(in: controller.view)
-        XCTAssertEqual(outlines.first?.numberOfRows, 3)
-        XCTAssertEqual(recorder.focusCount, 0)
+        #expect(outlines.first?.numberOfRows == 3)
+        #expect(recorder.focusCount == 0)
     }
 
-    func testDisconnectedSessionRetainsContentAndShowsBanner() async throws {
+    @Test
+    func disconnectedSessionRetainsContentAndShowsBanner() async throws {
         let session = try Self.session()
         let layout = PaneLayout(
             workspaceID: WorkspaceID(rawValue: "w1"),
@@ -153,11 +156,11 @@ final class AppKitIntegrationTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100))
 
         let fields: [NSTextField] = allSubviews(in: controller.view)
-        XCTAssertTrue(fields.contains {
+        #expect(fields.contains {
             $0.stringValue.contains("Disconnected")
                 && $0.stringValue.contains("socket closed")
         })
-        XCTAssertTrue(fields.contains { $0.stringValue == "Terminal unavailable" })
+        #expect(fields.contains { $0.stringValue == "Terminal unavailable" })
     }
 
     private static func session() throws -> HerdrSession {

@@ -1,10 +1,12 @@
-import XCTest
+import Testing
 @testable import sheep
 
-final class GitSummaryTests: XCTestCase {
-    func testCompactDescriptionIncludesDivergence() {
+@Suite
+struct GitSummaryTests {
+    @Test
+    func compactDescriptionIncludesDivergence() {
         let summary = GitSummary(branch: "main", ahead: 2, behind: 3)
-        XCTAssertEqual(summary.compactDescription, "main ↑2 ↓3")
-        XCTAssertEqual(GitSummary(branch: "detached").compactDescription, "detached")
+        #expect(summary.compactDescription == "main ↑2 ↓3")
+        #expect(GitSummary(branch: "detached").compactDescription == "detached")
     }
 }

@@ -55,7 +55,7 @@ public extension HerdrResponseTypes {
 }
 
 // MARK: - HerdrResponseResponse
-public struct HerdrResponseResponse: Codable, Sendable {
+public final class HerdrResponseResponse: Codable, Sendable {
     public let capabilities: HerdrResponseCapabilitiesClass?
     public let responseProtocol: Int?
     public let type: HerdrResponseResponseResultType
@@ -250,21 +250,6 @@ public struct HerdrResponseResponse: Codable, Sendable {
 // MARK: HerdrResponseResponse convenience initializers and mutators
 
 public extension HerdrResponseResponse {
-    init(data: Data) throws {
-        self = try newHerdrResponseJSONDecoder().decode(HerdrResponseResponse.self, from: data)
-    }
-
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-
     func with(
         capabilities: HerdrResponseCapabilitiesClass?? = nil,
         responseProtocol: Int?? = nil,

@@ -147,6 +147,19 @@ for (const group of groups) {
     /public class (Herdr[^:]+): Codable, Sendable/g,
     "public final class $1: Codable, Sendable",
   );
+  // ResponseResult currently expands to a large product type. Keeping it as a
+  // struct makes HerdrSuccessResult exceed the cooperative executor's stack
+  // while decoding, so box the generated root response value.
+  if (group.name === "Response") {
+    source = source.replace(
+      "public struct HerdrResponseResponse: Codable, Sendable",
+      "public final class HerdrResponseResponse: Codable, Sendable",
+    );
+    source = source.replace(
+      /    init\(data: Data\) throws \{\n        self = try newHerdrResponseJSONDecoder\(\)\.decode\(HerdrResponseResponse\.self, from: data\)\n    \}\n\n    init\(_ json: String, using encoding: String\.Encoding = \.utf8\) throws \{\n        guard let data = json\.data\(using: encoding\) else \{\n            throw NSError\(domain: "JSONDecoding", code: 0, userInfo: nil\)\n        \}\n        try self\.init\(data: data\)\n    \}\n\n    init\(fromURL url: URL\) throws \{\n        try self\.init\(data: try Data\(contentsOf: url\)\)\n    \}\n\n/,
+      "",
+    );
+  }
   source = source.replace(
     new RegExp(`class Herdr${group.name}JSONCodingKey:`, "g"),
     `final class Herdr${group.name}JSONCodingKey:`,

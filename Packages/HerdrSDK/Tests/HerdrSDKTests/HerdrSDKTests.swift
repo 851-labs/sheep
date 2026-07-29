@@ -1,20 +1,23 @@
 import Foundation
 import HerdrSDK
 import HerdrSDKLocal
-import XCTest
+import Testing
 
-final class HerdrSDKTests: XCTestCase {
-    func testSchemaCatalogCoversProtocol17() {
-        XCTAssertEqual(HerdrProtocolMetadata.protocolVersion, 17)
-        XCTAssertEqual(
-            HerdrSchemaCatalog.methods,
-            Set(HerdrMethod.allCases.map(\.rawValue))
+@Suite
+struct HerdrSDKTests {
+    @Test
+    func schemaCatalogCoversProtocol17() {
+        #expect(HerdrProtocolMetadata.protocolVersion == 17)
+        #expect(
+            HerdrSchemaCatalog.methods
+                == Set(HerdrMethod.allCases.map(\.rawValue))
         )
-        XCTAssertEqual(HerdrSchemaCatalog.methods.count, 90)
-        XCTAssertEqual(HerdrSchemaCatalog.resultTypes.count, 57)
+        #expect(HerdrSchemaCatalog.methods.count == 90)
+        #expect(HerdrSchemaCatalog.resultTypes.count == 57)
     }
 
-    func testLocalAttachmentUsesDirectTakeover() async throws {
+    @Test
+    func localAttachmentUsesDirectTakeover() async throws {
         let executable = URL(fileURLWithPath: "/bin/echo")
         let server = HerdrLocalServer(
             configuration: .init(executableURL: executable)
@@ -22,8 +25,8 @@ final class HerdrSDKTests: XCTestCase {
         let attachment = try await server.terminalAttachment(
             terminalID: .init(rawValue: "term_123")
         )
-        XCTAssertEqual(attachment.executableURL, executable)
-        XCTAssertEqual(attachment.arguments, [
+        #expect(attachment.executableURL == executable)
+        #expect(attachment.arguments == [
             "terminal",
             "attach",
             "term_123",
@@ -31,7 +34,8 @@ final class HerdrSDKTests: XCTestCase {
         ])
     }
 
-    func testProtocolSnapshotIgnoresUnknownFields() throws {
+    @Test
+    func protocolSnapshotIgnoresUnknownFields() throws {
         let data = Data(
             """
             {
@@ -50,39 +54,43 @@ final class HerdrSDKTests: XCTestCase {
             """.utf8
         )
         let snapshot = try JSONDecoder().decode(HerdrSession.self, from: data)
-        XCTAssertEqual(snapshot.protocolVersion, 17)
-        XCTAssertTrue(snapshot.layouts.isEmpty)
+        #expect(snapshot.protocolVersion == 17)
+        #expect(snapshot.layouts.isEmpty)
     }
 
-    func testUnknownResultAndEventDiscriminatorsFailDecoding() {
-        XCTAssertThrowsError(
-            try JSONDecoder().decode(
+    @Test
+    func unknownResultAndEventDiscriminatorsFailDecoding() {
+        do {
+            _ = try JSONDecoder().decode(
                 HerdrResponseResult.self,
                 from: Data(#"{"type":"future_result"}"#.utf8)
             )
-        ) { error in
-            XCTAssertEqual(
-                error as? HerdrCompatibilityError,
-                .unknownResultDiscriminator("future_result")
+            Issue.record("Expected an unknown result discriminator")
+        } catch {
+            #expect(
+                error as? HerdrCompatibilityError
+                    == .unknownResultDiscriminator("future_result")
             )
         }
-        XCTAssertThrowsError(
+        #expect(throws: (any Error).self) {
             try JSONDecoder().decode(
                 HerdrLifecycleEvent.self,
                 from: Data(
                     #"{"event":"future.event","data":{"type":"future_event"}}"#.utf8
                 )
             )
-        )
+        }
     }
 
-    func testStrongIdentifiersAndArbitraryJSONRoundTrip() throws {
+    @Test
+    func strongIdentifiersAndArbitraryJSONRoundTrip() throws {
         let paneID = PaneID(rawValue: "pane_9223372036854775807")
         let target = HerdrRequestPaneTarget(paneID: paneID)
         let encodedTarget = try JSONEncoder().encode(target)
-        XCTAssertEqual(
-            try JSONDecoder().decode(HerdrRequestPaneTarget.self, from: encodedTarget).paneID,
-            paneID
+        #expect(
+            try JSONDecoder()
+                .decode(HerdrRequestPaneTarget.self, from: encodedTarget)
+                .paneID == paneID
         )
 
         let value = HerdrJSONValue.object([
@@ -90,15 +98,16 @@ final class HerdrSDKTests: XCTestCase {
             "nested": .array([.bool(true), .null]),
         ])
         let encodedValue = try JSONEncoder().encode(value)
-        XCTAssertEqual(try JSONDecoder().decode(HerdrJSONValue.self, from: encodedValue), value)
+        #expect(try JSONDecoder().decode(HerdrJSONValue.self, from: encodedValue) == value)
     }
 
-    func testInstalledHerdrSnapshotContractWhenAvailable() throws {
+    @Test
+    func installedHerdrSnapshotContractWhenAvailable() throws {
         let executable: URL
         do {
             executable = try HerdrExecutableLocator().locate()
         } catch {
-            throw XCTSkip("Herdr is not installed")
+            return
         }
 
         let process = Process()
@@ -110,12 +119,12 @@ final class HerdrSDKTests: XCTestCase {
         let data = output.fileHandleForReading.readDataToEndOfFile()
         process.waitUntilExit()
         guard process.terminationStatus == 0 else {
-            throw XCTSkip("No running local Herdr server")
+            return
         }
 
         let response = try JSONDecoder().decode(SnapshotEnvelope.self, from: data)
-        XCTAssertEqual(response.result.snapshot.protocolVersion, 17)
-        XCTAssertFalse(response.result.snapshot.workspaces.isEmpty)
+        #expect(response.result.snapshot.protocolVersion == 17)
+        #expect(!response.result.snapshot.workspaces.isEmpty)
     }
 }
 

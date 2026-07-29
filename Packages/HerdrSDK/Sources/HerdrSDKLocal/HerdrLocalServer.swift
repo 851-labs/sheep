@@ -3,11 +3,24 @@ import HerdrSDK
 
 public actor HerdrLocalServer: HerdrEndpointProvider {
     public let configuration: HerdrLocalConfiguration
+    private let readinessProbe: @Sendable (URL) async -> Bool
     private var launchedProcess: Process?
     private var logHandle: FileHandle?
 
     public init(configuration: HerdrLocalConfiguration = .init()) {
         self.configuration = configuration
+        readinessProbe = { socketURL in
+            let client = HerdrClient(socketURL: socketURL)
+            return (try? await client.server.ping()) != nil
+        }
+    }
+
+    init(
+        configuration: HerdrLocalConfiguration,
+        readinessProbe: @escaping @Sendable (URL) async -> Bool
+    ) {
+        self.configuration = configuration
+        self.readinessProbe = readinessProbe
     }
 
     public func socketURL() async throws -> URL {
@@ -57,7 +70,7 @@ public actor HerdrLocalServer: HerdrEndpointProvider {
         return try HerdrExecutableLocator(environment: configuration.environment).locate()
     }
 
-    private var resolvedSocketURL: URL {
+    var resolvedSocketURL: URL {
         if let explicit = configuration.socketURL {
             return explicit
         }
@@ -69,8 +82,7 @@ public actor HerdrLocalServer: HerdrEndpointProvider {
     }
 
     private func isReady(_ socketURL: URL) async -> Bool {
-        let client = HerdrClient(socketURL: socketURL)
-        return (try? await client.server.ping()) != nil
+        await readinessProbe(socketURL)
     }
 
     private func launch(_ executableURL: URL) throws {

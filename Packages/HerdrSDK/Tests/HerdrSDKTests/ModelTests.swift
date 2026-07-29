@@ -1,22 +1,24 @@
 import Foundation
 import HerdrSDK
-import XCTest
+import Testing
 
-final class ModelTests: XCTestCase {
-    func testAgentStatusUrgency() {
-        XCTAssertEqual(
+@Suite
+struct ModelTests {
+    @Test
+    func agentStatusUrgency() {
+        #expect(
             [
                 AgentStatus.blocked,
                 .working,
                 .done,
                 .idle,
                 .unknown,
-            ].map(\.urgency),
-            [5, 4, 3, 2, 1]
+            ].map(\.urgency) == [5, 4, 3, 2, 1]
         )
     }
 
-    func testLayoutDecodesHerdrShapeAndZoom() throws {
+    @Test
+    func layoutDecodesHerdrShapeAndZoom() throws {
         let json = """
         {
           "workspace_id": "w1",
@@ -33,8 +35,8 @@ final class ModelTests: XCTestCase {
         }
         """
         let layout = try JSONDecoder().decode(PaneLayout.self, from: Data(json.utf8))
-        XCTAssertEqual(layout.root.paneIDs().map(\.rawValue), ["w1:p1", "w1:p2"])
-        XCTAssertEqual(layout.root.leavesWithPaths().map(\.path), [[false], [true]])
+        #expect(layout.root.paneIDs().map(\.rawValue) == ["w1:p1", "w1:p2"])
+        #expect(layout.root.leavesWithPaths().map(\.path) == [[false], [true]])
 
         let zoomed = PaneLayout(
             workspaceID: layout.workspaceID,
@@ -43,10 +45,11 @@ final class ModelTests: XCTestCase {
             focusedPaneID: PaneID(rawValue: "w1:p2"),
             root: layout.root
         )
-        XCTAssertEqual(zoomed.visibleRoot, .pane(PaneID(rawValue: "w1:p2")))
+        #expect(zoomed.visibleRoot == .pane(PaneID(rawValue: "w1:p2")))
     }
 
-    func testProtocol17SnapshotIgnoresUnknownFields() throws {
+    @Test
+    func protocol17SnapshotIgnoresUnknownFields() throws {
         let json = """
         {
           "version": "0.7.5",
@@ -81,13 +84,14 @@ final class ModelTests: XCTestCase {
         """
 
         let session = try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
-        XCTAssertEqual(session.protocolVersion, 17)
-        XCTAssertEqual(session.focusedWorkspace?.label, "sheep")
-        XCTAssertEqual(session.focusedTab?.id, TabID(rawValue: "w1:t1"))
-        XCTAssertEqual(session.agents.first?.displayName, "codex")
+        #expect(session.protocolVersion == 17)
+        #expect(session.focusedWorkspace?.label == "sheep")
+        #expect(session.focusedTab?.id == TabID(rawValue: "w1:t1"))
+        #expect(session.agents.first?.displayName == "codex")
     }
 
-    func testSelectionFallsBackFromStaleFocusedIdentifiers() throws {
+    @Test
+    func selectionFallsBackFromStaleFocusedIdentifiers() throws {
         let json = """
         {
           "version": "0.7.5", "protocol": 17,
@@ -114,8 +118,8 @@ final class ModelTests: XCTestCase {
         """
         let session = try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
 
-        XCTAssertEqual(session.focusedWorkspace?.id, WorkspaceID(rawValue: "w1"))
-        XCTAssertEqual(session.focusedTab?.id, TabID(rawValue: "w1:t1"))
-        XCTAssertEqual(session.focusedPane?.id, PaneID(rawValue: "w1:p1"))
+        #expect(session.focusedWorkspace?.id == WorkspaceID(rawValue: "w1"))
+        #expect(session.focusedTab?.id == TabID(rawValue: "w1:t1"))
+        #expect(session.focusedPane?.id == PaneID(rawValue: "w1:p1"))
     }
 }

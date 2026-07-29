@@ -1,44 +1,57 @@
 import AppKit
-import XCTest
+import Testing
 @testable import sheep
 
 @MainActor
-final class AppearanceTests: XCTestCase {
-    func testApplicationForcesDarkAppearance() {
-        XCTAssertEqual(NSApp.appearance?.name, .darkAqua)
+@Suite
+struct AppearanceTests {
+    @Test
+    func applicationForcesDarkAppearance() {
+        #expect(NSApp.appearance?.name == .darkAqua)
     }
 
-    func testPaletteUsesAdaptiveSystemColors() {
-        XCTAssertEqual(Palette.terminal, .textBackgroundColor)
-        XCTAssertEqual(Palette.selected, .selectedContentBackgroundColor)
-        XCTAssertEqual(Palette.idle, .systemTeal)
-        XCTAssertEqual(Palette.working, .systemYellow)
-        XCTAssertEqual(Palette.warning, .systemOrange)
-        XCTAssertEqual(Palette.blocked, .systemPink)
-        XCTAssertEqual(Palette.error, .systemRed)
+    @Test
+    func paletteUsesAdaptiveSystemColors() {
+        #expect(Palette.terminal == .textBackgroundColor)
+        #expect(Palette.selected == .selectedContentBackgroundColor)
+        #expect(Palette.idle == .systemTeal)
+        #expect(Palette.working == .systemYellow)
+        #expect(Palette.warning == .systemOrange)
+        #expect(Palette.blocked == .systemPink)
+        #expect(Palette.error == .systemRed)
     }
 
-    func testGhosttyGeometrySeparatesResizeFromDisplayAndScaleChanges() {
+    @Test
+    func ghosttyGeometrySeparatesResizeFromDisplayAndScaleChanges() {
         var geometry = GhosttySurfaceGeometryState()
         let initialSize = GhosttySurfacePixelSize(width: 1_600, height: 1_200)
 
-        XCTAssertTrue(geometry.recordContentScale(x: 2, y: 2))
-        XCTAssertTrue(geometry.recordDisplayID(42))
-        XCTAssertTrue(geometry.recordPixelSize(initialSize))
+        var changed = geometry.recordContentScale(x: 2, y: 2)
+        #expect(changed)
+        changed = geometry.recordDisplayID(42)
+        #expect(changed)
+        changed = geometry.recordPixelSize(initialSize)
+        #expect(changed)
 
-        XCTAssertFalse(geometry.recordContentScale(x: 2, y: 2))
-        XCTAssertFalse(geometry.recordDisplayID(42))
-        XCTAssertFalse(geometry.recordPixelSize(initialSize))
+        changed = geometry.recordContentScale(x: 2, y: 2)
+        #expect(!changed)
+        changed = geometry.recordDisplayID(42)
+        #expect(!changed)
+        changed = geometry.recordPixelSize(initialSize)
+        #expect(!changed)
 
-        XCTAssertTrue(
-            geometry.recordPixelSize(
-                GhosttySurfacePixelSize(width: 1_500, height: 1_200)
-            )
+        changed = geometry.recordPixelSize(
+            GhosttySurfacePixelSize(width: 1_500, height: 1_200)
         )
-        XCTAssertFalse(geometry.recordContentScale(x: 2, y: 2))
-        XCTAssertFalse(geometry.recordDisplayID(42))
+        #expect(changed)
+        changed = geometry.recordContentScale(x: 2, y: 2)
+        #expect(!changed)
+        changed = geometry.recordDisplayID(42)
+        #expect(!changed)
 
-        XCTAssertTrue(geometry.recordContentScale(x: 1, y: 1))
-        XCTAssertTrue(geometry.recordDisplayID(7))
+        changed = geometry.recordContentScale(x: 1, y: 1)
+        #expect(changed)
+        changed = geometry.recordDisplayID(7)
+        #expect(changed)
     }
 }

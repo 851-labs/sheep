@@ -23,6 +23,15 @@ Protocol model source is generated from Herdr's bundled JSON Schema. Run
 `Tools/HerdrSDKGenerator/generate.mjs` from the Sheep repository root after updating
 the pinned Herdr submodule.
 
+The package uses Swift Testing. Handwritten production source in both products
+is held to 100% line coverage; generated protocol models are verified separately
+against the pinned schema:
+
+```sh
+Scripts/check-herdr-sdk-generation.sh
+Scripts/check-herdr-sdk-coverage.sh
+```
+
 ## License
 
 Apache-2.0.

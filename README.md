@@ -52,11 +52,14 @@ Regenerate its public protocol models after updating the pinned Herdr source:
 ```sh
 npm ci --prefix Tools/HerdrSDKGenerator
 node Tools/HerdrSDKGenerator/generate.mjs
-swift test --package-path Packages/HerdrSDK
+Scripts/check-herdr-sdk-generation.sh
+Scripts/check-herdr-sdk-coverage.sh
 ```
 
 Generated Swift sources are committed so applications consuming the package do
-not need Node, Rust, or the Herdr source tree.
+not need Node, Rust, or the Herdr source tree. The coverage gate requires 100%
+line coverage for handwritten `HerdrSDK` and `HerdrSDKLocal` production code;
+generated schema models are covered by the deterministic generation drift check.
 
 Xcode 27 beta's archive tools require 8-byte member alignment while Zig 0.15.2
 emits valid 2-byte-aligned Darwin archives. If that beta rejects an archive,

@@ -2,6 +2,7 @@ import Foundation
 
 public actor HerdrClient {
     private let endpointProvider: any HerdrEndpointProvider
+    let sessionObservationTiming: HerdrSessionObservationTiming
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     var sessionContinuations: [UUID: AsyncStream<HerdrSessionUpdate>.Continuation] = [:]
@@ -16,10 +17,28 @@ public actor HerdrClient {
 
     public init(endpointProvider: any HerdrEndpointProvider) {
         self.endpointProvider = endpointProvider
+        sessionObservationTiming = .production
     }
 
     public init(socketURL: URL) {
         endpointProvider = HerdrStaticEndpoint(url: socketURL)
+        sessionObservationTiming = .production
+    }
+
+    init(
+        endpointProvider: any HerdrEndpointProvider,
+        sessionObservationTiming: HerdrSessionObservationTiming
+    ) {
+        self.endpointProvider = endpointProvider
+        self.sessionObservationTiming = sessionObservationTiming
+    }
+
+    init(
+        socketURL: URL,
+        sessionObservationTiming: HerdrSessionObservationTiming
+    ) {
+        endpointProvider = HerdrStaticEndpoint(url: socketURL)
+        self.sessionObservationTiming = sessionObservationTiming
     }
 
     deinit {
