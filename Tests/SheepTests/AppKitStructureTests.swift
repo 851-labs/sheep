@@ -8,6 +8,10 @@ import XCTest
 
 @MainActor
 final class AppKitStructureTests: XCTestCase {
+    func testApplicationForcesDarkAppearance() {
+        XCTAssertEqual(NSApp.appearance?.name, .darkAqua)
+    }
+
     func testPaletteUsesAdaptiveSystemColors() {
         XCTAssertEqual(Palette.terminal, .textBackgroundColor)
         XCTAssertEqual(Palette.selected, .selectedContentBackgroundColor)
