@@ -65,5 +65,4 @@ Xcode versions do not require this compatibility step.
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE) and
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Apache-2.0. See [LICENSE](LICENSE).
