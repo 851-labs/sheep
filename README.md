@@ -5,7 +5,7 @@ AppKit, and Ghostty.
 
 ## Requirements
 
-- macOS 14 or newer
+- macOS 13 or newer
 - Xcode
 - Herdr 0.7.5 or newer
 - Zig 0.15.2 (for the pinned Ghostty dependency)
@@ -61,10 +61,16 @@ not need Node, Rust, or the Herdr source tree. The coverage gate requires 100%
 line coverage for handwritten `HerdrSDK` and `HerdrSDKLocal` production code;
 generated schema models are covered by the deterministic generation drift check.
 
+Build a release app containing both Apple Silicon and Intel slices with:
+
+```sh
+Scripts/build-universal-macos.sh
+```
+
 Xcode 27 beta's archive tools require 8-byte member alignment while Zig 0.15.2
-emits valid 2-byte-aligned Darwin archives. If that beta rejects an archive,
-`Scripts/repack-darwin-archive.mjs` can repack it with Apple's `ar`. Stable
-Xcode versions do not require this compatibility step.
+emits valid 2-byte-aligned Darwin archives. The Ghostty bootstrap automatically
+uses `Scripts/repack-darwin-archive.mjs` while aggregating its static libraries.
+Stable Xcode versions do not require this compatibility step.
 
 ## License
 

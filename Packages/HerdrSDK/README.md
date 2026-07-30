@@ -1,7 +1,7 @@
 # HerdrSDK
 
 `HerdrSDK` is a native Swift client for the Herdr protocol. The package targets
-macOS 14 or newer and contains no runtime dependencies.
+macOS 13 or newer and contains no runtime dependencies.
 
 ```swift
 import HerdrSDK

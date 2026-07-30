@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build-and-test:
-    # Xcode 16 is required for Swift 6; the product still targets macOS 14.
+    # Xcode 16 is required for Swift 6; the product targets macOS 13.
     runs-on: macos-15
     timeout-minutes: 45
 
@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: .repos/ghostty/macos/GhosttyKit.xcframework
-          key: ghostty-1.3.1-zig-0.15.2-${{ runner.os }}-${{ runner.arch }}-universal
+          key: ghostty-1.3.1-zig-0.15.2-${{ runner.os }}-macos13-universal-v2
 
       - name: Build GhosttyKit
         if: steps.ghostty-cache.outputs.cache-hit != 'true'
@@ -49,20 +49,10 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: .repos/ghostty/macos/GhosttyKit.xcframework
-          key: ghostty-1.3.1-zig-0.15.2-${{ runner.os }}-${{ runner.arch }}-universal
+          key: ghostty-1.3.1-zig-0.15.2-${{ runner.os }}-macos13-universal-v2
 
-      - name: Generate project
-        run: xcodegen generate
-
-      - name: Build
-        run: |
-          xcodebuild \
-            -project Sheep.xcodeproj \
-            -scheme Sheep \
-            -configuration Debug \
-            -destination 'platform=macOS' \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+      - name: Build universal macOS app
+        run: Scripts/build-universal-macos.sh
 
       - name: Test
         run: |

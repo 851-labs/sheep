@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+set -euo pipefail
+
+REPOSITORY_ROOT=${0:A:h:h:h}
+TEMPORARY_DIRECTORY=$(mktemp -d)
+trap 'rm -rf "$TEMPORARY_DIRECTORY"' EXIT
+
+arguments=()
+archive_index=0
+
+for argument in "$@"; do
+  if [[ "$argument" == *.a && -f "$argument" ]]; then
+    repacked_archive="$TEMPORARY_DIRECTORY/${archive_index}-${argument:t}"
+    node \
+      "$REPOSITORY_ROOT/Scripts/repack-darwin-archive.mjs" \
+      "$argument" \
+      "$repacked_archive" \
+      >/dev/null
+    arguments+=("$repacked_archive")
+    (( archive_index += 1 ))
+  else
+    arguments+=("$argument")
+  fi
+done
+
+/usr/bin/libtool "${arguments[@]}"

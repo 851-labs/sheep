@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "HerdrSDK",
     platforms: [
-        .macOS(.v14),
+        .macOS(.v13),
     ],
     products: [
         .library(name: "HerdrSDK", type: .static, targets: ["HerdrSDK"]),
