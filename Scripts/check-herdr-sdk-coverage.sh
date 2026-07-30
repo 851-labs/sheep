@@ -8,14 +8,22 @@ package_dir="$repository_dir/Packages/HerdrSDK"
 swift test --package-path "$package_dir" --enable-code-coverage
 
 products_dir=$(swift build --package-path "$package_dir" --show-bin-path)
-profile="$products_dir/codecov/default.profdata"
+profile=$(find "$products_dir" \
+    -path '*/codecov/default.profdata' \
+    -type f \
+    -print \
+    -quit)
 test_binary=$(find "$products_dir" \
-    -path '*/HerdrSDKTests.xctest/Contents/MacOS/HerdrSDKTests' \
+    \( \
+        -path '*/HerdrSDKTests.xctest/Contents/MacOS/HerdrSDKTests' \
+        -o \
+        -path '*/HerdrSDKPackageTests.xctest/Contents/MacOS/HerdrSDKPackageTests' \
+    \) \
     -type f \
     -print \
     -quit)
 
-if [ -z "$test_binary" ] || [ ! -f "$profile" ]; then
+if [ -z "$test_binary" ] || [ -z "$profile" ]; then
     echo "Unable to locate the HerdrSDK coverage artifacts." >&2
     exit 1
 fi
