@@ -101,9 +101,28 @@ final class AppModel {
         }
     }
 
-    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) {
-        perform {
-            try await self.repository.setSplitRatio(tabID: tabID, path: path, ratio: ratio)
+    func setSplitRatio(
+        tabID: TabID,
+        path: [Bool],
+        ratio: Double
+    ) async -> Result<PaneLayout, Error>? {
+        guard case .connected = connection else { return nil }
+        do {
+            let layout = try await repository.setSplitRatio(
+                tabID: tabID,
+                path: path,
+                ratio: ratio
+            )
+            // The mutation response is newer than any export already in flight.
+            layoutGeneration += 1
+            layoutTask?.cancel()
+            return .success(layout)
+        } catch is CancellationError {
+            return nil
+        } catch {
+            connection = .disconnected(error.localizedDescription)
+            onChange?()
+            return .failure(error)
         }
     }
 

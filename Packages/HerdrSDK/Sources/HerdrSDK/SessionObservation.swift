@@ -46,7 +46,11 @@ public protocol HerdrSessionClient: Sendable {
     func createWorkspace(cwd: URL) async throws
     func createTab(workspaceID: WorkspaceID) async throws
     func exportLayout(tabID: TabID) async throws -> PaneLayout
-    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws
+    func setSplitRatio(
+        tabID: TabID,
+        path: [Bool],
+        ratio: Double
+    ) async throws -> PaneLayout
 }
 
 extension HerdrClient: HerdrSessionClient {
@@ -78,8 +82,8 @@ extension HerdrClient: HerdrSessionClient {
         tabID: TabID,
         path: [Bool],
         ratio: Double
-    ) async throws {
-        _ = try await layouts.setSplitRatio(tabID: tabID, path: path, ratio: ratio)
+    ) async throws -> PaneLayout {
+        try await layouts.setSplitRatio(tabID: tabID, path: path, ratio: ratio)
     }
 }
 

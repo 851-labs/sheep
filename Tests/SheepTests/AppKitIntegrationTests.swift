@@ -233,6 +233,76 @@ struct AppKitIntegrationTests {
         #expect(terminalCard(paneID: "w1:p4", in: controller.view) == nil)
     }
 
+    @Test
+    func splitDragKeepsLocalRatioAcrossStaleLayoutsAndLateAcknowledgements() async throws {
+        let tabID = TabID(rawValue: "w1:t1")
+        let staleLayout = PaneLayout(
+            workspaceID: WorkspaceID(rawValue: "w1"),
+            tabID: tabID,
+            zoomed: false,
+            focusedPaneID: PaneID(rawValue: "w1:p1"),
+            root: .split(
+                direction: .right,
+                ratio: 0.5,
+                first: .pane(PaneID(rawValue: "w1:p1")),
+                second: .pane(PaneID(rawValue: "w1:p2"))
+            )
+        )
+        let repository = RatioRaceRepository(
+            update: HerdrSessionUpdate(connection: .connected, session: try Self.session()),
+            layout: staleLayout
+        )
+        let model = AppModel(repository: repository, gitStatus: StubGitStatus())
+        let controller = MainSplitViewController(
+            model: model,
+            ghosttyRuntime: nil,
+            terminalAttachments: nil
+        )
+        controller.loadView()
+        controller.viewDidLoad()
+        let window = NSWindow(contentViewController: controller)
+        window.setContentSize(NSSize(width: 1_200, height: 800))
+        window.contentView?.layoutSubtreeIfNeeded()
+        try await Task.sleep(for: .milliseconds(100))
+        window.contentView?.layoutSubtreeIfNeeded()
+
+        let originalSplit = try #require(
+            (allSubviews(in: controller.view) as [TerminalCardSplitView]).first
+        )
+        let originalCards: [TerminalCardView] = allSubviews(in: controller.view)
+        #expect(originalCards.count == 2)
+
+        drag(originalSplit, to: 0.6)
+        model.onLayout?(.success(staleLayout))
+        controller.view.layoutSubtreeIfNeeded()
+        #expect(
+            (allSubviews(in: controller.view) as [TerminalCardSplitView]).first
+                === originalSplit
+        )
+        #expect(abs(dividerCenterRatio(in: originalSplit) - 0.6) < 0.02)
+
+        // Allow the first write to start, then supersede it before its delayed
+        // acknowledgement returns.
+        try await Task.sleep(for: .milliseconds(300))
+        drag(originalSplit, to: 0.75)
+        model.onLayout?(.success(staleLayout))
+        controller.view.layoutSubtreeIfNeeded()
+        #expect(abs(dividerCenterRatio(in: originalSplit) - 0.75) < 0.02)
+
+        try await Task.sleep(for: .milliseconds(400))
+        controller.view.layoutSubtreeIfNeeded()
+        let finalSplit = try #require(
+            (allSubviews(in: controller.view) as [TerminalCardSplitView]).first
+        )
+        let finalCards: [TerminalCardView] = allSubviews(in: controller.view)
+        #expect(finalSplit === originalSplit)
+        #expect(zip(finalCards, originalCards).allSatisfy { pair in
+            pair.0 === pair.1
+        })
+        #expect(abs(dividerCenterRatio(in: finalSplit) - 0.75) < 0.02)
+        #expect(repository.recordedRatios.count == 2)
+    }
+
     private static func session() throws -> HerdrSession {
         let json = """
         {
@@ -363,6 +433,27 @@ struct AppKitIntegrationTests {
         }
         return result
     }
+
+    private func drag(_ split: TerminalCardSplitView, to ratio: CGFloat) {
+        let extent = split.isVertical ? split.bounds.width : split.bounds.height
+        split.setPosition(
+            extent * ratio - split.dividerThickness / 2,
+            ofDividerAt: 0
+        )
+        split.isDraggingDivider = true
+        split.delegate?.splitViewDidResizeSubviews?(
+            Notification(name: NSSplitView.didResizeSubviewsNotification, object: split)
+        )
+        split.isDraggingDivider = false
+    }
+
+    private func dividerCenterRatio(in split: TerminalCardSplitView) -> CGFloat {
+        let extent = split.isVertical ? split.bounds.width : split.bounds.height
+        let firstExtent = split.isVertical
+            ? split.subviews[0].frame.width
+            : split.subviews[0].frame.height
+        return (firstExtent + split.dividerThickness / 2) / extent
+    }
 }
 
 private struct StubRepository: HerdrSessionClient {
@@ -383,7 +474,13 @@ private struct StubRepository: HerdrSessionClient {
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
     func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
-    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
+    func setSplitRatio(
+        tabID: TabID,
+        path: [Bool],
+        ratio: Double
+    ) async throws -> PaneLayout {
+        layout
+    }
 }
 
 private final class StreamingRepository: HerdrSessionClient, @unchecked Sendable {
@@ -414,7 +511,69 @@ private final class StreamingRepository: HerdrSessionClient, @unchecked Sendable
         try #require(layouts[tabID])
     }
 
-    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
+    func setSplitRatio(
+        tabID: TabID,
+        path: [Bool],
+        ratio: Double
+    ) async throws -> PaneLayout {
+        try #require(layouts[tabID])
+    }
+}
+
+private final class RatioRaceRepository: HerdrSessionClient, @unchecked Sendable {
+    private let update: HerdrSessionUpdate
+    private let layout: PaneLayout
+    private let lock = NSLock()
+    private var ratios: [Double] = []
+
+    init(update: HerdrSessionUpdate, layout: PaneLayout) {
+        self.update = update
+        self.layout = layout
+    }
+
+    var recordedRatios: [Double] {
+        lock.withLock { ratios }
+    }
+
+    func sessionUpdates() async -> AsyncStream<HerdrSessionUpdate> {
+        AsyncStream { continuation in continuation.yield(update) }
+    }
+
+    func refreshSession() async {}
+    func focusWorkspace(_ id: WorkspaceID) async throws {}
+    func focusTab(_ id: TabID) async throws {}
+    func focusPane(_ id: PaneID) async throws {}
+    func createWorkspace(cwd: URL) async throws {}
+    func createTab(workspaceID: WorkspaceID) async throws {}
+    func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
+
+    func setSplitRatio(
+        tabID: TabID,
+        path: [Bool],
+        ratio: Double
+    ) async throws -> PaneLayout {
+        lock.withLock { ratios.append(ratio) }
+        if ratio < 0.7 {
+            try? await Task.sleep(for: .milliseconds(500))
+        } else {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        guard case let .split(direction, _, first, second) = layout.root else {
+            return layout
+        }
+        return PaneLayout(
+            workspaceID: layout.workspaceID,
+            tabID: layout.tabID,
+            zoomed: layout.zoomed,
+            focusedPaneID: layout.focusedPaneID,
+            root: .split(
+                direction: direction,
+                ratio: ratio,
+                first: first,
+                second: second
+            )
+        )
+    }
 }
 
 private final class CommandRecorder: @unchecked Sendable {

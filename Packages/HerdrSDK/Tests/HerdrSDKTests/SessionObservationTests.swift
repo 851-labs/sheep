@@ -130,11 +130,12 @@ struct SessionObservationTests {
             try await client.exportLayout(tabID: TabID(rawValue: "t1")).focusedPaneID
                 == PaneID(rawValue: "p1")
         )
-        try await client.setSplitRatio(
+        let updatedLayout = try await client.setSplitRatio(
             tabID: TabID(rawValue: "t1"),
             path: [false],
             ratio: 0.4
         )
+        #expect(updatedLayout.focusedPaneID == PaneID(rawValue: "p1"))
         #expect(
             await eventually {
                 recorder.count(method: "pane.focus") == 2

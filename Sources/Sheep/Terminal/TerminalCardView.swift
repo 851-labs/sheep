@@ -37,6 +37,7 @@ final class TerminalCardView: NSView {
 @MainActor
 final class TerminalCardSplitView: NSSplitView {
     static let gutter: CGFloat = 10
+    var isDraggingDivider = false
 
     override var dividerThickness: CGFloat { Self.gutter }
 

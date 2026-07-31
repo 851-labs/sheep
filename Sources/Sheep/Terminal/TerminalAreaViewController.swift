@@ -12,7 +12,10 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
-    private var ratioTasks: [String: Task<Void, Never>] = [:]
+    private var ratioTasks: [SplitKey: Task<Void, Never>] = [:]
+    private var pendingRatios: [SplitKey: PendingSplitRatio] = [:]
+    private var nextRatioGeneration = 0
+    private var suppressedDividerCallbacks: Set<ObjectIdentifier> = []
     private var activeTabID: TabID?
     private var visibleTabID: TabID?
     private var renderedTabs: [TabID: RenderedTab] = [:]
@@ -93,10 +96,13 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         guard let tabID = activeTabID else { return }
         switch result {
         case let .success(layout) where layout.tabID == tabID:
-            let node = layout.visibleRoot
-            if var rendered = renderedTabs[tabID], rendered.layout.visibleRoot == node {
-                rendered.layout = layout
+            let effectiveLayout = applyingPendingRatios(to: layout)
+            let node = effectiveLayout.visibleRoot
+            if var rendered = renderedTabs[tabID],
+               rendered.layout.visibleRoot.hasSameTopology(as: node) {
+                rendered.layout = effectiveLayout
                 renderedTabs[tabID] = rendered
+                applySplitRatios(from: node, in: rendered.view, tabID: tabID)
                 showRenderedTab(tabID)
                 return
             }
@@ -104,7 +110,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             let tabView = layoutCanvas(
                 containing: build(node: node, tabID: tabID, path: [])
             )
-            renderedTabs[tabID] = RenderedTab(layout: layout, view: tabView)
+            renderedTabs[tabID] = RenderedTab(layout: effectiveLayout, view: tabView)
             mountRenderedTab(tabView)
             showRenderedTab(tabID)
         case let .failure(error):
@@ -223,10 +229,9 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             split.addArrangedSubview(build(node: first, tabID: tabID, path: path + [false]))
             split.addArrangedSubview(build(node: second, tabID: tabID, path: path + [true]))
             splitMetadata[ObjectIdentifier(split)] = .init(tabID: tabID, path: path)
-            DispatchQueue.main.async {
-                let extent = split.isVertical ? split.bounds.width : split.bounds.height
-                guard extent > 0 else { return }
-                split.setPosition(extent * ratio, ofDividerAt: 0)
+            DispatchQueue.main.async { [weak self, weak split] in
+                guard let self, let split else { return }
+                self.setSplitPosition(ratio, in: split)
             }
             return split
         }
@@ -268,17 +273,172 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         guard let split = notification.object as? NSSplitView,
               let metadata = splitMetadata[ObjectIdentifier(split)],
               split.subviews.count == 2 else { return }
+        let identifier = ObjectIdentifier(split)
+        if suppressedDividerCallbacks.remove(identifier) != nil { return }
+        guard (split as? TerminalCardSplitView)?.isDraggingDivider == true else { return }
         let total = split.isVertical ? split.bounds.width : split.bounds.height
         let first = split.isVertical ? split.subviews[0].frame.width : split.subviews[0].frame.height
         guard total > 0, first > 0 else { return }
-        let ratio = min(max(first / total, 0.1), 0.9)
-        let key = "\(metadata.tabID.rawValue):"
-            + metadata.path.map { $0 ? "1" : "0" }.joined()
+        let ratio = min(max((first + split.dividerThickness / 2) / total, 0.1), 0.9)
+        let key = SplitKey(tabID: metadata.tabID, path: metadata.path)
+        nextRatioGeneration += 1
+        let generation = nextRatioGeneration
+        pendingRatios[key] = PendingSplitRatio(generation: generation, ratio: ratio)
+        updateRenderedRatio(ratio, for: key)
         ratioTasks[key]?.cancel()
         ratioTasks[key] = Task { [weak self] in
-            try? await Task.sleep(for: .milliseconds(250))
-            guard !Task.isCancelled else { return }
-            self?.model.setSplitRatio(tabID: metadata.tabID, path: metadata.path, ratio: ratio)
+            do {
+                try await Task.sleep(for: .milliseconds(250))
+            } catch {
+                return
+            }
+            guard let self,
+                  !Task.isCancelled,
+                  self.pendingRatios[key]?.generation == generation else { return }
+            guard let result = await self.model.setSplitRatio(
+                tabID: metadata.tabID,
+                path: metadata.path,
+                ratio: ratio
+            ) else {
+                self.cancelPendingRatio(for: key, generation: generation)
+                return
+            }
+            guard self.pendingRatios[key]?.generation == generation else { return }
+            switch result {
+            case let .success(layout):
+                if self.isDraggingDivider(for: key) {
+                    self.pendingRatios[key]?.acknowledgedLayout = layout
+                } else {
+                    self.finishPendingRatio(for: key, generation: generation, layout: layout)
+                }
+            case .failure:
+                self.cancelPendingRatio(for: key, generation: generation)
+            }
+        }
+    }
+
+    func splitView(
+        _ splitView: NSSplitView,
+        constrainSplitPosition proposedPosition: CGFloat,
+        ofSubviewAt dividerIndex: Int
+    ) -> CGFloat {
+        guard let split = splitView as? TerminalCardSplitView,
+              let event = NSApp.currentEvent else {
+            return proposedPosition
+        }
+        guard event.type == .leftMouseDown || event.type == .leftMouseDragged else {
+            return proposedPosition
+        }
+        let pointer = split.convert(event.locationInWindow, from: nil)
+        let precedingFrame = split.subviews[dividerIndex].frame
+        let dividerRect = split.isVertical
+            ? NSRect(
+                x: precedingFrame.maxX,
+                y: split.bounds.minY,
+                width: split.dividerThickness,
+                height: split.bounds.height
+            )
+            : NSRect(
+                x: split.bounds.minX,
+                y: precedingFrame.maxY,
+                width: split.bounds.width,
+                height: split.dividerThickness
+            )
+        let hitArea = dividerRect.insetBy(dx: -4, dy: -4)
+        guard split.isDraggingDivider || hitArea.contains(pointer) else {
+            return proposedPosition
+        }
+        split.isDraggingDivider = true
+        DispatchQueue.main.async { [weak self, weak split] in
+            guard let self, let split else { return }
+            split.isDraggingDivider = false
+            guard let metadata = self.splitMetadata[ObjectIdentifier(split)] else { return }
+            self.dividerDragEnded(for: SplitKey(tabID: metadata.tabID, path: metadata.path))
+        }
+        return proposedPosition
+    }
+
+    private func dividerDragEnded(for key: SplitKey) {
+        guard let pending = pendingRatios[key],
+              let layout = pending.acknowledgedLayout else { return }
+        finishPendingRatio(for: key, generation: pending.generation, layout: layout)
+    }
+
+    private func finishPendingRatio(
+        for key: SplitKey,
+        generation: Int,
+        layout: PaneLayout
+    ) {
+        guard pendingRatios[key]?.generation == generation else { return }
+        pendingRatios.removeValue(forKey: key)
+        ratioTasks.removeValue(forKey: key)
+        displayLayout(.success(layout))
+    }
+
+    private func cancelPendingRatio(for key: SplitKey, generation: Int) {
+        guard pendingRatios[key]?.generation == generation else { return }
+        pendingRatios.removeValue(forKey: key)
+        ratioTasks.removeValue(forKey: key)
+        if activeTabID == key.tabID {
+            model.loadLayout(tabID: key.tabID)
+        }
+    }
+
+    private func isDraggingDivider(for key: SplitKey) -> Bool {
+        guard let rendered = renderedTabs[key.tabID] else { return false }
+        return splitViews(in: rendered.view).contains { split in
+            splitMetadata[ObjectIdentifier(split)]
+                == SplitMetadata(tabID: key.tabID, path: key.path)
+                && split.isDraggingDivider
+        }
+    }
+
+    private func applyingPendingRatios(to layout: PaneLayout) -> PaneLayout {
+        var root = layout.root
+        for (key, pending) in pendingRatios where key.tabID == layout.tabID {
+            root = root.replacingRatio(at: key.path, with: pending.ratio) ?? root
+        }
+        return layout.replacingRoot(root)
+    }
+
+    private func updateRenderedRatio(_ ratio: Double, for key: SplitKey) {
+        guard var rendered = renderedTabs[key.tabID],
+              let root = rendered.layout.root.replacingRatio(at: key.path, with: ratio) else {
+            return
+        }
+        rendered.layout = rendered.layout.replacingRoot(root)
+        renderedTabs[key.tabID] = rendered
+    }
+
+    private func applySplitRatios(
+        from node: PaneLayout.Node,
+        in rootView: NSView,
+        tabID: TabID
+    ) {
+        for split in splitViews(in: rootView) {
+            guard let metadata = splitMetadata[ObjectIdentifier(split)],
+                  metadata.tabID == tabID,
+                  let ratio = node.splitRatio(at: metadata.path) else { continue }
+            setSplitPosition(ratio, in: split)
+        }
+    }
+
+    private func setSplitPosition(_ ratio: Double, in split: TerminalCardSplitView) {
+        let extent = split.isVertical ? split.bounds.width : split.bounds.height
+        guard extent > 0, split.subviews.count == 2 else { return }
+        let firstExtent = split.isVertical
+            ? split.subviews[0].frame.width
+            : split.subviews[0].frame.height
+        let currentCenter = firstExtent + split.dividerThickness / 2
+        let targetCenter = extent * min(max(ratio, 0.1), 0.9)
+        guard abs(currentCenter - targetCenter) >= 0.5 else { return }
+
+        let identifier = ObjectIdentifier(split)
+        suppressedDividerCallbacks.insert(identifier)
+        split.setPosition(targetCenter - split.dividerThickness / 2, ofDividerAt: 0)
+        DispatchQueue.main.async { [weak self, weak split] in
+            guard let self, let split else { return }
+            self.suppressedDividerCallbacks.remove(ObjectIdentifier(split))
         }
     }
 
@@ -397,6 +557,10 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         _ tabID: TabID,
         preservingTerminalViews: Bool = false
     ) {
+        for key in Array(ratioTasks.keys) where key.tabID == tabID {
+            ratioTasks.removeValue(forKey: key)?.cancel()
+            pendingRatios.removeValue(forKey: key)
+        }
         if let rendered = renderedTabs.removeValue(forKey: tabID) {
             setPresented(false, in: rendered.view)
             let removedSplitIDs = Set(splitViews(in: rendered.view).map(ObjectIdentifier.init))
@@ -436,7 +600,84 @@ private struct RenderedTab {
     let view: NSView
 }
 
-private struct SplitMetadata {
+private struct SplitMetadata: Equatable {
     let tabID: TabID
     let path: [Bool]
+}
+
+private struct SplitKey: Hashable {
+    let tabID: TabID
+    let path: [Bool]
+}
+
+private struct PendingSplitRatio {
+    let generation: Int
+    let ratio: Double
+    var acknowledgedLayout: PaneLayout? = nil
+}
+
+private extension PaneLayout {
+    func replacingRoot(_ root: Node) -> Self {
+        Self(
+            workspaceID: workspaceID,
+            tabID: tabID,
+            zoomed: zoomed,
+            focusedPaneID: focusedPaneID,
+            root: root
+        )
+    }
+}
+
+private extension PaneLayout.Node {
+    func hasSameTopology(as other: Self) -> Bool {
+        switch (self, other) {
+        case let (.pane(lhs), .pane(rhs)):
+            lhs == rhs
+        case let (
+            .split(lhsDirection, _, lhsFirst, lhsSecond),
+            .split(rhsDirection, _, rhsFirst, rhsSecond)
+        ):
+            lhsDirection == rhsDirection
+                && lhsFirst.hasSameTopology(as: rhsFirst)
+                && lhsSecond.hasSameTopology(as: rhsSecond)
+        default:
+            false
+        }
+    }
+
+    func splitRatio(at path: [Bool]) -> Double? {
+        guard case let .split(_, ratio, first, second) = self else { return nil }
+        guard let step = path.first else { return ratio }
+        return (step ? second : first).splitRatio(at: Array(path.dropFirst()))
+    }
+
+    func replacingRatio(at path: [Bool], with ratio: Double) -> Self? {
+        guard case let .split(direction, existingRatio, first, second) = self else {
+            return nil
+        }
+        guard let step = path.first else {
+            return .split(direction: direction, ratio: ratio, first: first, second: second)
+        }
+        let remaining = Array(path.dropFirst())
+        if step {
+            guard let replacement = second.replacingRatio(at: remaining, with: ratio) else {
+                return nil
+            }
+            return .split(
+                direction: direction,
+                ratio: existingRatio,
+                first: first,
+                second: replacement
+            )
+        }
+        guard let replacement = first.replacingRatio(at: remaining, with: ratio) else {
+            return nil
+        }
+        return .split(
+            direction: direction,
+            ratio: existingRatio,
+            first: replacement,
+            second: second
+        )
+    }
 }
