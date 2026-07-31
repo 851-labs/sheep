@@ -163,6 +163,76 @@ struct AppKitIntegrationTests {
         #expect(fields.contains { $0.stringValue == "Terminal unavailable" })
     }
 
+    @Test
+    func switchingTabsPreservesRenderedTerminalTreesUntilTabsClose() async throws {
+        let firstTabID = TabID(rawValue: "w1:t1")
+        let secondTabID = TabID(rawValue: "w1:t2")
+        let repository = StreamingRepository(layouts: [
+            firstTabID: PaneLayout(
+                workspaceID: WorkspaceID(rawValue: "w1"),
+                tabID: firstTabID,
+                zoomed: false,
+                focusedPaneID: PaneID(rawValue: "w1:p1"),
+                root: .pane(PaneID(rawValue: "w1:p1"))
+            ),
+            secondTabID: PaneLayout(
+                workspaceID: WorkspaceID(rawValue: "w1"),
+                tabID: secondTabID,
+                zoomed: false,
+                focusedPaneID: PaneID(rawValue: "w1:p4"),
+                root: .pane(PaneID(rawValue: "w1:p4"))
+            ),
+        ])
+        let model = AppModel(repository: repository, gitStatus: StubGitStatus())
+        let controller = MainSplitViewController(
+            model: model,
+            ghosttyRuntime: nil,
+            terminalAttachments: nil
+        )
+        controller.loadView()
+        controller.viewDidLoad()
+
+        repository.yield(HerdrSessionUpdate(
+            connection: .connected,
+            session: try Self.twoTabSession(focusedTabID: firstTabID)
+        ))
+        try await Task.sleep(for: .milliseconds(50))
+        let firstCard = try #require(
+            terminalCard(paneID: "w1:p1", in: controller.view)
+        )
+        #expect(!firstCard.isHiddenOrHasHiddenAncestor)
+
+        repository.yield(HerdrSessionUpdate(
+            connection: .connected,
+            session: try Self.twoTabSession(focusedTabID: secondTabID)
+        ))
+        try await Task.sleep(for: .milliseconds(50))
+        let secondCard = try #require(
+            terminalCard(paneID: "w1:p4", in: controller.view)
+        )
+        #expect(firstCard.isHiddenOrHasHiddenAncestor)
+        #expect(!secondCard.isHiddenOrHasHiddenAncestor)
+
+        repository.yield(HerdrSessionUpdate(
+            connection: .connected,
+            session: try Self.twoTabSession(focusedTabID: firstTabID)
+        ))
+        try await Task.sleep(for: .milliseconds(50))
+        let restoredFirstCard = try #require(
+            terminalCard(paneID: "w1:p1", in: controller.view)
+        )
+        #expect(restoredFirstCard === firstCard)
+        #expect(!restoredFirstCard.isHiddenOrHasHiddenAncestor)
+        #expect(secondCard.isHiddenOrHasHiddenAncestor)
+
+        repository.yield(HerdrSessionUpdate(
+            connection: .connected,
+            session: try Self.session()
+        ))
+        try await Task.sleep(for: .milliseconds(50))
+        #expect(terminalCard(paneID: "w1:p4", in: controller.view) == nil)
+    }
+
     private static func session() throws -> HerdrSession {
         let json = """
         {
@@ -232,6 +302,56 @@ struct AppKitIntegrationTests {
         return try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
     }
 
+    private static func twoTabSession(focusedTabID: TabID) throws -> HerdrSession {
+        let firstFocused = focusedTabID.rawValue == "w1:t1"
+        let json = """
+        {
+          "version": "0.7.5", "protocol": 17,
+          "focused_workspace_id": "w1",
+          "focused_tab_id": "\(focusedTabID.rawValue)",
+          "focused_pane_id": "\(firstFocused ? "w1:p1" : "w1:p4")",
+          "workspaces": [
+            {
+              "workspace_id": "w1", "number": 1, "label": "sheep",
+              "focused": true, "pane_count": 2, "tab_count": 2,
+              "active_tab_id": "\(focusedTabID.rawValue)", "agent_status": "working"
+            }
+          ],
+          "tabs": [
+            {
+              "tab_id": "w1:t1", "workspace_id": "w1", "number": 1,
+              "label": "one", "focused": \(firstFocused), "pane_count": 1,
+              "agent_status": "working"
+            },
+            {
+              "tab_id": "w1:t2", "workspace_id": "w1", "number": 2,
+              "label": "two", "focused": \(!firstFocused), "pane_count": 1,
+              "agent_status": "idle"
+            }
+          ],
+          "panes": [
+            {
+              "pane_id": "w1:p1", "terminal_id": "term_1",
+              "workspace_id": "w1", "tab_id": "w1:t1", "focused": \(firstFocused),
+              "cwd": "/tmp", "agent_status": "working", "revision": 1
+            },
+            {
+              "pane_id": "w1:p4", "terminal_id": "term_4",
+              "workspace_id": "w1", "tab_id": "w1:t2", "focused": \(!firstFocused),
+              "cwd": "/tmp", "agent_status": "idle", "revision": 1
+            }
+          ],
+          "agents": []
+        }
+        """
+        return try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
+    }
+
+    private func terminalCard(paneID: String, in root: NSView) -> TerminalCardView? {
+        let cards: [TerminalCardView] = allSubviews(in: root)
+        return cards.first { $0.accessibilityLabel() == "Terminal card \(paneID)" }
+    }
+
     private func allSubviews<T: NSView>(in root: NSView) -> [T] {
         var result: [T] = []
         if let typed = root as? T {
@@ -263,6 +383,37 @@ private struct StubRepository: HerdrSessionClient {
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
     func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
+    func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
+}
+
+private final class StreamingRepository: HerdrSessionClient, @unchecked Sendable {
+    private let stream: AsyncStream<HerdrSessionUpdate>
+    private let continuation: AsyncStream<HerdrSessionUpdate>.Continuation
+    private let layouts: [TabID: PaneLayout]
+
+    init(layouts: [TabID: PaneLayout]) {
+        let (stream, continuation) = AsyncStream<HerdrSessionUpdate>.makeStream()
+        self.stream = stream
+        self.continuation = continuation
+        self.layouts = layouts
+    }
+
+    func yield(_ update: HerdrSessionUpdate) {
+        continuation.yield(update)
+    }
+
+    func sessionUpdates() async -> AsyncStream<HerdrSessionUpdate> { stream }
+    func refreshSession() async {}
+    func focusWorkspace(_ id: WorkspaceID) async throws {}
+    func focusTab(_ id: TabID) async throws {}
+    func focusPane(_ id: PaneID) async throws {}
+    func createWorkspace(cwd: URL) async throws {}
+    func createTab(workspaceID: WorkspaceID) async throws {}
+
+    func exportLayout(tabID: TabID) async throws -> PaneLayout {
+        try #require(layouts[tabID])
+    }
+
     func setSplitRatio(tabID: TabID, path: [Bool], ratio: Double) async throws {}
 }
 

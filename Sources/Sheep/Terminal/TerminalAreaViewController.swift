@@ -14,7 +14,10 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
     private var ratioTasks: [String: Task<Void, Never>] = [:]
     private var activeTabID: TabID?
-    private var renderedLayout: PaneLayout?
+    private var visibleTabID: TabID?
+    private var renderedTabs: [TabID: RenderedTab] = [:]
+    private var terminalViewsByTab: [TabID: [PaneID: GhosttyTerminalView]] = [:]
+    private var placeholder: NSView?
 
     init(
         model: AppModel,
@@ -68,14 +71,21 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         reloadTabs()
         guard let tab = model.session?.focusedTab else {
             activeTabID = nil
-            renderedLayout = nil
+            visibleTabID = nil
+            removeAllRenderedTabs()
             showEmptyState()
             return
         }
+        pruneRenderedTabs()
         if activeTabID != tab.id {
             activeTabID = tab.id
-            renderedLayout = nil
-            showLoading()
+            if renderedTabs[tab.id] != nil {
+                showRenderedTab(tab.id)
+            } else if visibleTabID == nil {
+                showLoading()
+            } else if let visibleTabID, let visible = renderedTabs[visibleTabID] {
+                setPresented(false, in: visible.view)
+            }
         }
     }
 
@@ -84,22 +94,26 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         switch result {
         case let .success(layout) where layout.tabID == tabID:
             let node = layout.visibleRoot
-            if let renderedLayout {
-                let renderedNode = renderedLayout.visibleRoot
-                if renderedLayout.tabID == layout.tabID, renderedNode == node {
-                    return
-                }
+            if var rendered = renderedTabs[tabID], rendered.layout.visibleRoot == node {
+                rendered.layout = layout
+                renderedTabs[tabID] = rendered
+                showRenderedTab(tabID)
+                return
             }
-            renderedLayout = layout
-            splitMetadata.removeAll()
-            replaceContent(with: layoutCanvas(
+            removeRenderedTab(tabID, preservingTerminalViews: true)
+            let tabView = layoutCanvas(
                 containing: build(node: node, tabID: tabID, path: [])
-            ))
+            )
+            renderedTabs[tabID] = RenderedTab(layout: layout, view: tabView)
+            mountRenderedTab(tabView)
+            showRenderedTab(tabID)
         case let .failure(error):
-            replaceContent(with: stateLabel(
-                title: "Unable to load terminal layout",
-                detail: error.localizedDescription
-            ))
+            if visibleTabID == nil {
+                showPlaceholder(stateLabel(
+                    title: "Unable to load terminal layout",
+                    detail: error.localizedDescription
+                ))
+            }
         default:
             break
         }
@@ -178,19 +192,29 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                         : "The Herdr executable could not be found."
                 ), paneID: id)
             }
-            let attachment = terminalAttachments.attachment(
-                terminalID: pane.terminalID
-            )
-            paneContent = GhosttyTerminalView(
-                runtime: ghosttyRuntime,
-                attachment: attachment,
-                pane: pane
-            ) { [weak self] in
-                self?.model.focusPane(id)
-            } ?? stateLabel(
-                title: "Terminal attach failed",
-                detail: "Could not attach \(pane.terminalID.rawValue)."
-            )
+            if let existing = terminalViewsByTab[tabID]?[id] {
+                paneContent = existing
+            } else {
+                let attachment = terminalAttachments.attachment(
+                    terminalID: pane.terminalID
+                )
+                let terminal = GhosttyTerminalView(
+                    runtime: ghosttyRuntime,
+                    attachment: attachment,
+                    pane: pane
+                ) { [weak self] in
+                    self?.model.focusPane(id)
+                }
+                if let terminal {
+                    terminalViewsByTab[tabID, default: [:]][id] = terminal
+                    paneContent = terminal
+                } else {
+                    paneContent = stateLabel(
+                        title: "Terminal attach failed",
+                        detail: "Could not attach \(pane.terminalID.rawValue)."
+                    )
+                }
+            }
             return terminalCard(containing: paneContent, paneID: id)
         case let .split(direction, ratio, first, second):
             let split = TerminalCardSplitView()
@@ -259,7 +283,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     }
 
     private func showLoading() {
-        replaceContent(with: stateLabel(title: "Loading layout…", detail: ""))
+        showPlaceholder(stateLabel(title: "Loading layout…", detail: ""))
     }
 
     private func showEmptyState() {
@@ -282,7 +306,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             stack.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             stack.centerYAnchor.constraint(equalTo: container.centerYAnchor),
         ])
-        replaceContent(with: container)
+        showPlaceholder(container)
     }
 
     private func stateLabel(title: String, detail: String) -> NSView {
@@ -309,10 +333,107 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         return container
     }
 
-    private func replaceContent(with newView: NSView) {
-        content.subviews.forEach { $0.removeFromSuperview() }
-        content.pinSubview(newView)
+    private func mountRenderedTab(_ tabView: NSView) {
+        tabView.isHidden = true
+        content.pinSubview(tabView)
     }
+
+    private func showRenderedTab(_ tabID: TabID) {
+        guard activeTabID == tabID, let selected = renderedTabs[tabID] else { return }
+        placeholder?.removeFromSuperview()
+        placeholder = nil
+        for (candidateID, rendered) in renderedTabs {
+            let isSelected = candidateID == tabID
+            rendered.view.isHidden = !isSelected
+            setPresented(isSelected, in: rendered.view)
+        }
+        visibleTabID = tabID
+        let focusedPaneID = selected.layout.focusedPaneID
+        DispatchQueue.main.async { [weak self, weak selectedView = selected.view] in
+            guard let self, self.activeTabID == tabID, let selectedView else { return }
+            self.terminalViews(in: selectedView)
+                .first(where: { $0.paneID == focusedPaneID })?
+                .restoreFirstResponder()
+        }
+    }
+
+    private func showPlaceholder(_ newView: NSView) {
+        placeholder?.removeFromSuperview()
+        newView.translatesAutoresizingMaskIntoConstraints = false
+        content.addSubview(newView, positioned: .above, relativeTo: nil)
+        NSLayoutConstraint.activate([
+            newView.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            newView.trailingAnchor.constraint(equalTo: content.trailingAnchor),
+            newView.topAnchor.constraint(equalTo: content.topAnchor),
+            newView.bottomAnchor.constraint(equalTo: content.bottomAnchor),
+        ])
+        placeholder = newView
+    }
+
+    private func pruneRenderedTabs() {
+        guard let session = model.session else { return }
+        let validTabIDs = Set(session.tabs.map(\.id))
+        for tabID in Array(renderedTabs.keys) where !validTabIDs.contains(tabID) {
+            removeRenderedTab(tabID)
+        }
+        let validPaneIDs = Set(session.panes.map(\.id))
+        for tabID in Array(terminalViewsByTab.keys) {
+            terminalViewsByTab[tabID] = terminalViewsByTab[tabID]?.filter {
+                validPaneIDs.contains($0.key)
+            }
+            if terminalViewsByTab[tabID]?.isEmpty == true {
+                terminalViewsByTab.removeValue(forKey: tabID)
+            }
+        }
+    }
+
+    private func removeAllRenderedTabs() {
+        for tabID in Set(renderedTabs.keys).union(terminalViewsByTab.keys) {
+            removeRenderedTab(tabID)
+        }
+    }
+
+    private func removeRenderedTab(
+        _ tabID: TabID,
+        preservingTerminalViews: Bool = false
+    ) {
+        if let rendered = renderedTabs.removeValue(forKey: tabID) {
+            setPresented(false, in: rendered.view)
+            let removedSplitIDs = Set(splitViews(in: rendered.view).map(ObjectIdentifier.init))
+            splitMetadata = splitMetadata.filter { !removedSplitIDs.contains($0.key) }
+            rendered.view.removeFromSuperview()
+        }
+        if !preservingTerminalViews {
+            terminalViewsByTab.removeValue(forKey: tabID)
+        }
+        if visibleTabID == tabID { visibleTabID = nil }
+    }
+
+    private func setPresented(_ presented: Bool, in root: NSView) {
+        terminalViews(in: root).forEach { $0.setPresented(presented) }
+    }
+
+    private func terminalViews(in root: NSView) -> [GhosttyTerminalView] {
+        descendants(of: GhosttyTerminalView.self, in: root)
+    }
+
+    private func splitViews(in root: NSView) -> [TerminalCardSplitView] {
+        descendants(of: TerminalCardSplitView.self, in: root)
+    }
+
+    private func descendants<View: NSView>(of type: View.Type, in root: NSView) -> [View] {
+        var result: [View] = []
+        if let root = root as? View { result.append(root) }
+        for subview in root.subviews {
+            result.append(contentsOf: descendants(of: type, in: subview))
+        }
+        return result
+    }
+}
+
+private struct RenderedTab {
+    var layout: PaneLayout
+    let view: NSView
 }
 
 private struct SplitMetadata {

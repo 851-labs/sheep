@@ -6,12 +6,15 @@ import HerdrSDKLocal
 @MainActor
 final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     nonisolated(unsafe) private(set) var surface: ghostty_surface_t?
+    let paneID: PaneID
     var markedText = NSMutableAttributedString()
     var keyText: [String]?
     private let focusPane: () -> Void
     private var tracking: NSTrackingArea?
     var cursorHidden = false
     private var geometry = GhosttySurfaceGeometryState()
+    private var presented = true
+    private var reportsFocusChanges = true
 
     init?(
         runtime: GhosttyRuntime,
@@ -20,6 +23,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         focusPane: @escaping () -> Void
     ) {
         guard let app = runtime.app else { return nil }
+        paneID = pane.id
         self.focusPane = focusPane
         super.init(frame: NSRect(x: 0, y: 0, width: 800, height: 600))
         wantsLayer = true
@@ -65,12 +69,16 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         NotificationCenter.default.removeObserver(self)
     }
 
-    override var acceptsFirstResponder: Bool { true }
+    override var acceptsFirstResponder: Bool { presented }
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        presented ? super.hitTest(point) : nil
+    }
 
     override func becomeFirstResponder() -> Bool {
         guard super.becomeFirstResponder() else { return false }
         if let surface { ghostty_surface_set_focus(surface, true) }
-        focusPane()
+        if reportsFocusChanges { focusPane() }
         return true
     }
 
@@ -114,6 +122,29 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             object: window
         )
         updateSurfaceEnvironment()
+    }
+
+    func setPresented(_ presented: Bool) {
+        guard self.presented != presented else { return }
+        self.presented = presented
+        guard let surface else { return }
+        if !presented {
+            if window?.firstResponder === self {
+                window?.makeFirstResponder(nil)
+            }
+            ghostty_surface_set_focus(surface, false)
+        }
+        ghostty_surface_set_occlusion(
+            surface,
+            presented && (window?.occlusionState.contains(.visible) ?? false)
+        )
+    }
+
+    func restoreFirstResponder() {
+        guard presented, let window else { return }
+        reportsFocusChanges = false
+        window.makeFirstResponder(self)
+        reportsFocusChanges = true
     }
 
     override func updateTrackingAreas() {
@@ -250,6 +281,10 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         ] as? NSNumber, geometry.recordDisplayID(number.uint32Value) {
             ghostty_surface_set_display_id(surface, number.uint32Value)
         }
+        ghostty_surface_set_occlusion(
+            surface,
+            presented && window.occlusionState.contains(.visible)
+        )
         updateSurfaceSize()
     }
 
