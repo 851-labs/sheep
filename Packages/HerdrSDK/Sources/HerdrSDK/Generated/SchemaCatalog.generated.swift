@@ -1,12 +1,12 @@
-// Generated from Herdr protocol 17, schema 1.
+// Generated from Herdr protocol 18, schema 1.
 // Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 
 import Foundation
 
 public enum HerdrProtocolMetadata {
-    public static let protocolVersion = 17
+    public static let protocolVersion = 18
     public static let schemaVersion = 1
-    public static let schemaSHA256 = "1ef4eb9ec655cb0c89726895f437d8654bdde13a22e591fda06a9015d03d88c7"
+    public static let schemaSHA256 = "b18cff0f10dc981cd616295e99002ea7cc78625dfb82d664feb4f776748b1654"
 }
 
 public enum HerdrMethod: String, Codable, CaseIterable, Sendable {
@@ -26,6 +26,7 @@ public enum HerdrMethod: String, Codable, CaseIterable, Sendable {
     case workspaceFocus = "workspace.focus"
     case workspaceRename = "workspace.rename"
     case workspaceMove = "workspace.move"
+    case workspaceMoveBlock = "workspace.move_block"
     case workspaceReportMetadata = "workspace.report_metadata"
     case workspaceClose = "workspace.close"
     case worktreeList = "worktree.list"
@@ -123,6 +124,7 @@ public enum HerdrSchemaCatalog {
         "workspace.focus",
         "workspace.rename",
         "workspace.move",
+        "workspace.move_block",
         "workspace.report_metadata",
         "workspace.close",
         "worktree.list",
@@ -266,6 +268,7 @@ public enum HerdrSchemaCatalog {
         "workspace_closed",
         "workspace_renamed",
         "workspace_moved",
+        "workspace_reordered",
         "workspace_focused",
         "worktree_created",
         "worktree_opened",
@@ -293,6 +296,7 @@ public enum HerdrSchemaCatalog {
         "workspace.metadata_updated",
         "workspace.renamed",
         "workspace.moved",
+        "workspace.reordered",
         "workspace.closed",
         "workspace.focused",
         "worktree.created",
@@ -533,6 +537,10 @@ public enum HerdrEndpoints {
 
     public static func workspaceMove(_ params: HerdrRequestWorkspaceMoveParams) -> HerdrEndpoint<HerdrRequestWorkspaceMoveParams> {
         HerdrEndpoint(method: .workspaceMove, params: params)
+    }
+
+    public static func workspaceMoveBlock(_ params: HerdrRequestWorkspaceMoveBlockParams) -> HerdrEndpoint<HerdrRequestWorkspaceMoveBlockParams> {
+        HerdrEndpoint(method: .workspaceMoveBlock, params: params)
     }
 
     public static func workspaceReportMetadata(_ params: HerdrRequestWorkspaceReportMetadataParams) -> HerdrEndpoint<HerdrRequestWorkspaceReportMetadataParams> {

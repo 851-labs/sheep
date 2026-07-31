@@ -128,7 +128,7 @@ struct LocalRuntimeTests {
         let fake = try FakeHerdrServer { descriptor, request in
             FakeHerdrServer.sendJSON([
                 "id": request["id"] ?? "",
-                "result": ["version": "0.7.5", "protocol": 17],
+                "result": ["version": "0.7.5", "protocol": 18],
             ], to: descriptor)
         }
         defer { fake.stop() }

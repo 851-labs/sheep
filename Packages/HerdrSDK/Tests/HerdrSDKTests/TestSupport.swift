@@ -133,7 +133,7 @@ final class FakeHerdrServer: @unchecked Sendable {
 
 func emptySession(
     version: String = "0.7.5",
-    protocolVersion: UInt = 17,
+    protocolVersion: UInt = 18,
     panes: [Pane] = []
 ) -> [String: Any] {
     [

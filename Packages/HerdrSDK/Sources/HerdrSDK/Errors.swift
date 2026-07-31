@@ -25,9 +25,11 @@ public enum HerdrCompatibilityError: LocalizedError, Equatable, Sendable {
         case let .versionTooOld(minimum, actual):
             "HerdrSDK requires Herdr \(minimum) or newer; the server reports \(actual)."
         case let .unknownResultDiscriminator(value):
-            "Herdr returned an unknown protocol-17 result discriminator: \(value)."
+            "Herdr returned an unknown protocol-\(HerdrProtocolMetadata.protocolVersion) "
+                + "result discriminator: \(value)."
         case let .unknownEventDiscriminator(value):
-            "Herdr emitted an unknown protocol-17 event discriminator: \(value)."
+            "Herdr emitted an unknown protocol-\(HerdrProtocolMetadata.protocolVersion) "
+                + "event discriminator: \(value)."
         }
     }
 }

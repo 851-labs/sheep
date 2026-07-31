@@ -53,8 +53,8 @@ struct ModelCoverageTests {
     func errorsDescribeEveryCase() {
         #expect(HerdrAPIError(code: "x", message: "message").errorDescription == "message")
         #expect(
-            HerdrCompatibilityError.protocolMismatch(expected: 17, actual: 18)
-                .errorDescription == "HerdrSDK requires protocol 17; the server reports 18."
+            HerdrCompatibilityError.protocolMismatch(expected: 18, actual: 19)
+                .errorDescription == "HerdrSDK requires protocol 18; the server reports 19."
         )
         #expect(
             HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "0.7.4")
@@ -63,12 +63,12 @@ struct ModelCoverageTests {
         #expect(
             HerdrCompatibilityError.unknownResultDiscriminator("future")
                 .errorDescription
-                == "Herdr returned an unknown protocol-17 result discriminator: future."
+                == "Herdr returned an unknown protocol-18 result discriminator: future."
         )
         #expect(
             HerdrCompatibilityError.unknownEventDiscriminator("future")
                 .errorDescription
-                == "Herdr emitted an unknown protocol-17 event discriminator: future."
+                == "Herdr emitted an unknown protocol-18 event discriminator: future."
         )
     }
 
@@ -90,7 +90,7 @@ struct ModelCoverageTests {
         let pane: Pane = try decode(paneObject(id: "p1", tabID: "t1", focused: false))
         let session = HerdrSession(
             version: "0.7.5",
-            protocolVersion: 17,
+            protocolVersion: 18,
             focusedWorkspaceID: nil,
             focusedTabID: nil,
             focusedPaneID: nil,
@@ -108,7 +108,7 @@ struct ModelCoverageTests {
 
         let explicitlyFocused = HerdrSession(
             version: "0.7.5",
-            protocolVersion: 17,
+            protocolVersion: 18,
             focusedWorkspaceID: workspace.id,
             focusedTabID: tabTwo.id,
             focusedPaneID: pane.id,
@@ -123,7 +123,7 @@ struct ModelCoverageTests {
 
         let empty = HerdrSession(
             version: "0.7.5",
-            protocolVersion: 17,
+            protocolVersion: 18,
             focusedWorkspaceID: WorkspaceID(rawValue: "missing"),
             focusedTabID: TabID(rawValue: "missing"),
             focusedPaneID: PaneID(rawValue: "missing"),
@@ -214,8 +214,8 @@ struct ModelCoverageTests {
         try validateCompatibility(session(version: "0.7.5-beta.1"))
         try validateCompatibility(session(version: "1.0"))
 
-        #expect(throws: HerdrCompatibilityError.protocolMismatch(expected: 17, actual: 16)) {
-            try validateCompatibility(session(protocolVersion: 16))
+        #expect(throws: HerdrCompatibilityError.protocolMismatch(expected: 18, actual: 17)) {
+            try validateCompatibility(session(protocolVersion: 17))
         }
         #expect(throws: HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "0.7.4")) {
             try validateCompatibility(session(version: "0.7.4"))
@@ -241,7 +241,7 @@ private func decode<T: Decodable>(
 
 private func session(
     version: String = "0.7.5",
-    protocolVersion: UInt = 17
+    protocolVersion: UInt = 18
 ) -> HerdrSession {
     HerdrSession(
         version: version,

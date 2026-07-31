@@ -49,13 +49,13 @@ struct TransportTests {
             let result: [String: Any]
             switch request["method"] as? String {
             case "ping":
-                result = ["type": "pong", "version": "0.7.5", "protocol": 17]
+                result = ["type": "pong", "version": "0.7.5", "protocol": 18]
             case "session.snapshot":
                 result = [
                     "type": "session_snapshot",
                     "snapshot": [
                         "version": "0.7.5",
-                        "protocol": 17,
+                        "protocol": 18,
                         "focused_workspace_id": NSNull(),
                         "focused_tab_id": NSNull(),
                         "focused_pane_id": NSNull(),
@@ -78,7 +78,7 @@ struct TransportTests {
 
         let client = HerdrClient(socketURL: server.socketURL)
         let status = try await client.server.ping()
-        #expect(status.protocolVersion == 17)
+        #expect(status.protocolVersion == 18)
         let snapshot = try await client.sessions.snapshot()
         #expect(snapshot.version == "0.7.5")
     }

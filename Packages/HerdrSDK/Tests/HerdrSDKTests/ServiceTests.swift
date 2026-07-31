@@ -31,7 +31,7 @@ struct ServiceTests {
             let result: Any
             switch method {
             case "ping":
-                result = ["version": "0.7.5", "protocol": 17]
+                result = ["version": "0.7.5", "protocol": 18]
             case "session.snapshot":
                 result = ["snapshot": emptySession()]
             default:
@@ -45,7 +45,7 @@ struct ServiceTests {
         defer { server.stop() }
 
         let client = HerdrClient(socketURL: server.socketURL)
-        #expect(try await client.server.ping().protocolVersion == 17)
+        #expect(try await client.server.ping().protocolVersion == 18)
         #expect(try await client.sessions.snapshot().version == "0.7.5")
         try await client.workspaces.focus(WorkspaceID(rawValue: "w1"))
         try await client.tabs.focus(TabID(rawValue: "t1"))
@@ -202,8 +202,8 @@ struct ServiceTests {
     @Test
     func snapshotRejectsIncompatibleServers() async throws {
         for (version, protocolVersion, expected) in [
-            ("0.7.4", 17, "version"),
-            ("0.7.5", 18, "protocol"),
+            ("0.7.4", 18, "version"),
+            ("0.7.5", 19, "protocol"),
         ] {
             let server = try FakeHerdrServer { descriptor, request in
                 FakeHerdrServer.sendJSON([

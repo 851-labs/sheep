@@ -32,9 +32,9 @@ if (!fs.existsSync(quicktype)) {
 
 const schemaData = fs.readFileSync(schemaPath);
 const schema = JSON.parse(schemaData);
-if (schema.protocol !== 17 || schema.schema_version !== 1) {
+if (schema.protocol !== 18 || schema.schema_version !== 1) {
   throw new Error(
-    `Expected Herdr protocol 17/schema 1, found ${schema.protocol}/${schema.schema_version}`,
+    `Expected Herdr protocol 18/schema 1, found ${schema.protocol}/${schema.schema_version}`,
   );
 }
 

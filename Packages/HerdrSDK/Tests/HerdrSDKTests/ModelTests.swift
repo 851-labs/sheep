@@ -49,11 +49,11 @@ struct ModelTests {
     }
 
     @Test
-    func protocol17SnapshotIgnoresUnknownFields() throws {
+    func protocol18SnapshotIgnoresUnknownFields() throws {
         let json = """
         {
           "version": "0.7.5",
-          "protocol": 17,
+          "protocol": 18,
           "focused_workspace_id": "w1",
           "focused_tab_id": "w1:t1",
           "focused_pane_id": "w1:p1",
@@ -84,7 +84,7 @@ struct ModelTests {
         """
 
         let session = try JSONDecoder().decode(HerdrSession.self, from: Data(json.utf8))
-        #expect(session.protocolVersion == 17)
+        #expect(session.protocolVersion == 18)
         #expect(session.focusedWorkspace?.label == "sheep")
         #expect(session.focusedTab?.id == TabID(rawValue: "w1:t1"))
         #expect(session.agents.first?.displayName == "codex")
@@ -94,7 +94,7 @@ struct ModelTests {
     func selectionFallsBackFromStaleFocusedIdentifiers() throws {
         let json = """
         {
-          "version": "0.7.5", "protocol": 17,
+          "version": "0.7.5", "protocol": 18,
           "focused_workspace_id": "closed-workspace",
           "focused_tab_id": "closed-tab",
           "focused_pane_id": "closed-pane",

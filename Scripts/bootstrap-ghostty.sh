@@ -5,15 +5,17 @@ set -euo pipefail
 REPOSITORY_ROOT=${0:A:h:h}
 GHOSTTY_ROOT="$REPOSITORY_ROOT/.repos/ghostty"
 FRAMEWORK_PATH="$GHOSTTY_ROOT/macos/GhosttyKit.xcframework"
-MACOS_LIBRARY="$FRAMEWORK_PATH/macos-arm64_x86_64/libghostty.a"
+MACOS_LIBRARY="$FRAMEWORK_PATH/macos-arm64_x86_64/ghostty-internal.a"
+REVISION_PATH="$FRAMEWORK_PATH/.sheep-source-revision"
+GHOSTTY_REVISION=$(git -C "$GHOSTTY_ROOT" rev-parse HEAD)
 ZIG_BIN=${SHEEP_ZIG_BIN:-}
 
 if [[ -z "$ZIG_BIN" ]]; then
   for candidate in \
-    /opt/homebrew/opt/zig@0.15/bin/zig \
-    /usr/local/opt/zig@0.15/bin/zig \
+    /opt/homebrew/opt/zig@0.16/bin/zig \
+    /usr/local/opt/zig@0.16/bin/zig \
     "$(command -v zig || true)"; do
-    if [[ -x "$candidate" && "$("$candidate" version)" == "0.15.2" ]]; then
+    if [[ -x "$candidate" && "$("$candidate" version)" == "0.16.0" ]]; then
       ZIG_BIN="$candidate"
       break
     fi
@@ -26,17 +28,19 @@ if [[ ! -f "$GHOSTTY_ROOT/build.zig" ]]; then
 fi
 
 if [[ -z "$ZIG_BIN" ]]; then
-  print -u2 "Zig 0.15.2 is required but was not found."
+  print -u2 "Zig 0.16.0 is required but was not found."
   exit 1
 fi
 
 ZIG_VERSION=$("$ZIG_BIN" version)
-if [[ "$ZIG_VERSION" != "0.15.2" ]]; then
-  print -u2 "Zig 0.15.2 is required; found $ZIG_VERSION at $ZIG_BIN."
+if [[ "$ZIG_VERSION" != "0.16.0" ]]; then
+  print -u2 "Zig 0.16.0 is required; found $ZIG_VERSION at $ZIG_BIN."
   exit 1
 fi
 
 if [[ -f "$MACOS_LIBRARY" ]] \
+  && [[ -f "$REVISION_PATH" ]] \
+  && [[ "$(<"$REVISION_PATH")" == "$GHOSTTY_REVISION" ]] \
   && lipo "$MACOS_LIBRARY" -verify_arch arm64 \
   && lipo "$MACOS_LIBRARY" -verify_arch x86_64 \
   && nm -gU "$MACOS_LIBRARY" 2>/dev/null \
@@ -46,6 +50,7 @@ if [[ -f "$MACOS_LIBRARY" ]] \
 fi
 
 cd "$GHOSTTY_ROOT"
+rm -rf "$FRAMEWORK_PATH"
 PIXEL_FORMAT_SOURCE="$GHOSTTY_ROOT/pkg/macos/video/pixel_format.zig"
 BUILD_SOURCE="$GHOSTTY_ROOT/build.zig"
 PATCH_BACKUP_DIRECTORY=$(mktemp -d)
@@ -63,18 +68,17 @@ restore_ghostty_source() {
 }
 trap restore_ghostty_source EXIT
 
-# Ghostty 1.3.1 names this CoreVideo FourCC through an SDK symbol that was
+# Ghostty names this CoreVideo FourCC through an SDK symbol that was
 # introduced after the macOS 14 runner SDK. The value itself is stable and
 # public (`r210`), so compile the pin against older SDKs using that value.
 perl -0pi -e \
   's/@"30RGB_r210" = c\.kCVPixelFormatType_30RGB_r210,/@"30RGB_r210" = 0x72323130,/' \
   "$PIXEL_FORMAT_SOURCE"
 
-# The default Ghostty install step also emits the standalone libghostty-vt
-# dylib. Sheep only consumes GhosttyKit, and that unrelated target currently
-# fails when Zig 0.15.2's libc++ is compiled against the Xcode 27 beta SDK.
+# The default Ghostty install step also emits standalone libghostty-vt
+# products. Sheep only consumes GhosttyKit, so skip that unrelated block.
 perl -0pi -e \
-  's#libghostty_vt_shared\.install\(b\.getInstallStep\(\)\);#// Sheep builds only GhosttyKit.#' \
+  's#    // libghostty-vt\n#    if (config.emit_lib_vt) {\n    // libghostty-vt\n#; s#    // Helpgen\n#    }\n\n    // Helpgen\n#' \
   "$BUILD_SOURCE"
 
 # Xcode 27's libtool discards Zig archive members that are not 8-byte aligned.
@@ -93,4 +97,5 @@ PATH="$BUILD_PATH" "$ZIG_BIN" build \
   -Dxcframework-target=universal \
   -Doptimize=ReleaseFast
 
+print -r -- "$GHOSTTY_REVISION" > "$REVISION_PATH"
 print "Built $FRAMEWORK_PATH"

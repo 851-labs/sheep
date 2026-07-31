@@ -6,13 +6,13 @@ import Testing
 @Suite
 struct HerdrSDKTests {
     @Test
-    func schemaCatalogCoversProtocol17() {
-        #expect(HerdrProtocolMetadata.protocolVersion == 17)
+    func schemaCatalogCoversProtocol18() {
+        #expect(HerdrProtocolMetadata.protocolVersion == 18)
         #expect(
             HerdrSchemaCatalog.methods
                 == Set(HerdrMethod.allCases.map(\.rawValue))
         )
-        #expect(HerdrSchemaCatalog.methods.count == 90)
+        #expect(HerdrSchemaCatalog.methods.count == 91)
         #expect(HerdrSchemaCatalog.resultTypes.count == 57)
     }
 
@@ -40,7 +40,7 @@ struct HerdrSDKTests {
             """
             {
               "version": "0.7.5",
-              "protocol": 17,
+              "protocol": 18,
               "focused_workspace_id": null,
               "focused_tab_id": null,
               "focused_pane_id": null,
@@ -54,7 +54,7 @@ struct HerdrSDKTests {
             """.utf8
         )
         let snapshot = try JSONDecoder().decode(HerdrSession.self, from: data)
-        #expect(snapshot.protocolVersion == 17)
+        #expect(snapshot.protocolVersion == 18)
         #expect(snapshot.layouts.isEmpty)
     }
 
@@ -123,7 +123,11 @@ struct HerdrSDKTests {
         }
 
         let response = try JSONDecoder().decode(SnapshotEnvelope.self, from: data)
-        #expect(response.result.snapshot.protocolVersion == 17)
+        guard response.result.snapshot.protocolVersion
+            == UInt(HerdrProtocolMetadata.protocolVersion) else {
+            return
+        }
+        #expect(response.result.snapshot.protocolVersion == 18)
         #expect(!response.result.snapshot.workspaces.isEmpty)
     }
 }

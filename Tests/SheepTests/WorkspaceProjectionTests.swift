@@ -9,7 +9,7 @@ struct WorkspaceProjectionTests {
     func repositoryDirectoryFallsBackToActivePaneCWD() throws {
         let json = """
         {
-          "version": "0.7.5", "protocol": 17,
+          "version": "0.7.5", "protocol": 18,
           "focused_workspace_id": "closed-workspace",
           "focused_tab_id": "closed-tab",
           "focused_pane_id": "closed-pane",

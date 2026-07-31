@@ -1,4 +1,4 @@
-// Generated from Herdr protocol 17, schema 1.
+// Generated from Herdr protocol 18, schema 1.
 // Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 // To parse the JSON, add this file to your project and do:
 //
@@ -115,6 +115,8 @@ public struct HerdrEventData: Codable, Sendable {
     public let label: String?
     public let insertIndex: Int?
     public let workspaces: [HerdrEventWorkspace]?
+    public let beforeWorkspaceID: WorkspaceID?
+    public let workspaceIDS: [String]?
     public let worktree: HerdrEventWorktree?
     public let alreadyOpen: Bool?
     public let forced: Bool?
@@ -147,6 +149,8 @@ public struct HerdrEventData: Codable, Sendable {
         case label = "label"
         case insertIndex = "insert_index"
         case workspaces = "workspaces"
+        case beforeWorkspaceID = "before_workspace_id"
+        case workspaceIDS = "workspace_ids"
         case worktree = "worktree"
         case alreadyOpen = "already_open"
         case forced = "forced"
@@ -173,13 +177,15 @@ public struct HerdrEventData: Codable, Sendable {
         case layout = "layout"
     }
 
-    public init(type: HerdrEventEvent, workspace: HerdrEventWorkspace?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrEventWorkspace]?, worktree: HerdrEventWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrEventTab?, tabID: TabID?, tabs: [HerdrEventTab]?, pane: HerdrEventPane?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrEventTab?, createdWorkspace: HerdrEventWorkspace?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrEventAgentStatus?, released: Bool?, agentStatus: HerdrEventAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrEventLayout?) {
+    public init(type: HerdrEventEvent, workspace: HerdrEventWorkspace?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrEventWorkspace]?, beforeWorkspaceID: WorkspaceID?, workspaceIDS: [String]?, worktree: HerdrEventWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrEventTab?, tabID: TabID?, tabs: [HerdrEventTab]?, pane: HerdrEventPane?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrEventTab?, createdWorkspace: HerdrEventWorkspace?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrEventAgentStatus?, released: Bool?, agentStatus: HerdrEventAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrEventLayout?) {
         self.type = type
         self.workspace = workspace
         self.workspaceID = workspaceID
         self.label = label
         self.insertIndex = insertIndex
         self.workspaces = workspaces
+        self.beforeWorkspaceID = beforeWorkspaceID
+        self.workspaceIDS = workspaceIDS
         self.worktree = worktree
         self.alreadyOpen = alreadyOpen
         self.forced = forced
@@ -232,6 +238,8 @@ public extension HerdrEventData {
         label: String?? = nil,
         insertIndex: Int?? = nil,
         workspaces: [HerdrEventWorkspace]?? = nil,
+        beforeWorkspaceID: WorkspaceID?? = nil,
+        workspaceIDS: [String]?? = nil,
         worktree: HerdrEventWorktree?? = nil,
         alreadyOpen: Bool?? = nil,
         forced: Bool?? = nil,
@@ -264,6 +272,8 @@ public extension HerdrEventData {
             label: label ?? self.label,
             insertIndex: insertIndex ?? self.insertIndex,
             workspaces: workspaces ?? self.workspaces,
+            beforeWorkspaceID: beforeWorkspaceID ?? self.beforeWorkspaceID,
+            workspaceIDS: workspaceIDS ?? self.workspaceIDS,
             worktree: worktree ?? self.worktree,
             alreadyOpen: alreadyOpen ?? self.alreadyOpen,
             forced: forced ?? self.forced,
@@ -1100,6 +1110,7 @@ public enum HerdrEventEvent: String, Codable, Sendable {
     case workspaceMetadataUpdated = "workspace_metadata_updated"
     case workspaceMoved = "workspace_moved"
     case workspaceRenamed = "workspace_renamed"
+    case workspaceReordered = "workspace_reordered"
     case workspaceUpdated = "workspace_updated"
     case worktreeCreated = "worktree_created"
     case worktreeOpened = "worktree_opened"

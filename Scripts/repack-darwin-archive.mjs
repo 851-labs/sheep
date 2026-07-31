@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 
 // Xcode 27's linker requires archive members to start on 8-byte boundaries.
-// Zig 0.15.2 emits valid Darwin archives with 2-byte member alignment, so this
+// Zig emits valid Darwin archives with 2-byte member alignment, so this
 // utility expands the archive and lets Apple's `ar` repack it for the local SDK.
 
-import { mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -50,10 +57,9 @@ try {
     }
 
     if (name && name !== "/" && name !== "__.SYMDEF" && contentSize > 0) {
-      const file = join(
-        directory,
-        `${String(index).padStart(4, "0")}-${basename(name)}`
-      );
+      const memberDirectory = join(directory, String(index).padStart(4, "0"));
+      mkdirSync(memberDirectory);
+      const file = join(memberDirectory, basename(name));
       writeFileSync(file, archive.subarray(contentOffset, contentOffset + contentSize), {
         mode: 0o600,
       });

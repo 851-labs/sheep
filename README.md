@@ -7,12 +7,12 @@ AppKit, and Ghostty.
 
 - macOS 13 or newer
 - Xcode
-- Herdr 0.7.5 or newer
-- Zig 0.15.2 (for the pinned Ghostty dependency)
+- A Herdr build using protocol 18
+- Zig 0.16.0 (for the pinned Ghostty dependency)
 
 ## Development
 
-Initialize the pinned Herdr 0.7.5 and Ghostty 1.3.1 source trees, then build
+Initialize the pinned Herdr and Ghostty source snapshots, then build
 Ghostty's universal XCFramework:
 
 ```sh
@@ -44,7 +44,7 @@ xcodebuild \
 ## HerdrSDK
 
 Sheep is built on the in-repository `HerdrSDK` Swift package. It provides the
-complete Herdr protocol-17 API, typed events, reconnecting session observation,
+complete Herdr protocol-18 API, typed events, reconnecting session observation,
 local server supervision, and direct terminal attachment configuration.
 
 Regenerate its public protocol models after updating the pinned Herdr source:
@@ -67,7 +67,7 @@ Build a release app containing both Apple Silicon and Intel slices with:
 Scripts/build-universal-macos.sh
 ```
 
-Xcode 27 beta's archive tools require 8-byte member alignment while Zig 0.15.2
+Xcode 27 beta's archive tools require 8-byte member alignment while Zig
 emits valid 2-byte-aligned Darwin archives. The Ghostty bootstrap automatically
 uses `Scripts/repack-darwin-archive.mjs` while aggregating its static libraries.
 Stable Xcode versions do not require this compatibility step.

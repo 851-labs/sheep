@@ -1,4 +1,4 @@
-// Generated from Herdr protocol 17, schema 1.
+// Generated from Herdr protocol 18, schema 1.
 // Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 // To parse the JSON, add this file to your project and do:
 //
@@ -101,6 +101,7 @@ public struct HerdrRequestTypes: Codable, Sendable {
     public let tabTarget: HerdrRequestTabTarget
     public let toastHerdrPosition: HerdrRequestToastHerdrPositionEnum
     public let workspaceCreateParams: HerdrRequestWorkspaceCreateParams
+    public let workspaceMoveBlockParams: HerdrRequestWorkspaceMoveBlockParams
     public let workspaceMoveParams: HerdrRequestWorkspaceMoveParams
     public let workspaceRenameParams: HerdrRequestWorkspaceRenameParams
     public let workspaceReportMetadataParams: HerdrRequestWorkspaceReportMetadataParams
@@ -205,6 +206,7 @@ public struct HerdrRequestTypes: Codable, Sendable {
         case tabTarget = "TabTarget"
         case toastHerdrPosition = "ToastHerdrPosition"
         case workspaceCreateParams = "WorkspaceCreateParams"
+        case workspaceMoveBlockParams = "WorkspaceMoveBlockParams"
         case workspaceMoveParams = "WorkspaceMoveParams"
         case workspaceRenameParams = "WorkspaceRenameParams"
         case workspaceReportMetadataParams = "WorkspaceReportMetadataParams"
@@ -216,7 +218,7 @@ public struct HerdrRequestTypes: Codable, Sendable {
         case worktreeRemoveParams = "WorktreeRemoveParams"
     }
 
-    public init(agentPromptParams: HerdrRequestAgentPromptParams, agentPromptWaitOptions: HerdrRequestAgentPromptWaitOptionsClass, agentReadParams: HerdrRequestAgentReadParams, agentRenameParams: HerdrRequestAgentRenameParams, agentSendKeysParams: HerdrRequestAgentSendKeysParams, agentStartParams: HerdrRequestAgentStartParams, agentStatus: HerdrRequestAgentStatusElement, agentTarget: HerdrRequestAgentTarget, agentViewBuiltinField: HerdrRequestAgentViewBuiltinField, agentViewBuiltinSortField: HerdrRequestAgentViewBuiltinSortField, agentViewClearParams: HerdrRequestAgentViewClearParams, agentViewContext: HerdrRequestAgentViewContext, agentViewField: HerdrRequestAgentViewField, agentViewFilter: HerdrRequestAgentViewFilter, agentViewSetParams: HerdrRequestAgentViewSetParams, agentViewSort: HerdrRequestAgentViewSortElement, agentViewSortField: HerdrRequestField, agentViewSortOrder: HerdrRequestOrder, agentViewValue: HerdrRequestValue, agentWaitParams: HerdrRequestAgentWaitParams, clientWindowTitleSetParams: HerdrRequestClientWindowTitleSetParams, eventMatch: HerdrRequestEventMatch, eventsSubscribeParams: HerdrRequestEventsSubscribeParams, eventsWaitParams: HerdrRequestEventsWaitParams, integrationInstallParams: HerdrRequestIntegrationInstallParams, integrationTarget: HerdrRequestTarget, integrationUninstallParams: HerdrRequestIntegrationUninstallParams, layoutApplyParams: HerdrRequestLayoutApplyParams, layoutExportParams: HerdrRequestLayoutExportParams, layoutNode: HerdrRequestRoot, layoutSetSplitRatioParams: HerdrRequestLayoutSetSplitRatioParams, notificationShowParams: HerdrRequestNotificationShowParams, notificationShowSound: HerdrRequestSound, outputMatch: HerdrRequestMatch, paneAgentState: HerdrRequestPaneAgentState, paneClearAgentAuthorityParams: HerdrRequestPaneClearAgentAuthorityParams, paneCurrentParams: HerdrRequestPaneCurrentParams, paneDirection: HerdrRequestPaneDirection, paneEdgesParams: HerdrRequestPaneEdgesParams, paneFocusDirectionParams: HerdrRequestPaneFocusDirectionParams, paneGraphicsClearParams: HerdrRequestPaneGraphicsClearParams, paneGraphicsFormat: HerdrRequestPaneGraphicsFormat, paneGraphicsPlacementParams: HerdrRequestPaneGraphicsPlacementParams, paneGraphicsSetParams: HerdrRequestPaneGraphicsSetParams, paneLayoutParams: HerdrRequestPaneLayoutParams, paneListParams: HerdrRequestPaneListParams, paneMoveDestination: HerdrRequestPaneMoveDestination, paneMoveParams: HerdrRequestPaneMoveParams, paneNeighborParams: HerdrRequestPaneNeighborParams, paneProcessInfoParams: HerdrRequestPaneProcessInfoParams, paneReadParams: HerdrRequestPaneReadParams, paneReleaseAgentParams: HerdrRequestPaneReleaseAgentParams, paneRenameParams: HerdrRequestPaneRenameParams, paneReportAgentParams: HerdrRequestPaneReportAgentParams, paneReportAgentSessionParams: HerdrRequestPaneReportAgentSessionParams, paneReportMetadataParams: HerdrRequestPaneReportMetadataParams, paneResizeParams: HerdrRequestPaneResizeParams, paneSendInputParams: HerdrRequestPaneSendInputParams, paneSendKeysParams: HerdrRequestPaneSendKeysParams, paneSendTextParams: HerdrRequestPaneSendTextParams, paneSplitParams: HerdrRequestPaneSplitParams, paneSwapParams: HerdrRequestPaneSwapParams, paneTarget: HerdrRequestPaneTarget, paneWaitForOutputParams: HerdrRequestPaneWaitForOutputParams, paneZoomMode: HerdrRequestPaneZoomMode, paneZoomParams: HerdrRequestPaneZoomParams, pluginActionInvokeParams: HerdrRequestPluginActionInvokeParams, pluginActionListParams: HerdrRequestPluginActionListParams, pluginInvocationContext: HerdrRequestPluginInvocationContextClass, pluginLinkParams: HerdrRequestPluginLinkParams, pluginListParams: HerdrRequestPluginListParams, pluginLogListParams: HerdrRequestPluginLogListParams, pluginPaneCloseParams: HerdrRequestPluginPaneCloseParams, pluginPaneFocusParams: HerdrRequestPluginPaneFocusParams, pluginPaneOpenParams: HerdrRequestPluginPaneOpenParams, pluginPanePlacement: HerdrRequestPluginPanePlacementEnum, pluginSetEnabledParams: HerdrRequestPluginSetEnabledParams, pluginSourceInfo: HerdrRequestPluginSourceInfoClass, pluginSourceKind: HerdrRequestKind, pluginUnlinkParams: HerdrRequestPluginUnlinkParams, popupSize: HerdrRequestPopupSizeUnion, readFormat: HerdrRequestFormat, readSource: HerdrRequestSource, serverLiveHandoffParams: HerdrRequestServerLiveHandoffParams, splitDirection: HerdrRequestDirection, subscription: HerdrRequestSubscriptionElement, tabCreateParams: HerdrRequestTabCreateParams, tabListParams: HerdrRequestTabListParams, tabMoveParams: HerdrRequestTabMoveParams, tabRenameParams: HerdrRequestTabRenameParams, tabTarget: HerdrRequestTabTarget, toastHerdrPosition: HerdrRequestToastHerdrPositionEnum, workspaceCreateParams: HerdrRequestWorkspaceCreateParams, workspaceMoveParams: HerdrRequestWorkspaceMoveParams, workspaceRenameParams: HerdrRequestWorkspaceRenameParams, workspaceReportMetadataParams: HerdrRequestWorkspaceReportMetadataParams, workspaceTarget: HerdrRequestWorkspaceTarget, workspaceWorktreeInfo: HerdrRequestWorkspaceWorktreeInfoClass, worktreeCreateParams: HerdrRequestWorktreeCreateParams, worktreeListParams: HerdrRequestWorktreeListParams, worktreeOpenParams: HerdrRequestWorktreeOpenParams, worktreeRemoveParams: HerdrRequestWorktreeRemoveParams) {
+    public init(agentPromptParams: HerdrRequestAgentPromptParams, agentPromptWaitOptions: HerdrRequestAgentPromptWaitOptionsClass, agentReadParams: HerdrRequestAgentReadParams, agentRenameParams: HerdrRequestAgentRenameParams, agentSendKeysParams: HerdrRequestAgentSendKeysParams, agentStartParams: HerdrRequestAgentStartParams, agentStatus: HerdrRequestAgentStatusElement, agentTarget: HerdrRequestAgentTarget, agentViewBuiltinField: HerdrRequestAgentViewBuiltinField, agentViewBuiltinSortField: HerdrRequestAgentViewBuiltinSortField, agentViewClearParams: HerdrRequestAgentViewClearParams, agentViewContext: HerdrRequestAgentViewContext, agentViewField: HerdrRequestAgentViewField, agentViewFilter: HerdrRequestAgentViewFilter, agentViewSetParams: HerdrRequestAgentViewSetParams, agentViewSort: HerdrRequestAgentViewSortElement, agentViewSortField: HerdrRequestField, agentViewSortOrder: HerdrRequestOrder, agentViewValue: HerdrRequestValue, agentWaitParams: HerdrRequestAgentWaitParams, clientWindowTitleSetParams: HerdrRequestClientWindowTitleSetParams, eventMatch: HerdrRequestEventMatch, eventsSubscribeParams: HerdrRequestEventsSubscribeParams, eventsWaitParams: HerdrRequestEventsWaitParams, integrationInstallParams: HerdrRequestIntegrationInstallParams, integrationTarget: HerdrRequestTarget, integrationUninstallParams: HerdrRequestIntegrationUninstallParams, layoutApplyParams: HerdrRequestLayoutApplyParams, layoutExportParams: HerdrRequestLayoutExportParams, layoutNode: HerdrRequestRoot, layoutSetSplitRatioParams: HerdrRequestLayoutSetSplitRatioParams, notificationShowParams: HerdrRequestNotificationShowParams, notificationShowSound: HerdrRequestSound, outputMatch: HerdrRequestMatch, paneAgentState: HerdrRequestPaneAgentState, paneClearAgentAuthorityParams: HerdrRequestPaneClearAgentAuthorityParams, paneCurrentParams: HerdrRequestPaneCurrentParams, paneDirection: HerdrRequestPaneDirection, paneEdgesParams: HerdrRequestPaneEdgesParams, paneFocusDirectionParams: HerdrRequestPaneFocusDirectionParams, paneGraphicsClearParams: HerdrRequestPaneGraphicsClearParams, paneGraphicsFormat: HerdrRequestPaneGraphicsFormat, paneGraphicsPlacementParams: HerdrRequestPaneGraphicsPlacementParams, paneGraphicsSetParams: HerdrRequestPaneGraphicsSetParams, paneLayoutParams: HerdrRequestPaneLayoutParams, paneListParams: HerdrRequestPaneListParams, paneMoveDestination: HerdrRequestPaneMoveDestination, paneMoveParams: HerdrRequestPaneMoveParams, paneNeighborParams: HerdrRequestPaneNeighborParams, paneProcessInfoParams: HerdrRequestPaneProcessInfoParams, paneReadParams: HerdrRequestPaneReadParams, paneReleaseAgentParams: HerdrRequestPaneReleaseAgentParams, paneRenameParams: HerdrRequestPaneRenameParams, paneReportAgentParams: HerdrRequestPaneReportAgentParams, paneReportAgentSessionParams: HerdrRequestPaneReportAgentSessionParams, paneReportMetadataParams: HerdrRequestPaneReportMetadataParams, paneResizeParams: HerdrRequestPaneResizeParams, paneSendInputParams: HerdrRequestPaneSendInputParams, paneSendKeysParams: HerdrRequestPaneSendKeysParams, paneSendTextParams: HerdrRequestPaneSendTextParams, paneSplitParams: HerdrRequestPaneSplitParams, paneSwapParams: HerdrRequestPaneSwapParams, paneTarget: HerdrRequestPaneTarget, paneWaitForOutputParams: HerdrRequestPaneWaitForOutputParams, paneZoomMode: HerdrRequestPaneZoomMode, paneZoomParams: HerdrRequestPaneZoomParams, pluginActionInvokeParams: HerdrRequestPluginActionInvokeParams, pluginActionListParams: HerdrRequestPluginActionListParams, pluginInvocationContext: HerdrRequestPluginInvocationContextClass, pluginLinkParams: HerdrRequestPluginLinkParams, pluginListParams: HerdrRequestPluginListParams, pluginLogListParams: HerdrRequestPluginLogListParams, pluginPaneCloseParams: HerdrRequestPluginPaneCloseParams, pluginPaneFocusParams: HerdrRequestPluginPaneFocusParams, pluginPaneOpenParams: HerdrRequestPluginPaneOpenParams, pluginPanePlacement: HerdrRequestPluginPanePlacementEnum, pluginSetEnabledParams: HerdrRequestPluginSetEnabledParams, pluginSourceInfo: HerdrRequestPluginSourceInfoClass, pluginSourceKind: HerdrRequestKind, pluginUnlinkParams: HerdrRequestPluginUnlinkParams, popupSize: HerdrRequestPopupSizeUnion, readFormat: HerdrRequestFormat, readSource: HerdrRequestSource, serverLiveHandoffParams: HerdrRequestServerLiveHandoffParams, splitDirection: HerdrRequestDirection, subscription: HerdrRequestSubscriptionElement, tabCreateParams: HerdrRequestTabCreateParams, tabListParams: HerdrRequestTabListParams, tabMoveParams: HerdrRequestTabMoveParams, tabRenameParams: HerdrRequestTabRenameParams, tabTarget: HerdrRequestTabTarget, toastHerdrPosition: HerdrRequestToastHerdrPositionEnum, workspaceCreateParams: HerdrRequestWorkspaceCreateParams, workspaceMoveBlockParams: HerdrRequestWorkspaceMoveBlockParams, workspaceMoveParams: HerdrRequestWorkspaceMoveParams, workspaceRenameParams: HerdrRequestWorkspaceRenameParams, workspaceReportMetadataParams: HerdrRequestWorkspaceReportMetadataParams, workspaceTarget: HerdrRequestWorkspaceTarget, workspaceWorktreeInfo: HerdrRequestWorkspaceWorktreeInfoClass, worktreeCreateParams: HerdrRequestWorktreeCreateParams, worktreeListParams: HerdrRequestWorktreeListParams, worktreeOpenParams: HerdrRequestWorktreeOpenParams, worktreeRemoveParams: HerdrRequestWorktreeRemoveParams) {
         self.agentPromptParams = agentPromptParams
         self.agentPromptWaitOptions = agentPromptWaitOptions
         self.agentReadParams = agentReadParams
@@ -310,6 +312,7 @@ public struct HerdrRequestTypes: Codable, Sendable {
         self.tabTarget = tabTarget
         self.toastHerdrPosition = toastHerdrPosition
         self.workspaceCreateParams = workspaceCreateParams
+        self.workspaceMoveBlockParams = workspaceMoveBlockParams
         self.workspaceMoveParams = workspaceMoveParams
         self.workspaceRenameParams = workspaceRenameParams
         self.workspaceReportMetadataParams = workspaceReportMetadataParams
@@ -434,6 +437,7 @@ public extension HerdrRequestTypes {
         tabTarget: HerdrRequestTabTarget? = nil,
         toastHerdrPosition: HerdrRequestToastHerdrPositionEnum? = nil,
         workspaceCreateParams: HerdrRequestWorkspaceCreateParams? = nil,
+        workspaceMoveBlockParams: HerdrRequestWorkspaceMoveBlockParams? = nil,
         workspaceMoveParams: HerdrRequestWorkspaceMoveParams? = nil,
         workspaceRenameParams: HerdrRequestWorkspaceRenameParams? = nil,
         workspaceReportMetadataParams: HerdrRequestWorkspaceReportMetadataParams? = nil,
@@ -538,6 +542,7 @@ public extension HerdrRequestTypes {
             tabTarget: tabTarget ?? self.tabTarget,
             toastHerdrPosition: toastHerdrPosition ?? self.toastHerdrPosition,
             workspaceCreateParams: workspaceCreateParams ?? self.workspaceCreateParams,
+            workspaceMoveBlockParams: workspaceMoveBlockParams ?? self.workspaceMoveBlockParams,
             workspaceMoveParams: workspaceMoveParams ?? self.workspaceMoveParams,
             workspaceRenameParams: workspaceRenameParams ?? self.workspaceRenameParams,
             workspaceReportMetadataParams: workspaceReportMetadataParams ?? self.workspaceReportMetadataParams,
@@ -1992,6 +1997,7 @@ public enum HerdrRequestSubscriptionType: String, Codable, Sendable {
     case workspaceMetadataUpdated = "workspace.metadata_updated"
     case workspaceMoved = "workspace.moved"
     case workspaceRenamed = "workspace.renamed"
+    case workspaceReordered = "workspace.reordered"
     case workspaceUpdated = "workspace.updated"
     case worktreeCreated = "worktree.created"
     case worktreeOpened = "worktree.opened"
@@ -2106,6 +2112,7 @@ public enum HerdrRequestTarget: String, Codable, Sendable {
     case cursor = "cursor"
     case devin = "devin"
     case droid = "droid"
+    case grok = "grok"
     case hermes = "hermes"
     case kilo = "kilo"
     case kimi = "kimi"
@@ -5558,6 +5565,59 @@ public extension HerdrRequestWorkspaceCreateParams {
             env: env ?? self.env,
             focus: focus ?? self.focus,
             label: label ?? self.label
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newHerdrRequestJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - HerdrRequestWorkspaceMoveBlockParams
+public struct HerdrRequestWorkspaceMoveBlockParams: Codable, Sendable {
+    public let beforeWorkspaceID: WorkspaceID?
+    public let workspaceIDS: [String]
+
+    public enum CodingKeys: String, CodingKey {
+        case beforeWorkspaceID = "before_workspace_id"
+        case workspaceIDS = "workspace_ids"
+    }
+
+    public init(beforeWorkspaceID: WorkspaceID?, workspaceIDS: [String]) {
+        self.beforeWorkspaceID = beforeWorkspaceID
+        self.workspaceIDS = workspaceIDS
+    }
+}
+
+// MARK: HerdrRequestWorkspaceMoveBlockParams convenience initializers and mutators
+
+public extension HerdrRequestWorkspaceMoveBlockParams {
+    init(data: Data) throws {
+        self = try newHerdrRequestJSONDecoder().decode(HerdrRequestWorkspaceMoveBlockParams.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        beforeWorkspaceID: WorkspaceID?? = nil,
+        workspaceIDS: [String]? = nil
+    ) -> HerdrRequestWorkspaceMoveBlockParams {
+        return HerdrRequestWorkspaceMoveBlockParams(
+            beforeWorkspaceID: beforeWorkspaceID ?? self.beforeWorkspaceID,
+            workspaceIDS: workspaceIDS ?? self.workspaceIDS
         )
     }
 

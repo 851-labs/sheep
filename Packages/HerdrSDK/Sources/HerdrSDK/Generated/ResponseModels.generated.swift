@@ -1,4 +1,4 @@
-// Generated from Herdr protocol 17, schema 1.
+// Generated from Herdr protocol 18, schema 1.
 // Do not edit by hand; run Tools/HerdrSDKGenerator/generate.mjs.
 // To parse the JSON, add this file to your project and do:
 //
@@ -1396,6 +1396,8 @@ public struct HerdrResponseData: Codable, Sendable {
     public let label: String?
     public let insertIndex: Int?
     public let workspaces: [HerdrResponseWorkspaceElement]?
+    public let beforeWorkspaceID: WorkspaceID?
+    public let workspaceIDS: [String]?
     public let worktree: HerdrResponseDataWorktree?
     public let alreadyOpen: Bool?
     public let forced: Bool?
@@ -1428,6 +1430,8 @@ public struct HerdrResponseData: Codable, Sendable {
         case label = "label"
         case insertIndex = "insert_index"
         case workspaces = "workspaces"
+        case beforeWorkspaceID = "before_workspace_id"
+        case workspaceIDS = "workspace_ids"
         case worktree = "worktree"
         case alreadyOpen = "already_open"
         case forced = "forced"
@@ -1454,13 +1458,15 @@ public struct HerdrResponseData: Codable, Sendable {
         case layout = "layout"
     }
 
-    public init(type: HerdrResponseEventEnum, workspace: HerdrResponseWorkspaceElement?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrResponseWorkspaceElement]?, worktree: HerdrResponseDataWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrResponseTabElement?, tabID: TabID?, tabs: [HerdrResponseTabElement]?, pane: HerdrResponseRootPaneElement?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrResponseAgentStatus?, released: Bool?, agentStatus: HerdrResponseAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrResponseLayoutElement?) {
+    public init(type: HerdrResponseEventEnum, workspace: HerdrResponseWorkspaceElement?, workspaceID: WorkspaceID?, label: String?, insertIndex: Int?, workspaces: [HerdrResponseWorkspaceElement]?, beforeWorkspaceID: WorkspaceID?, workspaceIDS: [String]?, worktree: HerdrResponseDataWorktree?, alreadyOpen: Bool?, forced: Bool?, tab: HerdrResponseTabElement?, tabID: TabID?, tabs: [HerdrResponseTabElement]?, pane: HerdrResponseRootPaneElement?, paneID: PaneID?, closedTabID: TabID?, closedWorkspaceID: WorkspaceID?, createdTab: HerdrResponseTabElement?, createdWorkspace: HerdrResponseWorkspaceElement?, previousPaneID: PaneID?, previousTabID: TabID?, previousWorkspaceID: WorkspaceID?, revision: Int?, agent: String?, finalStatus: HerdrResponseAgentStatus?, released: Bool?, agentStatus: HerdrResponseAgentStatus?, displayAgent: String?, stateLabels: [String: String]?, title: String?, layout: HerdrResponseLayoutElement?) {
         self.type = type
         self.workspace = workspace
         self.workspaceID = workspaceID
         self.label = label
         self.insertIndex = insertIndex
         self.workspaces = workspaces
+        self.beforeWorkspaceID = beforeWorkspaceID
+        self.workspaceIDS = workspaceIDS
         self.worktree = worktree
         self.alreadyOpen = alreadyOpen
         self.forced = forced
@@ -1513,6 +1519,8 @@ public extension HerdrResponseData {
         label: String?? = nil,
         insertIndex: Int?? = nil,
         workspaces: [HerdrResponseWorkspaceElement]?? = nil,
+        beforeWorkspaceID: WorkspaceID?? = nil,
+        workspaceIDS: [String]?? = nil,
         worktree: HerdrResponseDataWorktree?? = nil,
         alreadyOpen: Bool?? = nil,
         forced: Bool?? = nil,
@@ -1545,6 +1553,8 @@ public extension HerdrResponseData {
             label: label ?? self.label,
             insertIndex: insertIndex ?? self.insertIndex,
             workspaces: workspaces ?? self.workspaces,
+            beforeWorkspaceID: beforeWorkspaceID ?? self.beforeWorkspaceID,
+            workspaceIDS: workspaceIDS ?? self.workspaceIDS,
             worktree: worktree ?? self.worktree,
             alreadyOpen: alreadyOpen ?? self.alreadyOpen,
             forced: forced ?? self.forced,
@@ -1970,6 +1980,7 @@ public enum HerdrResponseEventEnum: String, Codable, Sendable {
     case workspaceMetadataUpdated = "workspace_metadata_updated"
     case workspaceMoved = "workspace_moved"
     case workspaceRenamed = "workspace_renamed"
+    case workspaceReordered = "workspace_reordered"
     case workspaceUpdated = "workspace_updated"
     case worktreeCreated = "worktree_created"
     case worktreeOpened = "worktree_opened"
@@ -4012,6 +4023,7 @@ public enum HerdrResponseTarget: String, Codable, Sendable {
     case cursor = "cursor"
     case devin = "devin"
     case droid = "droid"
+    case grok = "grok"
     case hermes = "hermes"
     case kilo = "kilo"
     case kimi = "kimi"

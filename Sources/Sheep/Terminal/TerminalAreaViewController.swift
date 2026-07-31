@@ -188,7 +188,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                 return terminalCard(containing: stateLabel(
                     title: "Terminal unavailable",
                     detail: ghosttyRuntime == nil
-                        ? "Ghostty 1.3.1 could not be initialized."
+                        ? "Ghostty could not be initialized."
                         : "The Herdr executable could not be found."
                 ), paneID: id)
             }

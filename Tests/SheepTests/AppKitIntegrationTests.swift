@@ -236,7 +236,7 @@ struct AppKitIntegrationTests {
     private static func session() throws -> HerdrSession {
         let json = """
         {
-          "version": "0.7.5", "protocol": 17,
+          "version": "0.7.5", "protocol": 18,
           "focused_workspace_id": "w1",
           "focused_tab_id": "w1:t1",
           "focused_pane_id": "w1:p1",
@@ -306,7 +306,7 @@ struct AppKitIntegrationTests {
         let firstFocused = focusedTabID.rawValue == "w1:t1"
         let json = """
         {
-          "version": "0.7.5", "protocol": 17,
+          "version": "0.7.5", "protocol": 18,
           "focused_workspace_id": "w1",
           "focused_tab_id": "\(focusedTabID.rawValue)",
           "focused_pane_id": "\(firstFocused ? "w1:p1" : "w1:p4")",
