@@ -225,6 +225,115 @@ struct ServiceTests {
             }
         }
     }
+
+    @Test
+    func protocol17SessionSupportsSharedAPIsAndRejectsProtocol18Features() async throws {
+        let recorder = RequestRecorder()
+        let server = try FakeHerdrServer { descriptor, request in
+            recorder.append(request)
+            let result: Any
+            switch request["method"] as? String {
+            case "session.snapshot":
+                result = ["snapshot": emptySession(protocolVersion: 17)]
+            default:
+                result = ["type": "ok"]
+            }
+            FakeHerdrServer.sendJSON([
+                "id": request["id"] ?? "",
+                "result": result,
+            ], to: descriptor)
+        }
+        defer { server.stop() }
+
+        let client = HerdrClient(socketURL: server.socketURL)
+        #expect(try await client.sessions.snapshot().protocolVersion == 17)
+        #expect(await client.protocolVersion == 17)
+        #expect(await client.capabilities?.workspaceBlockReordering == false)
+        try await client.workspaces.focus(WorkspaceID(rawValue: "w1"))
+
+        let expected = HerdrCompatibilityError.featureUnavailable(
+            feature: "workspace.move_block",
+            introduced: 18,
+            actual: 17
+        )
+        await #expect(throws: expected) {
+            try await client.send(HerdrEndpoints.workspaceMoveBlock(
+                .init(beforeWorkspaceID: nil, workspaceIDS: ["w1"])
+            ))
+        }
+        await #expect(throws: expected) {
+            try await client.rawRequest(method: "workspace.move_block")
+        }
+        await #expect(throws: HerdrCompatibilityError.featureUnavailable(
+            feature: "workspace.reordered",
+            introduced: 18,
+            actual: 17
+        )) {
+            _ = try await client.events.subscribe([
+                .init(type: "workspace.reordered"),
+            ])
+        }
+        #expect(recorder.requests.map { $0["method"] as? String } == [
+            "session.snapshot", "workspace.focus",
+        ])
+    }
+
+    @Test
+    func protocol18FeatureProbesUnknownServerAndExposesCapabilities() async throws {
+        let recorder = RequestRecorder()
+        let server = try FakeHerdrServer { descriptor, request in
+            recorder.append(request)
+            let result: Any
+            switch request["method"] as? String {
+            case "ping":
+                result = ["version": "0.7.5", "protocol": 18]
+            case "workspace.move_block":
+                result = ["type": "workspace_list", "workspaces": []]
+            default:
+                result = ["type": "ok"]
+            }
+            FakeHerdrServer.sendJSON([
+                "id": request["id"] ?? "",
+                "result": result,
+            ], to: descriptor)
+        }
+        defer { server.stop() }
+
+        let client = HerdrClient(socketURL: server.socketURL)
+        let result = try await client.send(HerdrEndpoints.workspaceMoveBlock(
+            .init(beforeWorkspaceID: nil, workspaceIDS: ["w1"])
+        ))
+        if case .workspaceList = result {
+            // Expected.
+        } else {
+            Issue.record("Expected workspace_list")
+        }
+        #expect(await client.protocolVersion == 18)
+        #expect(await client.capabilities?.workspaceBlockReordering == true)
+        #expect(recorder.requests.map { $0["method"] as? String } == [
+            "ping", "workspace.move_block",
+        ])
+
+        await #expect(throws: HerdrCompatibilityError.featureObsoleted(
+            feature: "workspace.focus",
+            obsoleted: 18,
+            actual: 18
+        )) {
+            try await client.send(ObsoletedRequest())
+        }
+    }
+}
+
+private struct ObsoletedRequest: HerdrRequest {
+    typealias Parameters = HerdrEmptyParameters
+    typealias Response = HerdrResponseResult
+
+    let method = HerdrMethod.workspaceFocus
+    let params = HerdrEmptyParameters()
+    let availability = HerdrProtocolAvailability(
+        introduced: 17,
+        obsoleted: 18
+    )
 }
 
 private func workspaceObject() -> [String: Any] {

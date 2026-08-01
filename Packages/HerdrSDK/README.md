@@ -19,7 +19,15 @@ The package has two products:
 - `HerdrSDKLocal` discovers or starts a local Herdr server and produces direct
   terminal attachment commands.
 
-Protocol model source is generated from Herdr's bundled JSON Schema. Run
+Protocol model source is generated from Herdr's bundled JSON Schema. The SDK
+supports protocols 17 and 18. Every generated method, result, event,
+subscription, and versioned enum case carries runtime availability metadata;
+protocol-18-only operations fail locally with `HerdrCompatibilityError`
+instead of being sent to a protocol-17 server.
+
+Availability changes are recorded in
+`Tools/HerdrSDKGenerator/protocol-availability.json`. The manifest supports
+`introduced`, `deprecated`, and `obsoleted` protocol versions. Run
 `Tools/HerdrSDKGenerator/generate.mjs` from the Sheep repository root after updating
 the pinned Herdr submodule.
 

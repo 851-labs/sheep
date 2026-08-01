@@ -154,11 +154,16 @@ public struct HerdrServerService: HerdrService {
     init(client: HerdrClient) { self.client = client }
 
     public func ping() async throws -> HerdrServerStatus {
-        try await client.request(
+        let status = try await client.request(
             method: .ping,
             params: EmptyParameters(),
             response: HerdrServerStatus.self
         )
+        try await client.registerServer(
+            version: status.version,
+            protocolVersion: status.protocolVersion
+        )
+        return status
     }
 }
 
@@ -182,7 +187,10 @@ public struct HerdrSessionService: HerdrService {
             params: EmptyParameters(),
             response: SnapshotResult.self
         )
-        try validateCompatibility(result.snapshot)
+        try await client.registerServer(
+            version: result.snapshot.version,
+            protocolVersion: result.snapshot.protocolVersion
+        )
         return result.snapshot
     }
 }
@@ -323,19 +331,20 @@ public struct HerdrPluginService: HerdrService {
     init(client: HerdrClient) { self.client = client }
 }
 
-func validateCompatibility(_ session: HerdrSession) throws {
-    guard session.protocolVersion == UInt(HerdrProtocolMetadata.protocolVersion) else {
-        throw HerdrCompatibilityError.protocolMismatch(
-            expected: HerdrProtocolMetadata.protocolVersion,
-            actual: session.protocolVersion
+func validateCompatibility(version: String, protocolVersion: UInt) throws {
+    guard HerdrProtocolMetadata.supportedProtocols.contains(Int(protocolVersion)) else {
+        throw HerdrCompatibilityError.unsupportedProtocol(
+            minimum: HerdrProtocolMetadata.minimumSupportedProtocol,
+            maximum: HerdrProtocolMetadata.maximumSupportedProtocol,
+            actual: protocolVersion
         )
     }
-    let actual = semanticVersion(session.version)
+    let actual = semanticVersion(version)
     let minimum = [0, 7, 5]
     guard !actual.lexicographicallyPrecedes(minimum) else {
         throw HerdrCompatibilityError.versionTooOld(
             minimum: "0.7.5",
-            actual: session.version
+            actual: version
         )
     }
 }

@@ -53,8 +53,28 @@ struct ModelCoverageTests {
     func errorsDescribeEveryCase() {
         #expect(HerdrAPIError(code: "x", message: "message").errorDescription == "message")
         #expect(
-            HerdrCompatibilityError.protocolMismatch(expected: 18, actual: 19)
-                .errorDescription == "HerdrSDK requires protocol 18; the server reports 19."
+            HerdrCompatibilityError.unsupportedProtocol(
+                minimum: 17,
+                maximum: 18,
+                actual: 19
+            ).errorDescription
+                == "HerdrSDK supports protocols 17 through 18; the server reports 19."
+        )
+        #expect(
+            HerdrCompatibilityError.featureUnavailable(
+                feature: "workspace.move_block",
+                introduced: 18,
+                actual: 17
+            ).errorDescription
+                == "Herdr workspace.move_block requires protocol 18; the server reports 17."
+        )
+        #expect(
+            HerdrCompatibilityError.featureObsoleted(
+                feature: "legacy.method",
+                obsoleted: 19,
+                actual: 19
+            ).errorDescription
+                == "Herdr legacy.method was removed in protocol 19; the server reports 19."
         )
         #expect(
             HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "0.7.4")
@@ -210,21 +230,32 @@ struct ModelCoverageTests {
 
     @Test
     func compatibilityAcceptsAndRejectsEveryBoundary() throws {
-        try validateCompatibility(session(version: "0.7.5"))
-        try validateCompatibility(session(version: "0.7.5-beta.1"))
-        try validateCompatibility(session(version: "1.0"))
+        try validateCompatibility(version: "0.7.5", protocolVersion: 17)
+        try validateCompatibility(version: "0.7.5-beta.1", protocolVersion: 18)
+        try validateCompatibility(version: "1.0", protocolVersion: 18)
 
-        #expect(throws: HerdrCompatibilityError.protocolMismatch(expected: 18, actual: 17)) {
-            try validateCompatibility(session(protocolVersion: 17))
+        #expect(throws: HerdrCompatibilityError.unsupportedProtocol(
+            minimum: 17,
+            maximum: 18,
+            actual: 16
+        )) {
+            try validateCompatibility(version: "0.7.5", protocolVersion: 16)
+        }
+        #expect(throws: HerdrCompatibilityError.unsupportedProtocol(
+            minimum: 17,
+            maximum: 18,
+            actual: 19
+        )) {
+            try validateCompatibility(version: "0.7.5", protocolVersion: 19)
         }
         #expect(throws: HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "0.7.4")) {
-            try validateCompatibility(session(version: "0.7.4"))
+            try validateCompatibility(version: "0.7.4", protocolVersion: 17)
         }
         #expect(throws: HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "invalid")) {
-            try validateCompatibility(session(version: "invalid"))
+            try validateCompatibility(version: "invalid", protocolVersion: 17)
         }
         #expect(throws: HerdrCompatibilityError.versionTooOld(minimum: "0.7.5", actual: "")) {
-            try validateCompatibility(session(version: ""))
+            try validateCompatibility(version: "", protocolVersion: 17)
         }
     }
 }

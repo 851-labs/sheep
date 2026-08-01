@@ -5,8 +5,28 @@ import Foundation
 
 public enum HerdrProtocolMetadata {
     public static let protocolVersion = 18
+    public static let minimumSupportedProtocol = 17
+    public static let maximumSupportedProtocol = 18
+    public static let supportedProtocols = minimumSupportedProtocol ... maximumSupportedProtocol
     public static let schemaVersion = 1
     public static let schemaSHA256 = "b18cff0f10dc981cd616295e99002ea7cc78625dfb82d664feb4f776748b1654"
+}
+
+public struct HerdrProtocolAvailability: Codable, Equatable, Sendable {
+    public let introduced: Int
+    public let deprecated: Int?
+    public let obsoleted: Int?
+
+    public init(introduced: Int, deprecated: Int? = nil, obsoleted: Int? = nil) {
+        self.introduced = introduced
+        self.deprecated = deprecated
+        self.obsoleted = obsoleted
+    }
+
+    public func isAvailable(on protocolVersion: UInt) -> Bool {
+        let version = Int(protocolVersion)
+        return version >= introduced && obsoleted.map { version < $0 } ?? true
+    }
 }
 
 public enum HerdrMethod: String, Codable, CaseIterable, Sendable {
@@ -325,6 +345,265 @@ public enum HerdrSchemaCatalog {
         "pane.agent_status_changed",
         "pane.scroll_changed",
     ]
+
+    public static let methodAvailability: [HerdrMethod: HerdrProtocolAvailability] = [
+        .ping: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .serverStop: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .serverLiveHandoff: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .serverReloadConfig: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .serverAgentManifests: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .serverReloadAgentManifests: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .notificationShow: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .clientWindowTitleSet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .clientWindowTitleClear: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .sessionSnapshot: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceCreate: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceGet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceFocus: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceRename: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceMove: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceMoveBlock: .init(introduced: 18, deprecated: nil, obsoleted: nil),
+        .workspaceReportMetadata: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .workspaceClose: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .worktreeList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .worktreeCreate: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .worktreeOpen: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .worktreeRemove: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabCreate: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabGet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabFocus: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabRename: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabMove: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .tabClose: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentGet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentRead: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentExplain: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentSendKeys: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentRename: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentViewSet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentViewClear: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentFocus: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentStart: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentPrompt: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .agentWait: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneSplit: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneSwap: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneMove: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneZoom: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneLayout: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneProcessInfo: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .layoutExport: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .layoutApply: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .layoutSetSplitRatio: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneNeighbor: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneEdges: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneFocusDirection: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneResize: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneCurrent: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneGet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneFocus: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneRename: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneSendText: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneSendKeys: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneSendInput: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneRead: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneGraphicsSet: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneGraphicsClear: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneGraphicsInfo: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneReportAgent: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneReportAgentSession: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneReportMetadata: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneClearAgentAuthority: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneReleaseAgent: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneClose: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .popupClose: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .eventsSubscribe: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .eventsWait: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneWaitForOutput: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .integrationInstall: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .integrationUninstall: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginLink: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginUnlink: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginEnable: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginDisable: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginActionList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginActionInvoke: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginLogList: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginPaneOpen: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginPaneFocus: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .pluginPaneClose: .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        .paneGraphicsStream: .init(introduced: 17),
+    ]
+
+    public static let resultAvailability: [String: HerdrProtocolAvailability] = [
+        "pong": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "session_snapshot": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_opened": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_removed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_started": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_prompted": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_view": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_current": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_swap": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_move": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_zoom": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_layout": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_process_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "layout_export": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "layout_apply": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "layout_split_ratio_set": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_neighbor": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_edges": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_focus_direction": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_resize": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_read": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_graphics_info": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_explain": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "subscription_started": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "wait_matched": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "output_matched": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "notification_show": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "client_window_title": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "integration_install": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "integration_uninstall": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_manifest_reload": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "agent_manifest_status": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_linked": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_unlinked": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_enabled": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_disabled": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_action_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_action_invoked": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_log_list": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_pane_opened": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_pane_focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "plugin_pane_closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "config_reload": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "ok": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+    ]
+
+    public static let eventAvailability: [String: HerdrProtocolAvailability] = [
+        "workspace_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_metadata_updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_renamed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace_reordered": .init(introduced: 18, deprecated: nil, obsoleted: nil),
+        "workspace_focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_opened": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree_removed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_renamed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab_focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_output_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_exited": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_agent_detected": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane_agent_status_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "layout_updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+    ]
+
+    public static let subscriptionAvailability: [String: HerdrProtocolAvailability] = [
+        "workspace.created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.metadata_updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.renamed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.reordered": .init(introduced: 18, deprecated: nil, obsoleted: nil),
+        "workspace.closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "workspace.focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree.created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree.opened": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "worktree.removed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab.created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab.closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab.focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab.renamed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "tab.moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.created": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.closed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.focused": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.moved": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.exited": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.agent_detected": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.output_matched": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.agent_status_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.scroll_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "layout.updated": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+    ]
+
+    public static let subscriptionEventAvailability: [String: HerdrProtocolAvailability] = [
+        "pane.output_matched": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.agent_status_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+        "pane.scroll_changed": .init(introduced: 17, deprecated: nil, obsoleted: nil),
+    ]
+}
+
+public extension HerdrMethod {
+    var availability: HerdrProtocolAvailability {
+        HerdrSchemaCatalog.methodAvailability[self]!
+    }
+}
+
+public struct HerdrCapabilities: Equatable, Sendable {
+    public let protocolVersion: UInt
+
+    public init(protocolVersion: UInt) {
+        self.protocolVersion = protocolVersion
+    }
+
+    public func supports(_ method: HerdrMethod) -> Bool {
+        method.availability.isAvailable(on: protocolVersion)
+    }
+
+    public var workspaceBlockReordering: Bool {
+        supports(.workspaceMoveBlock)
+    }
+}
+
+public extension HerdrRequestTarget {
+    var availability: HerdrProtocolAvailability {
+        switch self {
+        case .grok: .init(introduced: 18, deprecated: nil, obsoleted: nil)
+        default: .init(introduced: 17)
+        }
+    }
+}
+
+public extension HerdrResponseTarget {
+    var availability: HerdrProtocolAvailability {
+        switch self {
+        case .grok: .init(introduced: 18, deprecated: nil, obsoleted: nil)
+        default: .init(introduced: 17)
+        }
+    }
 }
 
 public enum HerdrSuccessResult: Codable, Sendable {

@@ -14,6 +14,11 @@ public actor HerdrClient {
     var subscribedPaneIDs: Set<PaneID> = []
     var sessionReconnectReason: String?
     var sessionRefreshTask: Task<Void, Never>?
+    public private(set) var protocolVersion: UInt?
+
+    public var capabilities: HerdrCapabilities? {
+        protocolVersion.map(HerdrCapabilities.init(protocolVersion:))
+    }
 
     public init(endpointProvider: any HerdrEndpointProvider) {
         self.endpointProvider = endpointProvider
@@ -63,6 +68,7 @@ public actor HerdrClient {
     public nonisolated var plugins: HerdrPluginService { .init(client: self) }
 
     public func send<Request: HerdrRequest>(_ request: Request) async throws -> Request.Response {
+        try await requireAvailability(request.availability, feature: request.method.rawValue)
         let resultData = try await requestData(
             method: request.method,
             paramsData: encoder.encode(request.params)
@@ -74,7 +80,13 @@ public actor HerdrClient {
         method: String,
         params: HerdrJSONValue = .object([:])
     ) async throws -> HerdrJSONValue {
-        try await request(
+        if let knownMethod = HerdrMethod(rawValue: method) {
+            try await requireAvailability(
+                knownMethod.availability,
+                feature: knownMethod.rawValue
+            )
+        }
+        return try await request(
             method: method,
             params: params,
             response: HerdrJSONValue.self
@@ -86,7 +98,12 @@ public actor HerdrClient {
         params: Params,
         response: Response.Type
     ) async throws -> Response {
-        try await request(method: method.rawValue, params: params, response: response)
+        try await requireAvailability(method.availability, feature: method.rawValue)
+        return try await request(
+            method: method.rawValue,
+            params: params,
+            response: response
+        )
     }
 
     func request<Params: Encodable & Sendable, Response: Decodable & Sendable>(
@@ -121,6 +138,11 @@ public actor HerdrClient {
     func makeEventConnection(
         filters: [HerdrEventFilter]
     ) async throws -> HerdrEventConnection {
+        for filter in filters {
+            if let availability = HerdrSchemaCatalog.subscriptionAvailability[filter.type] {
+                try await requireAvailability(availability, feature: filter.type)
+            }
+        }
         let socketURL = try await endpointProvider.socketURL()
         return try HerdrSocketTransport(socketURL: socketURL)
             .openSubscription(filters: filters)
@@ -129,8 +151,57 @@ public actor HerdrClient {
     public func openGraphicsStream(
         paneID: PaneID
     ) async throws -> HerdrPaneGraphicsStream {
+        try await requireAvailability(
+            HerdrMethod.paneGraphicsStream.availability,
+            feature: HerdrMethod.paneGraphicsStream.rawValue
+        )
         let socketURL = try await endpointProvider.socketURL()
         return try HerdrSocketTransport(socketURL: socketURL)
             .openGraphicsStream(paneID: paneID)
+    }
+
+    func registerServer(version: String, protocolVersion: UInt) throws {
+        try validateCompatibility(version: version, protocolVersion: protocolVersion)
+        self.protocolVersion = protocolVersion
+    }
+
+    private func requireAvailability(
+        _ availability: HerdrProtocolAvailability,
+        feature: String
+    ) async throws {
+        let requiresNegotiation =
+            availability.introduced > HerdrProtocolMetadata.minimumSupportedProtocol
+                || availability.obsoleted != nil
+        if protocolVersion == nil, requiresNegotiation {
+            try await probeServerCompatibility()
+        }
+        guard let protocolVersion else { return }
+        if Int(protocolVersion) < availability.introduced {
+            throw HerdrCompatibilityError.featureUnavailable(
+                feature: feature,
+                introduced: availability.introduced,
+                actual: protocolVersion
+            )
+        }
+        if let obsoleted = availability.obsoleted,
+           Int(protocolVersion) >= obsoleted {
+            throw HerdrCompatibilityError.featureObsoleted(
+                feature: feature,
+                obsoleted: obsoleted,
+                actual: protocolVersion
+            )
+        }
+    }
+
+    private func probeServerCompatibility() async throws {
+        let resultData = try await requestData(
+            method: HerdrMethod.ping.rawValue,
+            paramsData: encoder.encode(HerdrEmptyParameters())
+        )
+        let status = try decoder.decode(HerdrServerStatus.self, from: resultData)
+        try registerServer(
+            version: status.version,
+            protocolVersion: status.protocolVersion
+        )
     }
 }

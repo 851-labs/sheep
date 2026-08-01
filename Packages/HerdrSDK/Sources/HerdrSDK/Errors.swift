@@ -13,15 +13,24 @@ public struct HerdrAPIError: LocalizedError, Equatable, Sendable {
 }
 
 public enum HerdrCompatibilityError: LocalizedError, Equatable, Sendable {
-    case protocolMismatch(expected: Int, actual: UInt)
+    case unsupportedProtocol(minimum: Int, maximum: Int, actual: UInt)
+    case featureUnavailable(feature: String, introduced: Int, actual: UInt)
+    case featureObsoleted(feature: String, obsoleted: Int, actual: UInt)
     case versionTooOld(minimum: String, actual: String)
     case unknownResultDiscriminator(String)
     case unknownEventDiscriminator(String)
 
     public var errorDescription: String? {
         switch self {
-        case let .protocolMismatch(expected, actual):
-            "HerdrSDK requires protocol \(expected); the server reports \(actual)."
+        case let .unsupportedProtocol(minimum, maximum, actual):
+            "HerdrSDK supports protocols \(minimum) through \(maximum); "
+                + "the server reports \(actual)."
+        case let .featureUnavailable(feature, introduced, actual):
+            "Herdr \(feature) requires protocol \(introduced); "
+                + "the server reports \(actual)."
+        case let .featureObsoleted(feature, obsoleted, actual):
+            "Herdr \(feature) was removed in protocol \(obsoleted); "
+                + "the server reports \(actual)."
         case let .versionTooOld(minimum, actual):
             "HerdrSDK requires Herdr \(minimum) or newer; the server reports \(actual)."
         case let .unknownResultDiscriminator(value):

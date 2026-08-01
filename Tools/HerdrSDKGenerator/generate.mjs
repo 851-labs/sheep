@@ -20,6 +20,10 @@ const quicktype = path.join(
   repository,
   "Tools/HerdrSDKGenerator/node_modules/.bin/quicktype",
 );
+const availabilityPath = path.join(
+  repository,
+  "Tools/HerdrSDKGenerator/protocol-availability.json",
+);
 
 if (!fs.existsSync(schemaPath)) {
   throw new Error(`Herdr schema is missing at ${schemaPath}`);
@@ -32,10 +36,20 @@ if (!fs.existsSync(quicktype)) {
 
 const schemaData = fs.readFileSync(schemaPath);
 const schema = JSON.parse(schemaData);
-if (schema.protocol !== 18 || schema.schema_version !== 1) {
+const availabilityManifest = JSON.parse(fs.readFileSync(availabilityPath));
+if (
+  schema.protocol !== availabilityManifest.maximum_supported_protocol ||
+  schema.schema_version !== 1
+) {
   throw new Error(
-    `Expected Herdr protocol 18/schema 1, found ${schema.protocol}/${schema.schema_version}`,
+    `Expected Herdr protocol ${availabilityManifest.maximum_supported_protocol}/schema 1, found ${schema.protocol}/${schema.schema_version}`,
   );
+}
+if (
+  availabilityManifest.minimum_supported_protocol >
+  availabilityManifest.maximum_supported_protocol
+) {
+  throw new Error("Herdr protocol availability range is invalid");
 }
 
 fs.mkdirSync(outputDirectory, { recursive: true });
@@ -216,6 +230,98 @@ const subscriptionVariants =
 const subscriptionEventTypes =
   schema.schemas.subscription_event.$defs.SubscriptionEventKind.enum;
 const schemaHash = crypto.createHash("sha256").update(schemaData).digest("hex");
+const minimumSupportedProtocol =
+  availabilityManifest.minimum_supported_protocol;
+const maximumSupportedProtocol =
+  availabilityManifest.maximum_supported_protocol;
+
+const availabilityFor = (kind, name) => {
+  const override = availabilityManifest[kind]?.[name] ?? {};
+  return {
+    introduced: override.introduced ?? minimumSupportedProtocol,
+    deprecated: override.deprecated ?? null,
+    obsoleted: override.obsoleted ?? null,
+  };
+};
+
+const validateAvailability = (label, availability) => {
+  const introduced = availability.introduced ?? minimumSupportedProtocol;
+  const deprecated = availability.deprecated ?? null;
+  const obsoleted = availability.obsoleted ?? null;
+  if (!Number.isInteger(introduced) || introduced > maximumSupportedProtocol) {
+    throw new Error(`${label} has an invalid introduced protocol`);
+  }
+  if (deprecated != null && (!Number.isInteger(deprecated) || deprecated < introduced)) {
+    throw new Error(`${label} has an invalid deprecated protocol`);
+  }
+  if (obsoleted != null && (!Number.isInteger(obsoleted) || obsoleted <= introduced)) {
+    throw new Error(`${label} has an invalid obsoleted protocol`);
+  }
+};
+
+for (const [kind, values] of [
+  ["methods", requestVariants.map((item) => item.method)],
+  ["results", resultTypes],
+  ["events", eventTypes],
+  ["subscriptions", subscriptionVariants],
+  ["subscription_events", subscriptionEventTypes],
+]) {
+  const known = new Set(values);
+  for (const name of Object.keys(availabilityManifest[kind] ?? {})) {
+    if (!known.has(name)) {
+      throw new Error(`Availability manifest has unknown ${kind} entry: ${name}`);
+    }
+    validateAvailability(
+      `${kind}.${name}`,
+      availabilityManifest[kind][name],
+    );
+  }
+}
+
+for (const [type, cases] of Object.entries(availabilityManifest.enum_cases ?? {})) {
+  for (const [name, availability] of Object.entries(cases)) {
+    validateAvailability(`${type}.${name}`, availability);
+  }
+}
+
+const swiftOptionalInteger = (value) => value == null ? "nil" : `${value}`;
+const swiftAvailability = (kind, name) => {
+  const availability = availabilityFor(kind, name);
+  return `.init(introduced: ${availability.introduced}, deprecated: ${swiftOptionalInteger(availability.deprecated)}, obsoleted: ${swiftOptionalInteger(availability.obsoleted)})`;
+};
+const swiftAvailabilityDictionary = (kind, values, keyExpression) => values
+  .map((value) => `        ${keyExpression(value)}: ${swiftAvailability(kind, value)},`)
+  .join("\n");
+const enumAvailabilityExtensions = Object.entries(
+  availabilityManifest.enum_cases ?? {},
+).map(([type, cases]) => {
+  const generatedSources = groups.map((group) => fs.readFileSync(
+    path.join(outputDirectory, `${group.name}Models.generated.swift`),
+    "utf8",
+  )).join("\n");
+  if (!generatedSources.includes(`public enum ${type}:`)) {
+    throw new Error(`Availability manifest has unknown enum type: ${type}`);
+  }
+  const caseLines = Object.entries(cases).map(([name, availability]) => {
+    if (!generatedSources.includes(`case ${name} =`)) {
+      throw new Error(`Availability manifest has unknown enum case: ${type}.${name}`);
+    }
+    const resolved = {
+      introduced: availability.introduced ?? minimumSupportedProtocol,
+      deprecated: availability.deprecated ?? null,
+      obsoleted: availability.obsoleted ?? null,
+    };
+    return `        case .${name}: .init(introduced: ${resolved.introduced}, deprecated: ${swiftOptionalInteger(resolved.deprecated)}, obsoleted: ${swiftOptionalInteger(resolved.obsoleted)})`;
+  }).join("\n");
+  return `public extension ${type} {
+    var availability: HerdrProtocolAvailability {
+        switch self {
+${caseLines}
+        default: .init(introduced: ${minimumSupportedProtocol})
+        }
+    }
+}`;
+}).join("\n\n");
 
 const swiftStringArray = (values, indentation = "        ") =>
   values.map((value) => `${indentation}"${value}",`).join("\n");
@@ -257,8 +363,28 @@ import Foundation
 
 public enum HerdrProtocolMetadata {
     public static let protocolVersion = ${schema.protocol}
+    public static let minimumSupportedProtocol = ${minimumSupportedProtocol}
+    public static let maximumSupportedProtocol = ${maximumSupportedProtocol}
+    public static let supportedProtocols = minimumSupportedProtocol ... maximumSupportedProtocol
     public static let schemaVersion = ${schema.schema_version}
     public static let schemaSHA256 = "${schemaHash}"
+}
+
+public struct HerdrProtocolAvailability: Codable, Equatable, Sendable {
+    public let introduced: Int
+    public let deprecated: Int?
+    public let obsoleted: Int?
+
+    public init(introduced: Int, deprecated: Int? = nil, obsoleted: Int? = nil) {
+        self.introduced = introduced
+        self.deprecated = deprecated
+        self.obsoleted = obsoleted
+    }
+
+    public func isAvailable(on protocolVersion: UInt) -> Bool {
+        let version = Int(protocolVersion)
+        return version >= introduced && obsoleted.map { version < $0 } ?? true
+    }
 }
 
 public enum HerdrMethod: String, Codable, CaseIterable, Sendable {
@@ -289,7 +415,52 @@ ${swiftStringArray(subscriptionVariants)}
     public static let subscriptionEventTypes: Set<String> = [
 ${swiftStringArray(subscriptionEventTypes)}
     ]
+
+    public static let methodAvailability: [HerdrMethod: HerdrProtocolAvailability] = [
+${swiftAvailabilityDictionary("methods", requestVariants.map((item) => item.method), (value) => `.${swiftIdentifier(value)}`)}
+        .paneGraphicsStream: .init(introduced: ${minimumSupportedProtocol}),
+    ]
+
+    public static let resultAvailability: [String: HerdrProtocolAvailability] = [
+${swiftAvailabilityDictionary("results", resultTypes, (value) => `"${value}"`)}
+    ]
+
+    public static let eventAvailability: [String: HerdrProtocolAvailability] = [
+${swiftAvailabilityDictionary("events", eventTypes, (value) => `"${value}"`)}
+    ]
+
+    public static let subscriptionAvailability: [String: HerdrProtocolAvailability] = [
+${swiftAvailabilityDictionary("subscriptions", subscriptionVariants, (value) => `"${value}"`)}
+    ]
+
+    public static let subscriptionEventAvailability: [String: HerdrProtocolAvailability] = [
+${swiftAvailabilityDictionary("subscription_events", subscriptionEventTypes, (value) => `"${value}"`)}
+    ]
 }
+
+public extension HerdrMethod {
+    var availability: HerdrProtocolAvailability {
+        HerdrSchemaCatalog.methodAvailability[self]!
+    }
+}
+
+public struct HerdrCapabilities: Equatable, Sendable {
+    public let protocolVersion: UInt
+
+    public init(protocolVersion: UInt) {
+        self.protocolVersion = protocolVersion
+    }
+
+    public func supports(_ method: HerdrMethod) -> Bool {
+        method.availability.isAvailable(on: protocolVersion)
+    }
+
+    public var workspaceBlockReordering: Bool {
+        supports(.workspaceMoveBlock)
+    }
+}
+
+${enumAvailabilityExtensions}
 
 public enum HerdrSuccessResult: Codable, Sendable {
 ${resultCases}

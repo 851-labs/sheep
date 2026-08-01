@@ -6,14 +6,51 @@ import Testing
 @Suite
 struct HerdrSDKTests {
     @Test
-    func schemaCatalogCoversProtocol18() {
+    func schemaCatalogCoversSupportedProtocolWindow() {
         #expect(HerdrProtocolMetadata.protocolVersion == 18)
+        #expect(HerdrProtocolMetadata.minimumSupportedProtocol == 17)
+        #expect(HerdrProtocolMetadata.maximumSupportedProtocol == 18)
+        #expect(HerdrProtocolMetadata.supportedProtocols == 17 ... 18)
         #expect(
             HerdrSchemaCatalog.methods
                 == Set(HerdrMethod.allCases.map(\.rawValue))
         )
         #expect(HerdrSchemaCatalog.methods.count == 91)
         #expect(HerdrSchemaCatalog.resultTypes.count == 57)
+        #expect(HerdrSchemaCatalog.methodAvailability.count == 91)
+        #expect(Set(HerdrSchemaCatalog.resultAvailability.keys) == HerdrSchemaCatalog.resultTypes)
+        #expect(Set(HerdrSchemaCatalog.eventAvailability.keys) == HerdrSchemaCatalog.eventTypes)
+        #expect(
+            Set(HerdrSchemaCatalog.subscriptionAvailability.keys)
+                == HerdrSchemaCatalog.subscriptionTypes
+        )
+        #expect(
+            Set(HerdrSchemaCatalog.subscriptionEventAvailability.keys)
+                == HerdrSchemaCatalog.subscriptionEventTypes
+        )
+        #expect(HerdrMethod.workspaceFocus.availability.introduced == 17)
+        #expect(HerdrMethod.workspaceMoveBlock.availability.introduced == 18)
+        #expect(
+            HerdrSchemaCatalog.eventAvailability["workspace_reordered"]?.introduced == 18
+        )
+        #expect(
+            HerdrSchemaCatalog.subscriptionAvailability["workspace.reordered"]?.introduced
+                == 18
+        )
+        #expect(HerdrRequestTarget.grok.availability.introduced == 18)
+        #expect(HerdrRequestTarget.codex.availability.introduced == 17)
+        #expect(HerdrResponseTarget.grok.availability.introduced == 18)
+        #expect(HerdrResponseTarget.codex.availability.introduced == 17)
+
+        let deprecated = HerdrProtocolAvailability(
+            introduced: 17,
+            deprecated: 18,
+            obsoleted: 19
+        )
+        #expect(deprecated.deprecated == 18)
+        #expect(deprecated.isAvailable(on: 17))
+        #expect(deprecated.isAvailable(on: 18))
+        #expect(!deprecated.isAvailable(on: 19))
     }
 
     @Test

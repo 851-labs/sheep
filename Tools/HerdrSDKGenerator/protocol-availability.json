@@ -1,0 +1,33 @@
+{
+  "minimum_supported_protocol": 17,
+  "maximum_supported_protocol": 18,
+  "methods": {
+    "workspace.move_block": {
+      "introduced": 18
+    }
+  },
+  "results": {},
+  "events": {
+    "workspace_reordered": {
+      "introduced": 18
+    }
+  },
+  "subscriptions": {
+    "workspace.reordered": {
+      "introduced": 18
+    }
+  },
+  "subscription_events": {},
+  "enum_cases": {
+    "HerdrRequestTarget": {
+      "grok": {
+        "introduced": 18
+      }
+    },
+    "HerdrResponseTarget": {
+      "grok": {
+        "introduced": 18
+      }
+    }
+  }
+}

@@ -12,6 +12,11 @@ public protocol HerdrRequest: Sendable {
 
     var method: HerdrMethod { get }
     var params: Parameters { get }
+    var availability: HerdrProtocolAvailability { get }
+}
+
+public extension HerdrRequest {
+    var availability: HerdrProtocolAvailability { method.availability }
 }
 
 public struct HerdrEndpoint<Parameters: Encodable & Sendable>: HerdrRequest {

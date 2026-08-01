@@ -7,7 +7,7 @@ AppKit, and Ghostty.
 
 - macOS 13 or newer
 - Xcode
-- A Herdr build using protocol 18
+- Herdr 0.7.5 or newer using protocol 17 or 18
 - Zig 0.16.0 (for the pinned Ghostty dependency)
 
 ## Development
@@ -44,7 +44,8 @@ xcodebuild \
 ## HerdrSDK
 
 Sheep is built on the in-repository `HerdrSDK` Swift package. It provides the
-complete Herdr protocol-18 API, typed events, reconnecting session observation,
+complete Herdr protocol-18 API with protocol-17 compatibility, typed events,
+per-symbol runtime availability, reconnecting session observation,
 local server supervision, and direct terminal attachment configuration.
 
 Regenerate its public protocol models after updating the pinned Herdr source:
