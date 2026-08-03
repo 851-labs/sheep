@@ -13,6 +13,16 @@ struct GhosttySurfaceContentScale: Equatable {
 struct GhosttySurfacePixelSize: Equatable {
     let width: UInt32
     let height: UInt32
+
+    init(width: UInt32, height: UInt32) {
+        self.width = width
+        self.height = height
+    }
+
+    init(backingSize: CGSize) {
+        width = UInt32(max(1, backingSize.width))
+        height = UInt32(max(1, backingSize.height))
+    }
 }
 
 struct GhosttySurfaceGeometryState {

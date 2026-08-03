@@ -98,7 +98,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     override func viewDidChangeBackingProperties() {
         super.viewDidChangeBackingProperties()
-        updateSurfaceEnvironment()
+        updateSurfaceBackingProperties()
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -121,7 +121,8 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             name: NSWindow.didChangeScreenNotification,
             object: window
         )
-        updateSurfaceEnvironment()
+        updateSurfaceDisplayAndOcclusion()
+        updateSurfaceBackingProperties()
     }
 
     func setPresented(_ presented: Bool) {
@@ -263,19 +264,21 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     }
 
     @objc private func windowDidChangeScreen(_ notification: Notification) {
-        updateSurfaceEnvironment()
+        guard let changedWindow = notification.object as? NSWindow,
+              changedWindow === window else { return }
+
+        // AppKit posts didChangeScreen before it has necessarily installed the
+        // destination screen's backing properties on every descendant view.
+        // Update the display link immediately, then refresh scale and framebuffer
+        // size on the next main-loop turn, matching Ghostty's AppKit surface.
+        updateSurfaceDisplayAndOcclusion()
+        DispatchQueue.main.async { [weak self] in
+            self?.updateSurfaceBackingProperties()
+        }
     }
 
-    private func updateSurfaceEnvironment() {
+    private func updateSurfaceDisplayAndOcclusion() {
         guard let surface, let window else { return }
-        let scale = Double(window.backingScaleFactor)
-        if geometry.recordContentScale(x: scale, y: scale) {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            layer?.contentsScale = scale
-            CATransaction.commit()
-            ghostty_surface_set_content_scale(surface, scale, scale)
-        }
         if let number = window.screen?.deviceDescription[
             NSDeviceDescriptionKey("NSScreenNumber")
         ] as? NSNumber, geometry.recordDisplayID(number.uint32Value) {
@@ -285,17 +288,49 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             surface,
             presented && window.occlusionState.contains(.visible)
         )
-        updateSurfaceSize()
+    }
+
+    private func updateSurfaceBackingProperties() {
+        guard let surface, let window else { return }
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        layer?.contentsScale = window.backingScaleFactor
+        CATransaction.commit()
+
+        guard bounds.width > 0, bounds.height > 0 else { return }
+        let backingBounds = convertToBacking(bounds)
+        let xScale = backingBounds.width / bounds.width
+        let yScale = backingBounds.height / bounds.height
+        if geometry.recordContentScale(x: xScale, y: yScale) {
+            ghostty_surface_set_content_scale(
+                surface,
+                Double(xScale),
+                Double(yScale)
+            )
+        }
+
+        // The logical view bounds do not change when a window crosses between
+        // 1x and 2x displays, but its Metal framebuffer must. Calculate the
+        // backing size through AppKit instead of multiplying a cached scale.
+        updateSurfaceSize(backingSize: convertToBacking(bounds.size))
     }
 
     private func updateSurfaceSize() {
-        guard let surface, bounds.width > 0, bounds.height > 0 else { return }
+        guard bounds.width > 0, bounds.height > 0 else { return }
         let scale = geometry.contentScale
             ?? GhosttySurfaceContentScale(x: 1, y: 1)
-        let size = GhosttySurfacePixelSize(
-            width: UInt32(max(1, bounds.width * scale.x)),
-            height: UInt32(max(1, bounds.height * scale.y))
+        updateSurfaceSize(
+            backingSize: NSSize(
+                width: bounds.width * scale.x,
+                height: bounds.height * scale.y
+            )
         )
+    }
+
+    private func updateSurfaceSize(backingSize: NSSize) {
+        guard let surface else { return }
+        let size = GhosttySurfacePixelSize(backingSize: backingSize)
         guard geometry.recordPixelSize(size) else { return }
         ghostty_surface_set_size(
             surface,

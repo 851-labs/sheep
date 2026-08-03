@@ -53,5 +53,22 @@ struct AppearanceTests {
         #expect(changed)
         changed = geometry.recordDisplayID(7)
         #expect(changed)
+        changed = geometry.recordPixelSize(
+            GhosttySurfacePixelSize(backingSize: CGSize(width: 800, height: 600))
+        )
+        #expect(changed)
+        #expect(geometry.pixelSize == GhosttySurfacePixelSize(width: 800, height: 600))
+    }
+
+    @Test
+    func ghosttyBackingSizeAlwaysProducesAValidFramebuffer() {
+        #expect(
+            GhosttySurfacePixelSize(backingSize: .zero)
+                == GhosttySurfacePixelSize(width: 1, height: 1)
+        )
+        #expect(
+            GhosttySurfacePixelSize(backingSize: CGSize(width: 1_600, height: 1_200))
+                == GhosttySurfacePixelSize(width: 1_600, height: 1_200)
+        )
     }
 }
