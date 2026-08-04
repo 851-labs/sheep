@@ -20,6 +20,8 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private var visibleTabID: TabID?
     private var renderedTabs: [TabID: RenderedTab] = [:]
     private var terminalViewsByTab: [TabID: [PaneID: GhosttyTerminalView]] = [:]
+    private var terminalCardsByTab: [TabID: [PaneID: TerminalCardView]] = [:]
+    private var visuallyFocusedPaneByTab: [TabID: PaneID] = [:]
     private var placeholder: NSView?
 
     init(
@@ -97,6 +99,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         switch result {
         case let .success(layout) where layout.tabID == tabID:
             let effectiveLayout = applyingPendingRatios(to: layout)
+            visuallyFocusedPaneByTab[tabID] = effectiveLayout.focusedPaneID
             let node = effectiveLayout.visibleRoot
             if var rendered = renderedTabs[tabID],
                rendered.layout.visibleRoot.hasSameTopology(as: node) {
@@ -187,7 +190,8 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             guard let pane = model.session?.panes.first(where: { $0.id == id }) else {
                 return terminalCard(
                     containing: stateLabel(title: "Pane unavailable", detail: id.rawValue),
-                    paneID: id
+                    paneID: id,
+                    tabID: tabID
                 )
             }
             guard let ghosttyRuntime, let terminalAttachments else {
@@ -196,7 +200,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                     detail: ghosttyRuntime == nil
                         ? "Ghostty could not be initialized."
                         : "The Herdr executable could not be found."
-                ), paneID: id)
+                ), paneID: id, tabID: tabID)
             }
             if let existing = terminalViewsByTab[tabID]?[id] {
                 paneContent = existing
@@ -209,7 +213,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                     attachment: attachment,
                     pane: pane
                 ) { [weak self] in
-                    self?.model.focusPane(id)
+                    self?.visuallyFocusPane(id, in: tabID)
                 }
                 if let terminal {
                     terminalViewsByTab[tabID, default: [:]][id] = terminal
@@ -221,7 +225,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
                     )
                 }
             }
-            return terminalCard(containing: paneContent, paneID: id)
+            return terminalCard(containing: paneContent, paneID: id, tabID: tabID)
         case let .split(direction, ratio, first, second):
             let split = TerminalCardSplitView()
             split.isVertical = direction == .right
@@ -237,10 +241,15 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         }
     }
 
-    private func terminalCard(containing terminal: NSView, paneID: PaneID) -> NSView {
+    private func terminalCard(
+        containing terminal: NSView,
+        paneID: PaneID,
+        tabID: TabID
+    ) -> NSView {
         let card = TerminalCardView()
-        card.pinSubview(terminal)
+        card.installContent(terminal)
         card.setAccessibilityLabel("Terminal card \(paneID.rawValue)")
+        terminalCardsByTab[tabID, default: [:]][paneID] = card
         return card
     }
 
@@ -508,6 +517,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
             setPresented(isSelected, in: rendered.view)
         }
         visibleTabID = tabID
+        updatePaneDimming()
         let focusedPaneID = selected.layout.focusedPaneID
         DispatchQueue.main.async { [weak self, weak selectedView = selected.view] in
             guard let self, self.activeTabID == tabID, let selectedView else { return }
@@ -569,8 +579,33 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         }
         if !preservingTerminalViews {
             terminalViewsByTab.removeValue(forKey: tabID)
+            visuallyFocusedPaneByTab.removeValue(forKey: tabID)
         }
+        terminalCardsByTab.removeValue(forKey: tabID)
         if visibleTabID == tabID { visibleTabID = nil }
+    }
+
+    private func visuallyFocusPane(_ paneID: PaneID, in tabID: TabID) {
+        visuallyFocusedPaneByTab[tabID] = paneID
+        updatePaneDimming()
+        model.focusPane(paneID)
+    }
+
+    private func updatePaneDimming() {
+        for (tabID, cards) in terminalCardsByTab {
+            guard tabID == activeTabID,
+                  tabID == visibleTabID,
+                  let rendered = renderedTabs[tabID],
+                  rendered.layout.visibleRoot.isSplit else {
+                cards.values.forEach { $0.setDimmed(false) }
+                continue
+            }
+            let focusedPaneID = visuallyFocusedPaneByTab[tabID]
+                ?? rendered.layout.focusedPaneID
+            for (paneID, card) in cards {
+                card.setDimmed(paneID != focusedPaneID)
+            }
+        }
     }
 
     private func setPresented(_ presented: Bool, in root: NSView) {
@@ -629,6 +664,11 @@ private extension PaneLayout {
 }
 
 private extension PaneLayout.Node {
+    var isSplit: Bool {
+        if case .split = self { return true }
+        return false
+    }
+
     func hasSameTopology(as other: Self) -> Bool {
         switch (self, other) {
         case let (.pane(lhs), .pane(rhs)):

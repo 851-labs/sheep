@@ -105,7 +105,9 @@ struct AppKitIntegrationTests {
                 && $0.layer?.borderWidth == 1
         })
         #expect(terminalCards.allSatisfy { card in
-            guard let terminal = card.subviews.first else { return false }
+            guard let terminal = card.subviews.first(where: {
+                !String(describing: type(of: $0)).contains("DimmingOverlay")
+            }) else { return false }
             let edgeConstraints = card.constraints.filter {
                 ($0.firstItem as? NSView) === terminal
                     || ($0.secondItem as? NSView) === terminal
@@ -118,6 +120,17 @@ struct AppKitIntegrationTests {
             Set(cardLabels)
                 == Set(["Terminal card w1:p1", "Terminal card w1:p2", "Terminal card w1:p3"])
         )
+        let focusedCard = try #require(terminalCard(paneID: "w1:p1", in: controller.view))
+        let firstUnfocusedCard = try #require(
+            terminalCard(paneID: "w1:p2", in: controller.view)
+        )
+        let secondUnfocusedCard = try #require(
+            terminalCard(paneID: "w1:p3", in: controller.view)
+        )
+        #expect(!focusedCard.isDimmed)
+        #expect(firstUnfocusedCard.isDimmed)
+        #expect(secondUnfocusedCard.isDimmed)
+        #expect(TerminalCardView.unfocusedOverlayOpacity == 0.3)
 
         let outlines: [NSOutlineView] = allSubviews(in: controller.view)
         #expect(outlines.first?.numberOfRows == 3)
@@ -201,6 +214,7 @@ struct AppKitIntegrationTests {
             terminalCard(paneID: "w1:p1", in: controller.view)
         )
         #expect(!firstCard.isHiddenOrHasHiddenAncestor)
+        #expect(!firstCard.isDimmed)
 
         repository.yield(HerdrSessionUpdate(
             connection: .connected,
@@ -212,6 +226,8 @@ struct AppKitIntegrationTests {
         )
         #expect(firstCard.isHiddenOrHasHiddenAncestor)
         #expect(!secondCard.isHiddenOrHasHiddenAncestor)
+        #expect(!firstCard.isDimmed)
+        #expect(!secondCard.isDimmed)
 
         repository.yield(HerdrSessionUpdate(
             connection: .connected,
