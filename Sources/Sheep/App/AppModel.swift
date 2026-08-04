@@ -74,6 +74,10 @@ final class AppModel {
         perform { try await self.repository.createTab(workspaceID: id) }
     }
 
+    func closeTab(_ id: TabID) {
+        perform { try await self.repository.closeTab(id) }
+    }
+
     func createWorkspace() {
         let panel = NSOpenPanel()
         panel.title = "Create a Herdr space"

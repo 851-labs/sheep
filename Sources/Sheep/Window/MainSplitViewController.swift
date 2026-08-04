@@ -1,4 +1,5 @@
 import AppKit
+import HerdrSDK
 import HerdrSDKLocal
 
 @MainActor
@@ -6,19 +7,24 @@ final class MainSplitViewController: NSSplitViewController {
     private let model: AppModel
     private let sidebar: SidebarViewController
     private let terminalArea: TerminalAreaViewController
+    private let automaticallyObservesModel: Bool
     private var restoredWidth = false
 
     init(
         model: AppModel,
         ghosttyRuntime: GhosttyRuntime?,
-        terminalAttachments: HerdrTerminalAttachmentFactory?
+        terminalAttachments: HerdrTerminalAttachmentFactory?,
+        representedTabID: TabID? = nil,
+        automaticallyObservesModel: Bool = true
     ) {
         self.model = model
+        self.automaticallyObservesModel = automaticallyObservesModel
         sidebar = SidebarViewController(model: model)
         terminalArea = TerminalAreaViewController(
             model: model,
             ghosttyRuntime: ghosttyRuntime,
-            terminalAttachments: terminalAttachments
+            terminalAttachments: terminalAttachments,
+            representedTabID: representedTabID
         )
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,14 +44,16 @@ final class MainSplitViewController: NSSplitViewController {
         addSplitViewItem(sidebarItem)
         addSplitViewItem(NSSplitViewItem(viewController: terminalArea))
 
-        model.onChange = { [weak self] in
-            self?.sidebar.reload()
-            self?.terminalArea.reload()
+        if automaticallyObservesModel {
+            model.onChange = { [weak self] in
+                self?.refresh()
+            }
+            model.onLayout = { [weak self] result in
+                self?.displayLayout(result)
+            }
+            model.start()
         }
-        model.onLayout = { [weak self] result in
-            self?.terminalArea.displayLayout(result)
-        }
-        model.start()
+        refresh()
     }
 
     override func viewDidAppear() {
@@ -71,5 +79,22 @@ final class MainSplitViewController: NSSplitViewController {
 
     func createWorkspace() {
         model.createWorkspace()
+    }
+
+    func refresh() {
+        sidebar.reload()
+        terminalArea.reload()
+    }
+
+    func displayLayout(_ result: Result<PaneLayout, Error>) {
+        terminalArea.displayLayout(result)
+    }
+
+    func setRepresentedTabID(_ tabID: TabID?) {
+        terminalArea.setRepresentedTabID(tabID)
+    }
+
+    func setWindowPresented(_ presented: Bool) {
+        terminalArea.setWindowPresented(presented)
     }
 }

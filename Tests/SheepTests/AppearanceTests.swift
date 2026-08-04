@@ -98,7 +98,7 @@ struct AppearanceTests {
         }
         #expect(minimizeItem?.keyEquivalent == "m")
         #expect(minimizeItem?.keyEquivalentModifierMask == .command)
-        #expect(minimizeItem?.target === window)
+        #expect(minimizeItem?.target == nil)
 
         let closeItem = NSApp.mainMenu?.items
             .first(where: { $0.submenu?.title == "File" })?
@@ -106,7 +106,7 @@ struct AppearanceTests {
                 $0.action == #selector(NSWindow.performClose(_:))
             }
         #expect(closeItem?.keyEquivalent == "w")
-        #expect(closeItem?.target === window)
+        #expect(closeItem?.target == nil)
         #expect(NSApp.servicesMenu?.title == "Services")
     }
 }

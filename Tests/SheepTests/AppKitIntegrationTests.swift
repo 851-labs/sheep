@@ -50,8 +50,8 @@ struct AppKitIntegrationTests {
         #expect(labels.contains("Agents grouped by space"))
         #expect(!labels.contains("Create space"))
         #expect(!labels.contains("Collapse sidebar"))
-        #expect(labels.contains("Tab 1"))
-        #expect(!labels.contains("Tab other"))
+        #expect(!labels.contains("Tab 1"))
+        #expect(!labels.contains("New tab"))
 
         #expect(controller.splitViewItems.first?.behavior == .sidebar)
         let visualEffects: [NSVisualEffectView] = allSubviews(in: controller.view)
@@ -339,6 +339,52 @@ struct AppKitIntegrationTests {
         #expect(!card.isResizeIndicatorVisible)
     }
 
+    @Test
+    func workspaceTabsUseNativeAppKitWindowTabGroups() async throws {
+        let firstTabID = TabID(rawValue: "w1:t1")
+        let secondTabID = TabID(rawValue: "w1:t2")
+        let repository = StreamingRepository(layouts: [
+            firstTabID: PaneLayout(
+                workspaceID: WorkspaceID(rawValue: "w1"),
+                tabID: firstTabID,
+                zoomed: false,
+                focusedPaneID: PaneID(rawValue: "w1:p1"),
+                root: .pane(PaneID(rawValue: "w1:p1"))
+            ),
+            secondTabID: PaneLayout(
+                workspaceID: WorkspaceID(rawValue: "w1"),
+                tabID: secondTabID,
+                zoomed: false,
+                focusedPaneID: PaneID(rawValue: "w1:p4"),
+                root: .pane(PaneID(rawValue: "w1:p4"))
+            ),
+        ])
+        let model = AppModel(repository: repository, gitStatus: StubGitStatus())
+        let coordinator = WorkspaceTabCoordinator(
+            model: model,
+            ghosttyRuntime: nil,
+            terminalAttachments: nil
+        )
+        defer { coordinator.shutdown() }
+        coordinator.start(showWindow: false)
+
+        repository.yield(HerdrSessionUpdate(
+            connection: .connected,
+            session: try Self.twoTabSession(focusedTabID: firstTabID)
+        ))
+        try await Task.sleep(for: .milliseconds(100))
+
+        #expect(coordinator.nativeTabCount == 2)
+        #expect(coordinator.nativeTabTitles == ["one", "two"])
+        #expect(coordinator.selectedWindow?.tabbedWindows?.count == 2)
+        #expect(coordinator.selectedWindow?.tabbingMode != .disallowed)
+        #expect(
+            coordinator.selectedWindow?.tabbingIdentifier
+                == "com.851labs.sheep.workspace.w1"
+        )
+        #expect(firstTabID != secondTabID)
+    }
+
     private static func session() throws -> HerdrSession {
         let json = """
         {
@@ -509,6 +555,7 @@ private struct StubRepository: HerdrSessionClient {
     func focusPane(_ id: PaneID) async throws { recorder.recordFocus() }
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
+    func closeTab(_ id: TabID) async throws {}
     func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
     func setSplitRatio(
         tabID: TabID,
@@ -542,6 +589,7 @@ private final class StreamingRepository: HerdrSessionClient, @unchecked Sendable
     func focusPane(_ id: PaneID) async throws {}
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
+    func closeTab(_ id: TabID) async throws {}
 
     func exportLayout(tabID: TabID) async throws -> PaneLayout {
         try #require(layouts[tabID])
@@ -581,6 +629,7 @@ private final class RatioRaceRepository: HerdrSessionClient, @unchecked Sendable
     func focusPane(_ id: PaneID) async throws {}
     func createWorkspace(cwd: URL) async throws {}
     func createTab(workspaceID: WorkspaceID) async throws {}
+    func closeTab(_ id: TabID) async throws {}
     func exportLayout(tabID: TabID) async throws -> PaneLayout { layout }
 
     func setSplitRatio(

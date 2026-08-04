@@ -3,9 +3,7 @@ import HerdrSDKLocal
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var windowController: NSWindowController?
-    private var mainController: MainSplitViewController?
-    private var mainToolbar: MainWindowToolbar?
+    private var workspaceTabs: WorkspaceTabCoordinator?
     private var ghosttyRuntime: GhosttyRuntime?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -27,33 +25,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let attachmentFactory = executable.flatMap {
             try? HerdrTerminalAttachmentFactory(executableURL: $0)
         }
-        let content = MainSplitViewController(
+        let tabs = WorkspaceTabCoordinator(
             model: model,
             ghosttyRuntime: runtime,
             terminalAttachments: attachmentFactory
         )
-        mainController = content
-
-        let window = NSWindow(contentViewController: content)
-        window.title = "sheep"
-        window.setContentSize(NSSize(width: 1_120, height: 760))
-        window.minSize = NSSize(width: 720, height: 480)
-        window.styleMask = [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView]
-        window.titlebarAppearsTransparent = true
-        window.titleVisibility = .hidden
-        window.toolbarStyle = .unified
-        window.isOpaque = false
-        window.backgroundColor = .clear
-        window.isMovableByWindowBackground = true
-        let toolbar = MainWindowToolbar(splitView: content.splitView)
-        mainToolbar = toolbar
-        window.toolbar = toolbar.toolbar
-        window.center()
-
-        installMainMenu(window: window)
-        let controller = NSWindowController(window: window)
-        windowController = controller
-        controller.showWindow(nil)
+        workspaceTabs = tabs
+        tabs.start()
+        installMainMenu()
         NSApp.activate(ignoringOtherApps: true)
     }
 
@@ -62,15 +41,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func newTab() {
-        mainController?.createTab()
+        workspaceTabs?.createTab()
     }
 
     @objc private func newSpace() {
-        mainController?.createWorkspace()
+        workspaceTabs?.createWorkspace()
     }
 
     @objc private func toggleSidebar() {
-        mainController?.toggleSidebar(nil)
+        workspaceTabs?.toggleSidebar()
     }
 
     func installMainMenu(window: NSWindow? = nil) {
@@ -132,7 +111,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             action: #selector(NSWindow.performClose(_:)),
             keyEquivalent: "w"
         )
-        closeItem.target = window
+        closeItem.target = nil
         fileItem.submenu = fileMenu
         menu.addItem(fileItem)
 
@@ -185,7 +164,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: "f"
         )
         fullScreenItem.keyEquivalentModifierMask = [.command, .control]
-        fullScreenItem.target = window
+        fullScreenItem.target = nil
         viewItem.submenu = viewMenu
         menu.addItem(viewItem)
 
@@ -196,13 +175,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             action: #selector(NSWindow.performMiniaturize(_:)),
             keyEquivalent: "m"
         )
-        minimizeItem.target = window
+        minimizeItem.target = nil
         let zoomItem = windowMenu.addItem(
             withTitle: "Zoom",
             action: #selector(NSWindow.performZoom(_:)),
             keyEquivalent: ""
         )
-        zoomItem.target = window
+        zoomItem.target = nil
         windowMenu.addItem(.separator())
         let frontItem = windowMenu.addItem(
             withTitle: "Bring All to Front",

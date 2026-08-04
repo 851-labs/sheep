@@ -8,9 +8,11 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     private let model: AppModel
     private let ghosttyRuntime: GhosttyRuntime?
     private let terminalAttachments: HerdrTerminalAttachmentFactory?
-    private let tabStack = NSStackView()
     private let banner = NSTextField(labelWithString: "")
     private let content = NSView()
+    private var bannerHeightConstraint: NSLayoutConstraint?
+    private var representedTabID: TabID?
+    private var windowIsPresented = true
     private var splitMetadata: [ObjectIdentifier: SplitMetadata] = [:]
     private var ratioTasks: [SplitKey: Task<Void, Never>] = [:]
     private var pendingRatios: [SplitKey: PendingSplitRatio] = [:]
@@ -27,11 +29,13 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     init(
         model: AppModel,
         ghosttyRuntime: GhosttyRuntime?,
-        terminalAttachments: HerdrTerminalAttachmentFactory?
+        terminalAttachments: HerdrTerminalAttachmentFactory?,
+        representedTabID: TabID? = nil
     ) {
         self.model = model
         self.ghosttyRuntime = ghosttyRuntime
         self.terminalAttachments = terminalAttachments
+        self.representedTabID = representedTabID
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,28 +45,22 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
     override func loadView() {
         let root = NativeContentBackgroundView()
 
-        tabStack.orientation = .horizontal
-        tabStack.alignment = .centerY
-        tabStack.spacing = 4
-        tabStack.edgeInsets = NSEdgeInsets(top: 5, left: 7, bottom: 5, right: 7)
-
         banner.font = .systemFont(ofSize: 11, weight: .medium)
         banner.alignment = .center
         banner.maximumNumberOfLines = 2
         banner.isHidden = true
 
-        [tabStack, banner, content].forEach {
+        [banner, content].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview($0)
         }
+        let bannerHeight = banner.heightAnchor.constraint(equalToConstant: 0)
+        bannerHeightConstraint = bannerHeight
         NSLayoutConstraint.activate([
-            tabStack.topAnchor.constraint(equalTo: root.topAnchor),
-            tabStack.leadingAnchor.constraint(equalTo: root.leadingAnchor),
-            tabStack.trailingAnchor.constraint(equalTo: root.trailingAnchor),
-            tabStack.heightAnchor.constraint(equalToConstant: 40),
-            banner.topAnchor.constraint(equalTo: tabStack.bottomAnchor),
+            banner.topAnchor.constraint(equalTo: root.topAnchor),
             banner.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             banner.trailingAnchor.constraint(equalTo: root.trailingAnchor),
+            bannerHeight,
             content.topAnchor.constraint(equalTo: banner.bottomAnchor),
             content.leadingAnchor.constraint(equalTo: root.leadingAnchor),
             content.trailingAnchor.constraint(equalTo: root.trailingAnchor),
@@ -73,8 +71,10 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
 
     func reload() {
         reloadConnectionState()
-        reloadTabs()
-        guard let tab = model.session?.focusedTab else {
+        let tab = representedTabID.flatMap { representedID in
+            model.session?.tabs.first(where: { $0.id == representedID })
+        } ?? model.session?.focusedTab
+        guard let tab else {
             activeTabID = nil
             visibleTabID = nil
             removeAllRenderedTabs()
@@ -128,44 +128,11 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         }
     }
 
-    private func reloadTabs() {
-        tabStack.arrangedSubviews.forEach {
-            tabStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
-        }
-        guard let session = model.session,
-              let workspace = session.focusedWorkspace else { return }
-
-        for tab in session.tabs(in: workspace.id) {
-            let status = tab.agentStatus == .working ? "  ●" : ""
-            let button = ClosureButton(title: "\(tab.label)\(status)") { [weak self] in
-                self?.model.focusTab(tab.id)
-            }
-            button.isBordered = false
-            button.font = .systemFont(ofSize: 11, weight: tab.focused ? .semibold : .regular)
-            button.contentTintColor = tab.focused ? .labelColor : .secondaryLabelColor
-            button.showsSelectedBackground = tab.focused
-            button.setAccessibilityLabel("Tab \(tab.label)")
-            tabStack.addArrangedSubview(button)
-        }
-        let spacer = NSView()
-        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        tabStack.addArrangedSubview(spacer)
-        let plus = ClosureButton(
-            image: NSImage(systemSymbolName: "plus", accessibilityDescription: "New tab")!
-        ) { [weak self] in
-            self?.model.createTab()
-        }
-        plus.isBordered = false
-        plus.contentTintColor = .secondaryLabelColor
-        plus.setAccessibilityLabel("New tab")
-        tabStack.addArrangedSubview(plus)
-    }
-
     private func reloadConnectionState() {
         switch model.connection {
         case .connected:
             banner.isHidden = true
+            bannerHeightConstraint?.constant = 0
             banner.stringValue = ""
             banner.backgroundColor = .clear
         case .connecting:
@@ -181,6 +148,24 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         banner.stringValue = text
         banner.textColor = color
         banner.isHidden = false
+        bannerHeightConstraint?.constant = 28
+    }
+
+    func setRepresentedTabID(_ tabID: TabID?) {
+        guard representedTabID != tabID else { return }
+        representedTabID = tabID
+        reload()
+    }
+
+    func setWindowPresented(_ presented: Bool) {
+        guard windowIsPresented != presented else { return }
+        windowIsPresented = presented
+        for rendered in renderedTabs.values {
+            setPresented(presented && rendered.layout.tabID == visibleTabID, in: rendered.view)
+        }
+        if presented, let visibleTabID {
+            showRenderedTab(visibleTabID)
+        }
     }
 
     private func build(node: PaneLayout.Node, tabID: TabID, path: [Bool]) -> NSView {
@@ -514,7 +499,7 @@ final class TerminalAreaViewController: NSViewController, NSSplitViewDelegate {
         for (candidateID, rendered) in renderedTabs {
             let isSelected = candidateID == tabID
             rendered.view.isHidden = !isSelected
-            setPresented(isSelected, in: rendered.view)
+            setPresented(windowIsPresented && isSelected, in: rendered.view)
         }
         visibleTabID = tabID
         updatePaneDimming()

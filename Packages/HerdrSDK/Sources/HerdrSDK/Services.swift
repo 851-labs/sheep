@@ -272,6 +272,15 @@ public struct HerdrTabService: HerdrService {
         await client.mutationCompleted()
         return HerdrTabCreation(tab: result.tab, rootPane: result.rootPane)
     }
+
+    public func close(_ id: TabID) async throws {
+        _ = try await client.request(
+            method: .tabClose,
+            params: TabTarget(tabID: id),
+            response: MutationAcknowledgement.self
+        )
+        await client.mutationCompleted()
+    }
 }
 
 public struct HerdrPaneService: HerdrService {

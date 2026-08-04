@@ -24,6 +24,7 @@
 		5A54373DCEC4EBE8CE68A693 /* SidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34735E6171B79AE7C3D343C /* SidebarViewController.swift */; };
 		6098FFFDB4404D557D92675E /* WorkspaceProjectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5039C1396B41B6EF6B30A1D9 /* WorkspaceProjectionTests.swift */; };
 		6C3FC5FB86D2CC7D64ABB713 /* SidebarRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF2C86D21BABB627B13815E4 /* SidebarRowView.swift */; };
+		71D5EC86D4E854DD4E0F5565 /* WorkspaceTabCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A01F3C23388F5173A9A25BD /* WorkspaceTabCoordinator.swift */; };
 		73F1CDB6290FB8506193157C /* TerminalAreaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B1632B09D74D5E272B8499 /* TerminalAreaViewController.swift */; };
 		800E4ED767ECE0B05E095A9C /* GhosttyTerminalView+Callbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6711F1BFB485AF16DDD255D4 /* GhosttyTerminalView+Callbacks.swift */; };
 		965E8678C80B0F049449F3AF /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD88BFD19151053A4350C48 /* main.swift */; };
@@ -68,6 +69,7 @@
 		83847971403AAA8A1E4FF79D /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		842951AD2C5DBF4E8D0B2923 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		99FF5CE23F80DB1F7ADBCA84 /* GitSummaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitSummaryTests.swift; sourceTree = "<group>"; };
+		9A01F3C23388F5173A9A25BD /* WorkspaceTabCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceTabCoordinator.swift; sourceTree = "<group>"; };
 		A7AFC29EE02A4EB6F0E4657B /* GitStatusProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatusProviding.swift; sourceTree = "<group>"; };
 		AAD88BFD19151053A4350C48 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D34735E6171B79AE7C3D343C /* SidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarViewController.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 			children = (
 				DB938113EAD33DF759518255 /* MainSplitViewController.swift */,
 				18A3064BA4D6ECBDE149114A /* MainWindowToolbar.swift */,
+				9A01F3C23388F5173A9A25BD /* WorkspaceTabCoordinator.swift */,
 			);
 			path = Window;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				73F1CDB6290FB8506193157C /* TerminalAreaViewController.swift in Sources */,
 				09CA9A04A58EB952FD9E2647 /* TerminalCardView.swift in Sources */,
 				9A071485DC97112A86108A3A /* WorkspaceProjection.swift in Sources */,
+				71D5EC86D4E854DD4E0F5565 /* WorkspaceTabCoordinator.swift in Sources */,
 				965E8678C80B0F049449F3AF /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

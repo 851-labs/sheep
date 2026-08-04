@@ -49,10 +49,12 @@ struct ServiceTests {
         #expect(try await client.sessions.snapshot().version == "0.7.5")
         try await client.workspaces.focus(WorkspaceID(rawValue: "w1"))
         try await client.tabs.focus(TabID(rawValue: "t1"))
+        try await client.tabs.close(TabID(rawValue: "t1"))
         try await client.panes.focus(PaneID(rawValue: "p1"))
 
         #expect(recorder.requests.map { $0["method"] as? String } == [
-            "ping", "session.snapshot", "workspace.focus", "tab.focus", "pane.focus",
+            "ping", "session.snapshot", "workspace.focus", "tab.focus", "tab.close",
+            "pane.focus",
         ])
     }
 
