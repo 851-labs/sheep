@@ -320,10 +320,18 @@ struct AppKitIntegrationTests {
     @Test
     func terminalResizeIndicatorUsesGhosttyGridFormatAndTiming() async throws {
         let card = TerminalCardView()
+        card.frame = NSRect(x: 0, y: 0, width: 300, height: 200)
         card.showResizeIndicator(columns: 120, rows: 42)
+        card.layoutSubtreeIfNeeded()
 
         #expect(card.isResizeIndicatorVisible)
         #expect(card.resizeIndicatorText == "120 ⨯ 42")
+        #expect(card.resizeIndicatorCornerRadius > 0)
+        if #available(macOS 26.0, *) {
+            #expect(card.resizeIndicatorUsesLiquidGlass)
+        } else {
+            #expect(!card.resizeIndicatorUsesLiquidGlass)
+        }
 
         try await Task.sleep(for: .milliseconds(800))
         #expect(!card.isResizeIndicatorVisible)

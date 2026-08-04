@@ -15,6 +15,8 @@ final class TerminalCardView: NSView {
     private(set) var contentView: NSView?
     var isResizeIndicatorVisible: Bool { !resizeIndicator.isHidden }
     var resizeIndicatorText: String { resizeIndicator.stringValue }
+    var resizeIndicatorUsesLiquidGlass: Bool { resizeIndicator.usesLiquidGlass }
+    var resizeIndicatorCornerRadius: CGFloat { resizeIndicator.pillCornerRadius }
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -138,6 +140,10 @@ private final class TerminalDimmingOverlayView: NSView {
 @MainActor
 private final class TerminalResizeIndicatorView: NSView {
     private let label = NSTextField(labelWithString: "")
+    private let backgroundView: NSView
+
+    let usesLiquidGlass: Bool
+    private(set) var pillCornerRadius: CGFloat = 0
 
     var stringValue: String {
         get { label.stringValue }
@@ -145,26 +151,46 @@ private final class TerminalResizeIndicatorView: NSView {
     }
 
     override init(frame frameRect: NSRect) {
+        if #available(macOS 26.0, *) {
+            let glass = NSGlassEffectView()
+            glass.style = .regular
+            backgroundView = glass
+            usesLiquidGlass = true
+        } else {
+            let material = NSVisualEffectView()
+            material.material = .hudWindow
+            material.blendingMode = .withinWindow
+            material.state = .active
+            backgroundView = material
+            usesLiquidGlass = false
+        }
         super.init(frame: frameRect)
         wantsLayer = true
-        layer?.cornerRadius = 4
         layer?.shadowColor = NSColor.black.cgColor
-        layer?.shadowOpacity = 0.25
-        layer?.shadowRadius = 3
-        layer?.shadowOffset = .zero
+        layer?.shadowOpacity = 0.3
+        layer?.shadowRadius = 5
+        layer?.shadowOffset = NSSize(width: 0, height: -1)
 
-        label.font = .systemFont(ofSize: 13)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(backgroundView)
+        NSLayoutConstraint.activate([
+            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+
+        label.font = .systemFont(ofSize: 13, weight: .medium)
         label.textColor = .labelColor
         label.alignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
+        addSubview(label, positioned: .above, relativeTo: backgroundView)
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5),
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 6),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6),
         ])
-        updateAdaptiveAppearance()
     }
 
     @available(*, unavailable)
@@ -174,15 +200,23 @@ private final class TerminalResizeIndicatorView: NSView {
         nil
     }
 
-    override func viewDidChangeEffectiveAppearance() {
-        super.viewDidChangeEffectiveAppearance()
-        updateAdaptiveAppearance()
-    }
-
-    private func updateAdaptiveAppearance() {
-        effectiveAppearance.performAsCurrentDrawingAppearance {
-            layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+    override func layout() {
+        super.layout()
+        pillCornerRadius = bounds.height / 2
+        if #available(macOS 26.0, *), let glass = backgroundView as? NSGlassEffectView {
+            glass.cornerRadius = pillCornerRadius
+        } else {
+            backgroundView.wantsLayer = true
+            backgroundView.layer?.cornerRadius = pillCornerRadius
+            backgroundView.layer?.cornerCurve = .continuous
+            backgroundView.layer?.masksToBounds = true
         }
+        layer?.shadowPath = CGPath(
+            roundedRect: bounds,
+            cornerWidth: pillCornerRadius,
+            cornerHeight: pillCornerRadius,
+            transform: nil
+        )
     }
 }
 
