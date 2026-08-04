@@ -13,6 +13,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     private var tracking: NSTrackingArea?
     var cursorHidden = false
     private var geometry = GhosttySurfaceGeometryState()
+    private var contentSize = NSSize(width: 800, height: 600)
     private var presented = true
     private var reportsFocusChanges = true
     var gridSizeDidChange: ((GhosttyTerminalGridSize) -> Void)?
@@ -91,10 +92,10 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
 
     override func layout() {
         super.layout()
-        // Divider and window drags continuously relayout this view. Ghostty only
-        // needs the framebuffer size here; scale and display changes have their
-        // own AppKit notifications.
-        updateSurfaceSize()
+        // Keep this as a fallback, but the containing terminal card explicitly
+        // forwards its authoritative content size during layout. A leaf NSView's
+        // layout callback is not guaranteed for every native window-tab resize.
+        sizeDidChange(bounds.size)
     }
 
     override func viewDidChangeBackingProperties() {
@@ -140,6 +141,22 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             surface,
             presented && (window?.occlusionState.contains(.visible) ?? false)
         )
+        if presented {
+            // Native window tabs can adopt the tab group's geometry while their
+            // content hierarchy is hidden. Resynchronize after AppKit completes
+            // that layout so the first visible frame uses the current grid size.
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.presented else { return }
+                self.superview?.layoutSubtreeIfNeeded()
+                self.sizeDidChange(self.bounds.size)
+            }
+        }
+    }
+
+    func sizeDidChange(_ size: NSSize) {
+        guard size.width > 0, size.height > 0 else { return }
+        contentSize = size
+        updateSurfaceSize(backingSize: convertToBacking(size))
     }
 
     func restoreFirstResponder() {
@@ -314,17 +331,17 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         // The logical view bounds do not change when a window crosses between
         // 1x and 2x displays, but its Metal framebuffer must. Calculate the
         // backing size through AppKit instead of multiplying a cached scale.
-        updateSurfaceSize(backingSize: convertToBacking(bounds.size))
+        updateSurfaceSize(backingSize: convertToBacking(contentSize))
     }
 
     private func updateSurfaceSize() {
-        guard bounds.width > 0, bounds.height > 0 else { return }
+        guard contentSize.width > 0, contentSize.height > 0 else { return }
         let scale = geometry.contentScale
             ?? GhosttySurfaceContentScale(x: 1, y: 1)
         updateSurfaceSize(
             backingSize: NSSize(
-                width: bounds.width * scale.x,
-                height: bounds.height * scale.y
+                width: contentSize.width * scale.x,
+                height: contentSize.height * scale.y
             )
         )
     }

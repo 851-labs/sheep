@@ -1,6 +1,13 @@
 import AppKit
 
 @MainActor
+protocol TerminalContentSizing: AnyObject {
+    func sizeDidChange(_ size: NSSize)
+}
+
+extension GhosttyTerminalView: TerminalContentSizing {}
+
+@MainActor
 final class TerminalCardView: NSView {
     static let cornerRadius: CGFloat = 12
     static let unfocusedOverlayOpacity: CGFloat = 0.3
@@ -66,6 +73,13 @@ final class TerminalCardView: NSView {
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
         updateAdaptiveAppearance()
+    }
+
+    override func layout() {
+        super.layout()
+        guard let contentView,
+              let sizingContent = contentView as? TerminalContentSizing else { return }
+        sizingContent.sizeDidChange(contentView.bounds.size)
     }
 
     func installContent(_ content: NSView) {

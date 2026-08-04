@@ -340,6 +340,21 @@ struct AppKitIntegrationTests {
     }
 
     @Test
+    func terminalCardForwardsAuthoritativeContentSizeDuringLayout() {
+        let card = TerminalCardView()
+        let content = RecordingTerminalContentView()
+        card.installContent(content)
+
+        card.frame = NSRect(x: 0, y: 0, width: 640, height: 420)
+        card.layoutSubtreeIfNeeded()
+        #expect(content.reportedSizes.last == NSSize(width: 640, height: 420))
+
+        card.frame = NSRect(x: 0, y: 0, width: 960, height: 540)
+        card.layoutSubtreeIfNeeded()
+        #expect(content.reportedSizes.last == NSSize(width: 960, height: 540))
+    }
+
+    @Test
     func workspaceTabsUseNativeAppKitWindowTabGroups() async throws {
         let firstTabID = TabID(rawValue: "w1:t1")
         let secondTabID = TabID(rawValue: "w1:t2")
@@ -535,6 +550,15 @@ struct AppKitIntegrationTests {
             ? split.subviews[0].frame.width
             : split.subviews[0].frame.height
         return (firstExtent + split.dividerThickness / 2) / extent
+    }
+}
+
+@MainActor
+private final class RecordingTerminalContentView: NSView, TerminalContentSizing {
+    private(set) var reportedSizes: [NSSize] = []
+
+    func sizeDidChange(_ size: NSSize) {
+        reportedSizes.append(size)
     }
 }
 
