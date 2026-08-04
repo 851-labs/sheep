@@ -7,7 +7,7 @@ final class TerminalCardView: NSView {
     static let resizeIndicatorDuration = Duration.milliseconds(750)
     static let resizeIndicatorReadinessDelay = Duration.milliseconds(500)
     static let resizeIndicatorFadeInDuration: TimeInterval = 0.14
-    static let resizeIndicatorFadeOutDuration: TimeInterval = 0.2
+    static let resizeIndicatorFadeOutDuration: TimeInterval = 0.1
 
     private let dimmingOverlay = TerminalDimmingOverlayView()
     private let resizeIndicator = TerminalResizeIndicatorView()
