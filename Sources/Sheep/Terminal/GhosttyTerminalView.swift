@@ -15,6 +15,7 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
     private var geometry = GhosttySurfaceGeometryState()
     private var presented = true
     private var reportsFocusChanges = true
+    var gridSizeDidChange: ((GhosttyTerminalGridSize) -> Void)?
 
     init?(
         runtime: GhosttyRuntime,
@@ -337,6 +338,12 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
             size.width,
             size.height
         )
+        let surfaceSize = ghostty_surface_size(surface)
+        guard surfaceSize.columns > 0, surfaceSize.rows > 0 else { return }
+        gridSizeDidChange?(.init(
+            columns: surfaceSize.columns,
+            rows: surfaceSize.rows
+        ))
     }
 
     private func updateAdaptiveAppearance() {
@@ -415,4 +422,9 @@ final class GhosttyTerminalView: NSView, @preconcurrency NSTextInputClient {
         }
     }
 
+}
+
+struct GhosttyTerminalGridSize: Equatable {
+    let columns: UInt16
+    let rows: UInt16
 }

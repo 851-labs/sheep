@@ -105,9 +105,7 @@ struct AppKitIntegrationTests {
                 && $0.layer?.borderWidth == 1
         })
         #expect(terminalCards.allSatisfy { card in
-            guard let terminal = card.subviews.first(where: {
-                !String(describing: type(of: $0)).contains("DimmingOverlay")
-            }) else { return false }
+            guard let terminal = card.contentView else { return false }
             let edgeConstraints = card.constraints.filter {
                 ($0.firstItem as? NSView) === terminal
                     || ($0.secondItem as? NSView) === terminal
@@ -317,6 +315,18 @@ struct AppKitIntegrationTests {
         })
         #expect(abs(dividerCenterRatio(in: finalSplit) - 0.75) < 0.02)
         #expect(repository.recordedRatios.count == 2)
+    }
+
+    @Test
+    func terminalResizeIndicatorUsesGhosttyGridFormatAndTiming() async throws {
+        let card = TerminalCardView()
+        card.showResizeIndicator(columns: 120, rows: 42)
+
+        #expect(card.isResizeIndicatorVisible)
+        #expect(card.resizeIndicatorText == "120 ⨯ 42")
+
+        try await Task.sleep(for: .milliseconds(800))
+        #expect(!card.isResizeIndicatorVisible)
     }
 
     private static func session() throws -> HerdrSession {
