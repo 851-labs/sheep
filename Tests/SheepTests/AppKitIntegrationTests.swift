@@ -327,13 +327,15 @@ struct AppKitIntegrationTests {
         #expect(card.isResizeIndicatorVisible)
         #expect(card.resizeIndicatorText == "120 ⨯ 42")
         #expect(card.resizeIndicatorCornerRadius > 0)
+        #expect(TerminalCardView.resizeIndicatorFadeInDuration > 0)
+        #expect(TerminalCardView.resizeIndicatorFadeOutDuration > 0)
         if #available(macOS 26.0, *) {
             #expect(card.resizeIndicatorUsesLiquidGlass)
         } else {
             #expect(!card.resizeIndicatorUsesLiquidGlass)
         }
 
-        try await Task.sleep(for: .milliseconds(800))
+        try await Task.sleep(for: .milliseconds(1_050))
         #expect(!card.isResizeIndicatorVisible)
     }
 

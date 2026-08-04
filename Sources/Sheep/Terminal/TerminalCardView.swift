@@ -6,10 +6,13 @@ final class TerminalCardView: NSView {
     static let unfocusedOverlayOpacity: CGFloat = 0.3
     static let resizeIndicatorDuration = Duration.milliseconds(750)
     static let resizeIndicatorReadinessDelay = Duration.milliseconds(500)
+    static let resizeIndicatorFadeInDuration: TimeInterval = 0.14
+    static let resizeIndicatorFadeOutDuration: TimeInterval = 0.2
 
     private let dimmingOverlay = TerminalDimmingOverlayView()
     private let resizeIndicator = TerminalResizeIndicatorView()
     private var resizeIndicatorTask: Task<Void, Never>?
+    private var resizeIndicatorGeneration = 0
     private var resizeIndicatorReady = false
     private(set) var isDimmed = false
     private(set) var contentView: NSView?
@@ -90,12 +93,41 @@ final class TerminalCardView: NSView {
 
     func showResizeIndicator(columns: UInt16, rows: UInt16) {
         resizeIndicator.stringValue = "\(columns) ⨯ \(rows)"
-        resizeIndicator.isHidden = false
+        resizeIndicatorGeneration += 1
+        let generation = resizeIndicatorGeneration
+        if resizeIndicator.isHidden {
+            resizeIndicator.alphaValue = 0
+            resizeIndicator.isHidden = false
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = Self.resizeIndicatorFadeInDuration
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                resizeIndicator.animator().alphaValue = 1
+            }
+        } else if resizeIndicator.alphaValue < 1 {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = Self.resizeIndicatorFadeInDuration
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                resizeIndicator.animator().alphaValue = 1
+            }
+        }
         resizeIndicatorTask?.cancel()
         resizeIndicatorTask = Task { [weak self] in
             try? await Task.sleep(for: Self.resizeIndicatorDuration)
-            guard !Task.isCancelled else { return }
-            self?.resizeIndicator.isHidden = true
+            guard let self,
+                  !Task.isCancelled,
+                  self.resizeIndicatorGeneration == generation else { return }
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = Self.resizeIndicatorFadeOutDuration
+                context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+                self.resizeIndicator.animator().alphaValue = 0
+            } completionHandler: { [weak self] in
+                Task { @MainActor [weak self] in
+                    guard let self,
+                          self.resizeIndicatorGeneration == generation else { return }
+                    self.resizeIndicator.isHidden = true
+                    self.resizeIndicator.alphaValue = 1
+                }
+            }
         }
     }
 
