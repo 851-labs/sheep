@@ -53,8 +53,80 @@ struct LocalRuntimeTests {
     }
 
     @Test
+    func executableDiscoverySelectsClientCompatibleWithRunningServer() throws {
+        let directory = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let incompatible = try executable(at: directory.appending(path: "herdr-incompatible"))
+        let compatible = try executable(at: directory.appending(path: "herdr-compatible"))
+        let locator = HerdrExecutableLocator(
+            environment: [:],
+            standardPaths: [incompatible.path, compatible.path],
+            statusProbe: { executable, _, _ in
+                HerdrExecutableServerStatus(
+                    running: true,
+                    protocolVersion: 18,
+                    compatible: executable == compatible
+                )
+            }
+        )
+
+        #expect(
+            try locator.locate(
+                compatibleWith: directory.appending(path: "herdr.sock")
+            ) == compatible
+        )
+    }
+
+    @Test
+    func executableDiscoveryRejectsOnlyIncompatibleInstalledClient() throws {
+        let directory = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let incompatible = try executable(at: directory.appending(path: "herdr"))
+        let locator = HerdrExecutableLocator(
+            environment: [:],
+            standardPaths: [incompatible.path],
+            statusProbe: { _, _, _ in
+                HerdrExecutableServerStatus(
+                    running: true,
+                    protocolVersion: 18,
+                    compatible: false
+                )
+            }
+        )
+
+        #expect(throws: HerdrLocalError.noCompatibleExecutable(serverProtocol: 18)) {
+            try locator.locate(
+                compatibleWith: directory.appending(path: "herdr.sock")
+            )
+        }
+    }
+
+    @Test
+    func executableDiscoveryPreservesOrderWhenNoServerIsRunning() throws {
+        let directory = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let first = try executable(at: directory.appending(path: "first"))
+        let second = try executable(at: directory.appending(path: "second"))
+        let locator = HerdrExecutableLocator(
+            environment: [:],
+            standardPaths: [first.path, second.path],
+            statusProbe: { _, _, _ in nil }
+        )
+
+        #expect(
+            try locator.locate(
+                compatibleWith: directory.appending(path: "missing.sock")
+            ) == first
+        )
+    }
+
+    @Test
     func localErrorsHaveActionableDescriptions() {
         #expect(HerdrLocalError.executableNotFound.errorDescription?.contains("not installed") == true)
+        #expect(
+            HerdrLocalError.noCompatibleExecutable(serverProtocol: 18)
+                .errorDescription?.contains("protocol 18") == true
+        )
         #expect(HerdrLocalError.startupTimedOut.errorDescription?.contains("timeout") == true)
         #expect(
             HerdrLocalError.launchFailed("boom").errorDescription

@@ -61,24 +61,11 @@ public actor HerdrLocalServer: HerdrEndpointProvider {
     }
 
     public func executableURL() throws -> URL {
-        if let explicit = configuration.executableURL {
-            guard FileManager.default.isExecutableFile(atPath: explicit.path) else {
-                throw HerdrLocalError.executableNotFound
-            }
-            return explicit
-        }
-        return try HerdrExecutableLocator(environment: configuration.environment).locate()
+        try configuration.resolvedExecutableURL()
     }
 
     var resolvedSocketURL: URL {
-        if let explicit = configuration.socketURL {
-            return explicit
-        }
-        if let override = configuration.environment["HERDR_SOCKET_PATH"] {
-            return URL(fileURLWithPath: override)
-        }
-        return FileManager.default.homeDirectoryForCurrentUser
-            .appending(path: ".config/herdr/herdr.sock")
+        configuration.resolvedSocketURL
     }
 
     private func isReady(_ socketURL: URL) async -> Bool {

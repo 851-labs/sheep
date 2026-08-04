@@ -18,10 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let model = AppModel(repository: localRuntime.client, gitStatus: GitStatusService())
         let runtime = GhosttyRuntime()
         ghosttyRuntime = runtime
-        let executable = configuration.executableURL
-            ?? (try? HerdrExecutableLocator(
-                environment: configuration.environment
-            ).locate())
+        let executable = try? configuration.resolvedExecutableURL()
         let attachmentFactory = executable.flatMap {
             try? HerdrTerminalAttachmentFactory(executableURL: $0)
         }
